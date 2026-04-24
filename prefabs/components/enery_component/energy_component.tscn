@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cft262mhc86o3"]
+
+[ext_resource type="Script" uid="uid://rf1imqqinlys" path="res://prefabs/components/enery_component/energy_component.gd" id="1_ienvy"]
+
+[node name="EnergyComponent" type="Node" unique_id=911516889]
+script = ExtResource("1_ienvy")

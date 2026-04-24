@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://b0to31obmue6u"]
+
+[ext_resource type="Script" uid="uid://ckkbs34vixnvp" path="res://scenes/ui/pause_menu/pause_menu.gd" id="1_kgchh"]
+
+[node name="PauseMenu" type="Control" unique_id=1442706905]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_kgchh")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=17719862]
+layer = 999
+
+[node name="BackgroundPanel" type="Panel" parent="CanvasLayer" unique_id=580076164]
+modulate = Color(1, 1, 1, 0.5)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MenuPanel" type="Panel" parent="CanvasLayer" unique_id=909381205]
+custom_minimum_size = Vector2(300, 400)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -200.0
+offset_right = 150.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MenuContainer" type="VBoxContainer" parent="CanvasLayer/MenuPanel" unique_id=1697246397]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="CanvasLayer/MenuPanel/MenuContainer" unique_id=1740771550]
+layout_mode = 2
+text = "游戏暂停"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ContinueBtn" type="Button" parent="CanvasLayer/MenuPanel/MenuContainer" unique_id=1652543793]
+unique_name_in_owner = true
+layout_mode = 2
+text = "继续游戏"
+
+[node name="SettingsBtn" type="Button" parent="CanvasLayer/MenuPanel/MenuContainer" unique_id=120017831]
+unique_name_in_owner = true
+layout_mode = 2
+text = "设置"
+
+[node name="BackToMenuBtn" type="Button" parent="CanvasLayer/MenuPanel/MenuContainer" unique_id=2092424736]
+unique_name_in_owner = true
+layout_mode = 2
+text = "返回主菜单"
+
+[node name="QuitBtn" type="Button" parent="CanvasLayer/MenuPanel/MenuContainer" unique_id=910735096]
+unique_name_in_owner = true
+layout_mode = 2
+text = "退出游戏"
+
+[connection signal="pressed" from="CanvasLayer/MenuPanel/MenuContainer/ContinueBtn" to="." method="_on_continue_btn_pressed"]
+[connection signal="pressed" from="CanvasLayer/MenuPanel/MenuContainer/SettingsBtn" to="." method="_on_settings_btn_pressed"]
+[connection signal="pressed" from="CanvasLayer/MenuPanel/MenuContainer/BackToMenuBtn" to="." method="_on_back_to_menu_btn_pressed"]
+[connection signal="pressed" from="CanvasLayer/MenuPanel/MenuContainer/QuitBtn" to="." method="_on_quit_btn_pressed"]

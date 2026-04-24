@@ -1,0 +1,68 @@
+[gd_scene format=3 uid="uid://dwk7a6af021ro"]
+
+[ext_resource type="Script" uid="uid://cnx16ci8rj6c" path="res://scenes/game/room_base.gd" id="1_rgfqh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4d5uy"]
+size = Vector2(1312, 76)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rgfqh"]
+size = Vector2(1298, 44)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tinbp"]
+size = Vector2(54, 806)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ex1kv"]
+size = Vector2(44, 776)
+
+[node name="RoomBase" type="Node2D" unique_id=447668660]
+script = ExtResource("1_rgfqh")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1331762951]
+layer = -1
+
+[node name="Background" type="ColorRect" parent="CanvasLayer" unique_id=1958789998]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.4849202, 0.4849202, 0.4849202, 1)
+
+[node name="RoomVisuals" type="Sprite2D" parent="CanvasLayer" unique_id=184550738]
+
+[node name="Collision" type="Node2D" parent="." unique_id=1452180790]
+
+[node name="WallTop" type="StaticBody2D" parent="Collision" unique_id=345312669]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Collision/WallTop" unique_id=156592254]
+position = Vector2(629, 15)
+shape = SubResource("RectangleShape2D_4d5uy")
+
+[node name="WallBottom" type="StaticBody2D" parent="Collision" unique_id=1038052427]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Collision/WallBottom" unique_id=1786297600]
+position = Vector2(638, 717)
+shape = SubResource("RectangleShape2D_rgfqh")
+
+[node name="WallLeft" type="StaticBody2D" parent="Collision" unique_id=1034928558]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Collision/WallLeft" unique_id=1998943697]
+position = Vector2(7, 370)
+shape = SubResource("RectangleShape2D_tinbp")
+
+[node name="WallRight" type="StaticBody2D" parent="Collision" unique_id=1196658502]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Collision/WallRight" unique_id=1352232697]
+position = Vector2(1282, 354)
+shape = SubResource("RectangleShape2D_ex1kv")
+
+[node name="SpawnPoints" type="Node2D" parent="." unique_id=362723793]
+
+[node name="EnemySpawn1" type="Marker2D" parent="SpawnPoints" unique_id=139743482]
+position = Vector2(176, 522)
+
+[node name="EnemySpawn2" type="Marker2D" parent="SpawnPoints" unique_id=1415767318]
+position = Vector2(982, 207)
+
+[node name="ItemSpawn" type="Marker2D" parent="SpawnPoints" unique_id=367669205]
+position = Vector2(142, 150)

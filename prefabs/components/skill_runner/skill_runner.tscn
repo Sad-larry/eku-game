@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dfpr1vqbtu3ht"]
+
+[ext_resource type="Script" uid="uid://myuu75pggc7m" path="res://prefabs/components/skill_runner/skill_runner.gd" id="1_33oi8"]
+
+[node name="SkillRunner" type="Node" unique_id=749520195]
+script = ExtResource("1_33oi8")

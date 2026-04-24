@@ -1,0 +1,58 @@
+# 依赖目录
+node_modules/
+vendor/
+venv/
+env/
+__pycache__/
+
+# 构建输出
+dist/
+build/
+out/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# 日志和临时文件
+*.log
+*.tmp
+*.temp
+*.swp
+.cache/
+
+# 版本控制
+.git/
+.gitignore
+.gitattributes
+.svn/
+
+# 环境配置
+.env
+.env.*
+!.env.example
+*.local
+
+# IDE 相关
+.idea/
+.vscode/
+*.sublime-*
+
+# 特定文件类型
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.mp4
+*.mp3
+
+# 测试和覆盖率
+coverage/
+.nyc_output/
+*.test.js
+*.spec.ts
+
+# Godot 项目示例
+*.import
+.import/

@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="UnitStats" format=3 uid="uid://777gcwve8r0e"]
+
+[ext_resource type="Script" uid="uid://cc78t6x0o34on" path="res://resources/data/entities/unit_stats.gd" id="1_foemc"]
+
+[resource]
+script = ExtResource("1_foemc")
+name = "Eku"
+metadata/_custom_type_script = "uid://cc78t6x0o34on"

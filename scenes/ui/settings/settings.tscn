@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://c2l1texcrid4e"]
+
+[ext_resource type="Script" uid="uid://d0vkcisfwkhl" path="res://scenes/ui/settings/settings.gd" id="1_1m5ku"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_wgxpm"]
+font_size = 64
+
+[node name="Settings" type="Control" unique_id=1567424844]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_1m5ku")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=367194504]
+layer = 999
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer" unique_id=2081724761]
+self_modulate = Color(0.99646384, 0.99646395, 0.99646395, 1)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/MarginContainer" unique_id=115323009]
+layout_mode = 2
+color = Color(0.4630682, 0.4630682, 0.463068, 1)
+
+[node name="Label" type="Label" parent="CanvasLayer/MarginContainer/ColorRect" unique_id=590372942]
+layout_mode = 0
+offset_top = 316.0
+offset_right = 1280.0
+offset_bottom = 404.0
+text = "SETTINGS"
+label_settings = SubResource("LabelSettings_wgxpm")
+horizontal_alignment = 1
+
+[node name="BackButton" type="Button" parent="CanvasLayer/MarginContainer/ColorRect" unique_id=1670932086]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -36.0
+offset_top = -98.0
+offset_right = 36.0
+offset_bottom = -45.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = "返回"
+
+[connection signal="pressed" from="CanvasLayer/MarginContainer/ColorRect/BackButton" to="." method="_on_button_pressed"]

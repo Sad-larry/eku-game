@@ -1,0 +1,224 @@
+[gd_scene format=3 uid="uid://d2miww5iawxo"]
+
+[ext_resource type="Script" uid="uid://daa6as8a7m5dd" path="res://scenes/ui/hud/hud.gd" id="1_0mwgc"]
+[ext_resource type="Texture2D" uid="uid://dijqgty4hucmm" path="res://icon.svg" id="2_hqnrr"]
+
+[node name="HUD" type="CanvasLayer" unique_id=134044149]
+layer = 99
+script = ExtResource("1_0mwgc")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1527594160]
+modulate = Color(1, 1, 1, 0.2)
+custom_minimum_size = Vector2(1280, 60)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -640.0
+offset_top = -60.0
+offset_right = 640.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(1, 1, 1, 0.48235294)
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1276935830]
+custom_minimum_size = Vector2(1280, 60)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -640.0
+offset_top = -60.0
+offset_right = 640.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_left = 3
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 3
+theme_override_constants/margin_bottom = 3
+
+[node name="StatusContainer" type="HBoxContainer" parent="MarginContainer" unique_id=849379809]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 48
+alignment = 1
+
+[node name="HealthContainer" type="VBoxContainer" parent="MarginContainer/StatusContainer" unique_id=1420053544]
+layout_mode = 2
+
+[node name="HealthLabel" type="Label" parent="MarginContainer/StatusContainer/HealthContainer" unique_id=1326323560]
+unique_name_in_owner = true
+layout_mode = 2
+text = "HP：100/100"
+
+[node name="HealthBar" type="ProgressBar" parent="MarginContainer/StatusContainer/HealthContainer" unique_id=1530119292]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="EnergyContainer" type="VBoxContainer" parent="MarginContainer/StatusContainer" unique_id=576122582]
+layout_mode = 2
+
+[node name="EnergyLabel" type="Label" parent="MarginContainer/StatusContainer/EnergyContainer" unique_id=1009974462]
+unique_name_in_owner = true
+layout_mode = 2
+text = "MP：50/50"
+
+[node name="EnergyBar" type="ProgressBar" parent="MarginContainer/StatusContainer/EnergyContainer" unique_id=553210866]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ComboMargin" type="MarginContainer" parent="MarginContainer/StatusContainer" unique_id=598242744]
+layout_mode = 2
+
+[node name="ComboLabel" type="Label" parent="MarginContainer/StatusContainer/ComboMargin" unique_id=224500459]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Combo：0"
+
+[node name="SkillSlotContainer" type="GridContainer" parent="MarginContainer" unique_id=210307090]
+custom_minimum_size = Vector2(250, 48)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme_override_constants/h_separation = 10
+columns = 4
+
+[node name="Panel" type="Panel" parent="MarginContainer/SkillSlotContainer" unique_id=1453575627]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="SkillSlot1" type="Button" parent="MarginContainer/SkillSlotContainer/Panel" unique_id=694735605]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SkillSlot1" type="TextureRect" parent="MarginContainer/SkillSlotContainer/Panel/SkillSlot1" unique_id=9894180]
+modulate = Color(1, 0, 0, 1)
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 0
+offset_right = 48.0
+offset_bottom = 48.0
+texture = ExtResource("2_hqnrr")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Panel2" type="Panel" parent="MarginContainer/SkillSlotContainer" unique_id=1853422324]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+
+[node name="SkillSlot2" type="Button" parent="MarginContainer/SkillSlotContainer/Panel2" unique_id=633154074]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SkillSlot2" type="TextureRect" parent="MarginContainer/SkillSlotContainer/Panel2/SkillSlot2" unique_id=797230033]
+modulate = Color(0, 1, 0, 1)
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 0
+offset_right = 48.0
+offset_bottom = 48.0
+texture = ExtResource("2_hqnrr")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Panel3" type="Panel" parent="MarginContainer/SkillSlotContainer" unique_id=1203270357]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+
+[node name="SkillSlot3" type="Button" parent="MarginContainer/SkillSlotContainer/Panel3" unique_id=657739472]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SkillSlot3" type="TextureRect" parent="MarginContainer/SkillSlotContainer/Panel3/SkillSlot3" unique_id=1918428607]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 0
+offset_right = 48.0
+offset_bottom = 48.0
+texture = ExtResource("2_hqnrr")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Panel4" type="Panel" parent="MarginContainer/SkillSlotContainer" unique_id=463231005]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+
+[node name="SkillSlot4" type="Button" parent="MarginContainer/SkillSlotContainer/Panel4" unique_id=1987611604]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SkillSlot4" type="TextureRect" parent="MarginContainer/SkillSlotContainer/Panel4/SkillSlot4" unique_id=1285793498]
+modulate = Color(1, 0, 1, 1)
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 0
+offset_right = 48.0
+offset_bottom = 48.0
+texture = ExtResource("2_hqnrr")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Panel" type="Panel" parent="MarginContainer" unique_id=902502679]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+
+[node name="PauseButton" type="Button" parent="MarginContainer/Panel" unique_id=499351174]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="PauseIcon" type="TextureRect" parent="MarginContainer/Panel/PauseButton" unique_id=1877177019]
+modulate = Color(1, 0.9108233, 0.4945157, 1)
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("2_hqnrr")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PauseLabel" type="Label" parent="MarginContainer/Panel/PauseButton" unique_id=118104087]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "暂停"
+horizontal_alignment = 1
+
+[connection signal="pressed" from="MarginContainer/SkillSlotContainer/Panel/SkillSlot1" to="." method="_on_skill_slot_1_pressed"]
+[connection signal="pressed" from="MarginContainer/SkillSlotContainer/Panel2/SkillSlot2" to="." method="_on_skill_slot_2_pressed"]
+[connection signal="pressed" from="MarginContainer/SkillSlotContainer/Panel3/SkillSlot3" to="." method="_on_skill_slot_3_pressed"]
+[connection signal="pressed" from="MarginContainer/SkillSlotContainer/Panel4/SkillSlot4" to="." method="_on_skill_slot_4_pressed"]
+[connection signal="pressed" from="MarginContainer/Panel/PauseButton" to="." method="_on_pause_button_pressed"]

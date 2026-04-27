@@ -17,9 +17,9 @@ const DEFAULT_SFX_VOLUME: float = 0.9
 const DEFAULT_UI_VOLUME: float = 0.8
 
 # ========================== 节点引用 ==========================
-@onready var music_player: AudioStreamPlayer
-@onready var sfx_players: Array[AudioStreamPlayer] = []
-@onready var ui_sfx_player: AudioStreamPlayer
+var music_player: AudioStreamPlayer
+var sfx_players: Array[AudioStreamPlayer] = []
+var ui_sfx_player: AudioStreamPlayer
 
 # ========================== 变量定义 ==========================
 var current_music_path: String = ""
@@ -44,8 +44,7 @@ func _ready() -> void:
 	# 监听游戏状态变化（用于暂停/恢复音乐）
 	#if GameManager and GameManager.has_signal("game_state_changed"):
 		#GameManager.game_state_changed.connect(_on_game_state_changed)
-	#print("AudioManager: 音频管理器初始化完成")
-	pass
+	print("AudioManager: 音频管理器初始化完成")
 
 ## 创建SFX播放器池
 func _create_sfx_player_pool() -> void:

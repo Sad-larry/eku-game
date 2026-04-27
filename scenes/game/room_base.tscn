@@ -16,6 +16,7 @@ size = Vector2(44, 776)
 
 [node name="RoomBase" type="Node2D" unique_id=447668660]
 script = ExtResource("1_rgfqh")
+room_id = "empty_room"
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1331762951]
 layer = -1

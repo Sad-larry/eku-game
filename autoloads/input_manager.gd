@@ -3,142 +3,33 @@
 # 自动加载配置：Project -> Project Settings -> Autoloads 中添加，命名为 InputManager
 extends Node
 
+# ========================== 常量定义 ==========================
+# 调试开关
+const DEBUG_MODE: bool = false
+
+# 输入缓冲时长（毫秒）
+const INPUT_BUFFER_DURATION_MS: int = 150
+
+# 按键名 → Godot Key 枚举映射（用于 _setup_input_map 中注册 InputMap）
+const KEY_NAME_MAP: Dictionary = {
+	"A": KEY_A, "B": KEY_B, "C": KEY_C, "D": KEY_D,
+	"E": KEY_E, "F": KEY_F, "P": KEY_P, "Q": KEY_Q,
+	"S": KEY_S, "W": KEY_W, "Z": KEY_Z, "X": KEY_X,
+	"1": KEY_1, "2": KEY_2, "3": KEY_3, "4": KEY_4,
+	"Space": KEY_SPACE, "Enter": KEY_ENTER, "Escape": KEY_ESCAPE,
+	"Backspace": KEY_BACKSPACE, "Tab": KEY_TAB,
+	"Left Shift": KEY_SHIFT, "Right Shift": KEY_SHIFT,
+	"Left Ctrl": KEY_CTRL, "Right Ctrl": KEY_CTRL,
+	"Left Alt": KEY_ALT, "Right Alt": KEY_ALT,
+	"Left Arrow": KEY_LEFT, "Right Arrow": KEY_RIGHT,
+	"Up Arrow": KEY_UP, "Down Arrow": KEY_DOWN
+}
+
 # TODO 当暂停时，所有按键都禁用了，但是有没有一种可能，就是暂停进入设置或其他界面时
 # 还是需要使用到按键进行快捷操作，例如，使用方向键或Tab键进行组件选择，使用回车键进行确认
 
-# ========================== 常量定义 ==========================
-# 输入缓冲时长（毫秒）- 适配快节奏连招，可在balance_config中配置
-const INPUT_BUFFER_DURATION_MS: int = 150   # 毫秒
 
-# region 输入映射配置
-# 输入映射配置
-# 字段说明：
-# - type: 输入类型（action/axis）
-# - bufferable: 是否支持输入缓冲（战斗核心操作开启）
-# - keyboard: 键鼠按键（主/备选）
-# - priority: 输入优先级（1-5，5最高，用于冲突处理）
-# - description: 功能描述（多语言适配预留）
-# - category: 分类（movement/combat/ui/debug）
-const INPUT_ACTIONS: Dictionary[String, Dictionary] = {
-	# 移动类（Movement）
-	"move_left": {
-		"type": "axis",
-		"bufferable": false,
-		"keyboard": ["A", "Left Arrow"],
-		"priority": 5,
-		"description": "向左移动",
-		"category": "movement"
-	},
-	"move_right": {
-		"type": "axis",
-		"bufferable": false,
-		"keyboard": ["D", "Right Arrow"],
-		"priority": 5,
-		"description": "向右移动",
-		"category": "movement"
-	},
-	"move_up": {
-		"type": "axis",
-		"bufferable": false,
-		"keyboard": ["W", "Up Arrow"],
-		"priority": 5,
-		"description": "向上移动",
-		"category": "movement"
-	},
-	"move_down": {
-		"type": "axis",
-		"bufferable": false,
-		"keyboard": ["S", "Down Arrow"],
-		"priority": 5,
-		"description": "向下移动",
-		"category": "movement"
-	},
-	"dash": {
-		"type": "action",
-		"bufferable": true,
-		"keyboard": ["Left Shift", "Right Mouse"],
-		"priority": 4,
-		"description": "瞬移冲刺（连招核心）",
-		"category": "movement"
-	},
-
-	# 战斗核心类（Combat）
-	"attack": {
-		"type": "action",
-		"bufferable": true,
-		"keyboard": ["Left Mouse", "C"],
-		"priority": 3,
-		"description": "普通攻击（连招起手）",
-		"category": "combat"
-	},
-	"skill_1": {
-		"type": "action",
-		"bufferable": true,
-		"keyboard": ["1"],
-		"priority": 3,
-		"description": "技能1（起手型）",
-		"category": "combat"
-	},
-	"skill_2": {
-		"type": "action",
-		"bufferable": true,
-		"keyboard": ["2"],
-		"priority": 3,
-		"description": "技能2（终结型）",
-		"category": "combat"
-	},
-	"skill_3": {
-		"type": "action",
-		"bufferable": true,
-		"keyboard": ["3"],
-		"priority": 3,
-		"description": "技能3（控制型）",
-		"category": "combat"
-	},
-	"skill_4": {
-		"type": "action",
-		"bufferable": true,
-		"keyboard": ["4"],
-		"priority": 3,
-		"description": "技能4（生存型）",
-		"category": "combat"
-	},
-	"interact": {
-		"type": "action",
-		"bufferable": true,
-		"keyboard": ["F", "Space"],
-		"priority": 2,
-		"description": "交互（拾取/对话/开门）",
-		"category": "combat"
-	},
-
-	# UI/系统类（UI/System）
-	"pause": {
-		"type": "action",
-		"bufferable": false,
-		"keyboard": ["Escape", "P"],
-		"priority": 1,
-		"description": "暂停游戏/打开菜单",
-		"category": "ui"
-	},
-	"ui_confirm_q": {
-		"type": "action",
-		"bufferable": false,
-		"keyboard": ["Q", "Enter"],
-		"priority": 1,
-		"description": "UI确认",
-		"category": "ui"
-	},
-	"ui_cancel_e": {
-		"type": "action",
-		"bufferable": false,
-		"keyboard": ["E", "Backspace"],
-		"priority": 1,
-		"description": "UI取消/返回",
-		"category": "ui"
-	}
-}
-# endregion
+const INPUT_ACTIONS := INPUTACTIONS.INPUT_ACTIONS_DICTIONARY
 
 # ========================== 变量定义 ==========================
 # 是否锁定输入（暂停/菜单时禁用）
@@ -146,48 +37,134 @@ var input_locked: bool = false
 # 输入缓冲队列: Array[Dictionary{action: String, time_ms: int}]
 var _buffer: Array[Dictionary] = []
 
+# 辅助变量：用于暂停键的防抖（避免重复触发）
+var _pause_key_just_handled: bool = false
+# 缓存的非 axis 动作名列表（避免每帧遍历字典）
+var _action_names: Array[String] = []
+# 上一帧的移动向量（用于检测变化后发射信号）
+var _last_movement: Vector2 = Vector2.ZERO
+
 # ========================== 信号定义 ==========================
-# 输入缓冲触发（当缓冲的输入被处理时）
-signal buffered_input_triggered(action: String)
+# 通用输入触发（所有 action 类型动作按下时发射）
+signal action_triggered(action_name: String)
+# 移动向量变化（与上一帧不同时发射）
+signal movement_vector_changed(direction: Vector2)
 # 输入锁定状态变更
 signal input_lock_changed(is_locked: bool)
-# 核心战斗输入触发（简化战斗系统监听）
-signal combat_input_triggered(action: String, is_buffered: bool)
+# 请求打开/关闭暂停菜单（解耦 UIManager）
+signal pause_requested()
 
 # ========================== 初始化 ==========================
 func _ready() -> void:
+	_setup_input_map()
+	_cache_action_names()
 	_connect_game_state()
-	print("InputManager: 输入管理器初始化完成")
-	
+	if DEBUG_MODE:
+		print("InputManager: 初始化完成，已注册 ", _action_names.size(), " 个可检测动作")
+
+func _setup_input_map() -> void:
+	"""遍历 INPUT_ACTIONS，将未在 project.godot 中注册的按键补注册到 InputMap"""
+	for action_name: String in INPUT_ACTIONS:
+		var config: Dictionary = INPUT_ACTIONS[action_name]
+		if InputMap.has_action(action_name):
+			continue
+		InputMap.add_action(action_name)
+		for key_name: String in config["keyboard"]:
+			_register_key(action_name, key_name)
+		if DEBUG_MODE:
+			print("[InputManager] InputMap 补注册: ", action_name)
+
+func _register_key(action_name: String, key_name: String) -> void:
+	"""将单个按键名注册到 InputMap 动作"""
+	if key_name.contains("Mouse"):
+		var button_index: int = MOUSE_BUTTON_LEFT if "Left" in key_name else MOUSE_BUTTON_RIGHT
+		var event_btn := InputEventMouseButton.new()
+		event_btn.button_index = button_index as MouseButton
+		event_btn.double_click = false
+		InputMap.action_add_event(action_name, event_btn)
+		return
+
+	var key: Key = KEY_NAME_MAP.get(key_name, KEY_NONE)
+	if key == KEY_NONE:
+		if DEBUG_MODE:
+			push_warning("[InputManager] 未知按键名: ", key_name, "（动作: ", action_name, "）")
+		return
+	var event := InputEventKey.new()
+	event.physical_keycode = key
+	InputMap.action_add_event(action_name, event)
+
+func _cache_action_names() -> void:
+	"""缓存非 axis、非 pause 的动作名列表，供 _detect_actions 每帧遍历"""
+	for action_name: String in INPUT_ACTIONS:
+		var config: Dictionary = INPUT_ACTIONS[action_name]
+		if config["type"] == "axis" or action_name == "pause":
+			continue
+		_action_names.append(action_name)
+
 func _connect_game_state() -> void:
-	if GameManager and GameManager.has_signal("game_state_changed"):
+	if not GameManager:
+		if DEBUG_MODE:
+			print("[InputManager] 警告: GameManager 未找到，输入锁定将不会自动响应游戏状态")
+		return
+
+	if GameManager.has_signal("game_state_changed"):
 		GameManager.game_state_changed.connect(_on_game_state_changed)
-		# 兜底：信号已发出但未收到时，手动同步一次
-		_on_game_state_changed(GameManager.current_game_state, GameManager.GameState.NULL)
-		
+		_on_game_state_changed(GameManager.current_game_state, GameManager.current_game_state)
+
 # ========================== 输入状态更新 ==========================
 func _process(_delta: float) -> void:
+	_handle_pause_input()
+	_detect_actions()
+	_emit_movement_vector()
+	_clean_expired_buffer()
+
+func _handle_pause_input() -> void:
+	"""单独处理暂停键，确保在锁定状态下也能响应（但根据游戏状态决定是否生效）"""
+	if not Input.is_action_just_pressed("pause"):
+		_pause_key_just_handled = false
+		return
+
+	if _pause_key_just_handled:
+		return
+	_pause_key_just_handled = true
+
+	pause_requested.emit()
+	if DEBUG_MODE:
+		print("[InputManager] pause_requested 信号发出")
+
+func _detect_actions() -> void:
+	"""遍历 _action_names，检测按键按下后自动缓冲并发射 action_triggered 信号"""
 	if input_locked:
 		return
-	# 处理暂停键（即时响应）
-	if Input.is_action_just_pressed("pause"):
-		UIManager.open_pause_menu()
+	for action_name: String in _action_names:
+		if Input.is_action_just_pressed(action_name):
+			var config: Dictionary = INPUT_ACTIONS[action_name]
+			if config["bufferable"]:
+				buffer_input(action_name)
+			action_triggered.emit(action_name)
+			if DEBUG_MODE:
+				print("[InputManager] action_triggered: ", action_name)
+
+func _emit_movement_vector() -> void:
+	"""检测移动向量变化并发射 signal"""
+	if input_locked:
+		if _last_movement != Vector2.ZERO:
+			_last_movement = Vector2.ZERO
+			movement_vector_changed.emit(Vector2.ZERO)
+		return
+	var vec: Vector2 = get_movement_vector()
+	if vec != _last_movement:
+		_last_movement = vec
+		movement_vector_changed.emit(vec)
 
 # ========================== 输入缓冲核心接口 ==========================
 func buffer_input(action: String) -> bool:
-	"""
-	缓冲输入动作
-	参数: action - 输入动作名（需在INPUT_ACTIONS中定义）
-	返回: 是否成功缓冲
-	"""
 	if input_locked:
 		return false
 	var config = INPUT_ACTIONS.get(action)
 	if not config or not config["bufferable"]:
 		return false
-		
-	# 避免重复缓冲同一动作（短时间内）
-	# 防重复：如果队列最后一个动作相同且时间差<50ms，忽略
+
 	var now_ms = Time.get_ticks_msec()
 	if _buffer.size() > 0:
 		var last = _buffer[-1]
@@ -195,40 +172,26 @@ func buffer_input(action: String) -> bool:
 			return false
 
 	_buffer.append({ "action": action, "time_ms": now_ms })
-	if Global.DEBUG_MODE:
+	if DEBUG_MODE:
 		print("[InputManager] 缓冲 + ", action, " 队列长度: ", _buffer.size())
-
 	return true
 
 func get_buffered_input() -> String:
-	"""
-	获取并移除首个有效缓冲输入
-	返回: 缓冲的动作名（无则返回空字符串）
-	"""
 	_clean_expired_buffer()
-	
+
 	if _buffer.is_empty() or input_locked:
 		return ""
-	
+
 	var entry = _buffer.pop_front()
-	buffered_input_triggered.emit(entry.action)
-	combat_input_triggered.emit(entry.action, true)
 	return entry.action
 
 func clear_buffer(action: String = "") -> void:
-	"""
-	清空输入缓冲
-	参数: action - 可选，指定清空某个动作的缓冲（为空则清空全部）
-	"""
 	if action.is_empty():
 		_buffer.clear()
 	else:
 		_buffer = _buffer.filter(func(e): return e.action != action)
-	if Global.DEBUG_MODE:
-		print("[InputManager] 清空缓冲 -> ", action if action != "" else "全部")
 
 func _clean_expired_buffer() -> void:
-	"""清理超时的输入缓冲s"""
 	var now_ms = Time.get_ticks_msec()
 	var i = 0
 	while i < _buffer.size():
@@ -236,13 +199,9 @@ func _clean_expired_buffer() -> void:
 			_buffer.remove_at(i)
 		else:
 			i += 1
-	
+
 # ========================== 输入状态查询接口 ==========================
 func get_movement_vector() -> Vector2:
-	"""
-	获取规范化的移动向量
-	返回: 二维移动向量（-1~1）
-	"""
 	if input_locked:
 		return Vector2.ZERO
 	var vec = Vector2(
@@ -250,37 +209,32 @@ func get_movement_vector() -> Vector2:
 		Input.get_axis("move_up", "move_down")
 	)
 	return vec.limit_length(1.0)
-	
+
 func is_action_just_pressed(action: String) -> bool:
-	"""安全查询按键刚按下状态（输入锁定时返回false）"""
 	return not input_locked and Input.is_action_just_pressed(action)
 
 func is_action_pressed(action: String) -> bool:
-	"""安全查询按键长按状态（输入锁定时返回false）"""
 	return not input_locked and Input.is_action_pressed(action)
 
 func is_action_just_released(action: String) -> bool:
-	"""安全查询按键刚松开状态（输入锁定时返回false）"""
 	return not input_locked and Input.is_action_just_released(action)
 
 # ========================== 输入锁定控制 ==========================
 func set_input_lock(locked: bool) -> void:
-	"""设置输入锁定状态"""
 	if input_locked == locked:
 		return
 	input_locked = locked
 	input_lock_changed.emit(locked)
-	# 锁定时清空缓冲
 	if locked:
 		clear_buffer()
-	if Global.DEBUG_MODE:
+	if DEBUG_MODE:
 		print("[InputManager] 输入锁定状态 -> ", locked)
 
 # ========================== 游戏状态回调 ==========================
 func _on_game_state_changed(new_state: GameManager.GameState, _old_state: GameManager.GameState) -> void:
-	"""监听游戏状态变更，自动控制输入锁定"""
 	match new_state:
 		GameManager.GameState.MAIN_MENU,\
+		GameManager.GameState.LOBBY,\
 		GameManager.GameState.SETTINGS,\
 		GameManager.GameState.PAUSED,\
 		GameManager.GameState.GAME_OVER:
@@ -292,13 +246,7 @@ func _on_game_state_changed(new_state: GameManager.GameState, _old_state: GameMa
 
 # ========================== 调试输入打印 ==========================
 func _input(event: InputEvent) -> void:
-	"""调试模式：打印所有按下的按键（非锁定时）"""
-	if not Global.DEBUG_MODE or input_locked:
+	if not DEBUG_MODE or input_locked:
 		return
-	
-	# 只打印按下事件（忽略重复的自动连发事件）
 	if event.is_pressed() and not event.is_echo():
-		for action in INPUT_ACTIONS:
-			if InputMap.event_is_action(event, action):
-				print("[InputManager] 按键: %s 动作触发: %s" % [event.as_text(), action])
-				break  # 一个事件可能匹配多个动作，但通常只需打印一个
+		print("[InputManager] 按键: ", event.as_text())

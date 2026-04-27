@@ -4,3 +4,12 @@
 
 [node name="AttackComponent" type="Node" unique_id=1844350517]
 script = ExtResource("1_7mj6j")
+
+[node name="ComboTimer" type="Timer" parent="." unique_id=815627168]
+one_shot = true
+
+[node name="HitTimer" type="Timer" parent="." unique_id=1974660878]
+one_shot = true
+
+[connection signal="timeout" from="ComboTimer" to="." method="_on_combo_timer_timeout"]
+[connection signal="timeout" from="HitTimer" to="." method="_on_hit_timer_timeout"]

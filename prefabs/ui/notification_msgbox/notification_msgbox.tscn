@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://c43tgh2u63611"]
+
+[ext_resource type="Script" uid="uid://2yg8hsba73yi" path="res://prefabs/ui/notification_msgbox/notification_msgbox.gd" id="1_5eocm"]
+
+[node name="NotificationMsgbox" type="CanvasLayer" unique_id=953491233]
+layer = 999
+script = ExtResource("1_5eocm")
+
+[node name="Panel" type="Panel" parent="." unique_id=554235035]
+custom_minimum_size = Vector2(500, 0)
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -250.0
+offset_top = 30.0
+offset_right = 250.0
+offset_bottom = 70.0
+grow_horizontal = 2
+
+[node name="Label" type="Label" parent="Panel" unique_id=1513873521]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Messge"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2

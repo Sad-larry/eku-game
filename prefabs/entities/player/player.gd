@@ -5,173 +5,147 @@ extends CharacterBody2D
 class_name Player
 
 # ========================== 导出参数（可在编辑器调整） ==========================
-@export var move_speed: float = 200.0          # 移动速度
-@export var attack_duration: float = 0.9       # 攻击动作时长
+@export var stats_resource: Resource  # 在编辑器拖入 Stats 资源
 
 # ========================== 节点引用（自动获取） ==========================
 @onready var anim_tree: AnimationTree = $AnimationTree
 @onready var move_state_machine: AnimationNodeStateMachinePlayback = anim_tree.get("parameters/MoveStateMachine/playback")
-
-# ========================== 状态枚举 ==========================
-enum PlayerState {
-	IDLE,       # 待机
-	MOVE,       # 移动
-	ATTACK,     # 攻击
-	HURT,       # 受击
-	DEAD        # 死亡
-}
+@onready var attack_component: AttackComponent = %AttackComponent
+@onready var health_component: HealthComponent = $StatsComponents/HealthComponent
+@onready var anim_controller: PlayerAnimationController = $PlayerAnimationController
+@onready var movement_component: MovementComponent = $MovementComponent
+@onready var player_state_machine: PlayerStateMachine = $PlayerStateMachine
 
 # ========================== 全局变量 ==========================
-var current_state: PlayerState = PlayerState.IDLE  # 当前状态
+
 var last_direction: Vector2 = Vector2.DOWN         # 记录最后朝向
 var velocity_knockback: Vector2 = Vector2.ZERO     # 击退速度
 var is_attacking: bool = false                     # 是否攻击
 
+var _skill_runners: Dictionary = {}
+# 技能槽配置（保留这 4 个预加载，作为技能槽的配置）
+var _skill_slot_data: Array[SkillEffect] = [
+	preload("res://resources/data/skills/initiator/slash_01.tres"),
+	preload("res://resources/data/skills/initiator/slash_02.tres"),
+	preload("res://resources/data/skills/finisher/pierce_01.tres"),
+	preload("res://resources/data/skills/finisher/pierce_02.tres"),
+]
+const SKILL_SLOT_MAP: Dictionary = {
+	"skill_1": 0,
+	"skill_2": 1,
+	"skill_3": 2,
+	"skill_4": 3,
+}
+
 # ========================== 生命周期 ==========================
 func _ready():
-	anim_tree.active = true
-	# 初始化状态
-	_switch_state(PlayerState.IDLE)
-	# 监听攻击动画结束
-	anim_tree.animation_finished.connect(_on_attack_animation_finished)
+	health_component.connect("health_updated", _on_health_forward_to_bus)
+	health_component.connect("unit_died", _on_died)
+	# 立即发射信号刷新HUD显示，初始化顺序不可变
+	health_component.setup(stats_resource)
+	
+	# 输入处理 – 仅转换信号为状态机命令
+	InputManager.action_triggered.connect(_on_input_action)
+	InputManager.movement_vector_changed.connect(_on_movement_changed)
+	_init_state_machine()
+	
+	EventBus.skill_damage_requested.connect(_on_skill_damage_requested)
+	EventBus.player_died.connect(_on_player_died)
+	
+	# 通过 InputManager 信号接收输入（替代直接每帧查询）
 	print("Player: 初始化完成")
 
+func _on_player_died() -> void:
+	UIManager.open_game_over()
+
 func _physics_process(delta: float):
-	# 死亡时停止所有逻辑
-	if current_state == PlayerState.DEAD:
-		return
-		
-	# 每帧强制更新动画方向（修复斜向不自然 + 动画错乱）
-	_update_animation_direction()
-	
-	# 状态机核心
-	match current_state:
-		PlayerState.IDLE, PlayerState.MOVE:
-			_handle_movement(delta)
-		PlayerState.ATTACK:
-			# 攻击时无法移动
-			pass
-		PlayerState.HURT:
-			_handle_knockback(delta)
-			
+	# 只在 idle/move 状态下更新移动
+	if player_state_machine.current_state_name in ["idle", "move"]:
+		var input_dir = InputManager.get_movement_vector()
+		movement_component.update_movement(input_dir, delta)
+		var move_dir = movement_component.get_movement_direction()
+		if move_dir != Vector2.ZERO:
+			last_direction = move_dir
+	# 攻击/受击状态下保持 velocity 不变（由状态自己的 logic 控制）
+	# 将方向传递给动画控制器
+	anim_controller.set_movement_direction(last_direction)
+	# 状态机更新 —— 改为调用状态机的 _process 机制，而非调用不存在的 update()
+	# 这里改由 Godot 引擎自动调用 player_state_machine._process(delta)
+	# 所以只需要：
+	#   move_and_slide()
+
 	move_and_slide()
 
-# ========================== 核心：移动逻辑 ==========================
-func _handle_movement(_delta: float):
-	# 从全局输入管理器获取移动向量
-	var input_dir: Vector2 = InputManager.get_movement_vector()
+func _on_input_action(action: String):
+	# TODO 这里将所有的输入事件都派发给状态机，可是还有其他输入事件如ui_confirm_q、ui_cancel_e等状态机是处理不了的
+	# 将所有输入事件派发给状态机，由当前状态决定是否响应
+	player_state_machine.send_event(action)
 	
-	# 8方向标准化（核心！修复斜向动画不自然）
-	input_dir = normalize_8_direction(input_dir)
+func _on_movement_changed(dir: Vector2) -> void:
+	# 只在 idle / move 状态下响应移动事件
+	# 攻击/受击状态不响应，由状态自己的 on_event 决定
+	if dir != Vector2.ZERO:
+		player_state_machine.send_event("move")
+	else:
+		player_state_machine.send_event("idle")
+
+func _init_state_machine() -> void:	
+	# 创建持久化 SkillRunner 池
+	for slot_data in _skill_slot_data:
+		var runner = SkillRunner.new(slot_data, self)
+		# 加入场景树
+		add_child(runner)
+		_skill_runners[slot_data.id] = runner
 	
-	# 处理攻击输入（缓冲输入）
-	if InputManager.is_action_just_pressed("attack") and not is_attacking:
-		_switch_state(PlayerState.ATTACK)
+	var states = {
+		"idle":     PlayerIdleState.new(),
+		"move":     PlayerMoveState.new(),
+		"attack":   PlayerAttackState.new(),
+		"hurt":     PlayerHurtState.new(),
+		"dead":     PlayerDeadState.new(),
+		"recovery": PlayerRecoveryState.new(),
+		"skill":    PlayerSkillState.new()
+	}
+	for state_name in states:
+		states[state_name].setup(self)
+		player_state_machine.add_state(state_name, states[state_name])
+	
+	player_state_machine.change_to("idle")
+
+func get_skill_runner(skill_id: String) -> SkillRunner:
+	return _skill_runners.get(skill_id)
+
+func get_skill_data_by_action(action_name: String) -> SkillEffect:
+	var idx = SKILL_SLOT_MAP.get(action_name, -1)
+	if idx < 0 or idx >= _skill_slot_data.size():
+		return null
+	return _skill_slot_data[idx]
+
+func get_target() -> Node:
+	# TODO: 实现目标检测逻辑
+	# 思路：检测前方扇形/圆形范围内最近的敌人
+	# var space_state = get_world_2d().direct_space_state
+	# var query = PhysicsRayQueryParameters2D.create(global_position, global_position + last_direction * 50)
+	# var result = space_state.intersect_ray(query)
+	# return result.collider if result else null
+	return null
+
+## 连接HurtboxComponent信号
+func _on_hurtbox_component_damaged(hitbox: HitboxComponent) -> void:
+	# 已死亡则不再处理
+	if health_component.current_health <= 0:
 		return
-		
-	# 无输入 → 待机
-	if input_dir == Vector2.ZERO:
-		_switch_state(PlayerState.IDLE)
-		velocity = Vector2.ZERO
-		return
+	health_component.take_damage(hitbox.damage)
+	player_state_machine.send_event("hurt")
 
-	# 有输入 → 移动
-	last_direction = input_dir
-	velocity = last_direction * move_speed
-	_switch_state(PlayerState.MOVE)
+func _on_health_forward_to_bus(new_health: int, max_health: int) -> void:
+	EventBus.health_updated.emit(new_health, max_health)
 
-# ========================== 8方向标准化（核心修复函数） =========================
-func normalize_8_direction(dir: Vector2) -> Vector2:
-	if dir.length() < 0.01:
-		return Vector2.ZERO
-	
-	dir = dir.normalized()
-	var angle = dir.angle()
-	var eight_dir = [
-		Vector2.RIGHT,
-		Vector2(1, 1), # DOWN_RIGHT
-		Vector2.DOWN,
-		Vector2(1, -1), # DOWN_LEFT
-		Vector2.LEFT,
-		Vector2(-1, -1), # UP_LEFT
-		Vector2.UP,
-		Vector2(-1, 1) # UP_RIGHT
-	]
-	
-	var closest = eight_dir[0]
-	var min_diff = abs(angle - closest.angle())
-	
-	for v in eight_dir:
-		var diff = abs(angle - v.angle())
-		if diff < min_diff:
-			min_diff = diff
-			closest = v
-	return closest
+func _on_died() -> void:
+	player_state_machine.send_event("dead")
 
-# ========================== 核心：状态管理 ==========================
-func _switch_state(new_state: PlayerState) -> void:
-	if new_state == current_state:
-		return
-
-	# 退出旧状态
-	match current_state:
-		PlayerState.ATTACK:
-			is_attacking = false
-
-	# 进入新状态
-	current_state = new_state
-	match new_state:
-		PlayerState.IDLE:
-			move_state_machine.travel("idle")
-		PlayerState.MOVE:
-			move_state_machine.travel("move")
-		PlayerState.ATTACK:
-			_perform_attack()
-		PlayerState.HURT:
-			move_state_machine.travel("hurt")
-		PlayerState.DEAD:
-			move_state_machine.travel("dead")
-			
-# ========================== 每帧更新方向（修复动画错乱） ==========================
-func _update_animation_direction():
-	anim_tree.set("parameters/MoveStateMachine/idle/blend_position", last_direction)
-	anim_tree.set("parameters/MoveStateMachine/move/blend_position", last_direction)
-	anim_tree.set("parameters/MoveStateMachine/attack/blend_position", last_direction)
-	
-# ========================== 攻击逻辑 ==========================
-func _perform_attack():
-	is_attacking = true
-	velocity = Vector2.ZERO
-	move_state_machine.travel("attack")
-	
-	# 攻击自动结束
-	await get_tree().create_timer(attack_duration).timeout
-	if current_state == PlayerState.ATTACK:
-		_switch_state(PlayerState.IDLE)
-		
-# ========================== 攻击动画结束 ==========================
-func _on_attack_animation_finished(_anim_name: StringName):
-	if current_state == PlayerState.ATTACK:
-		_switch_state(PlayerState.IDLE)
-		
-# ========================== 受击与击退 ==========================
-func take_damage(knockback_velocity: Vector2) -> void:
-	if current_state == PlayerState.DEAD:
-		return
-	last_direction = knockback_velocity.bounce(Vector2.ONE).normalized()
-	velocity_knockback = knockback_velocity
-	_switch_state(PlayerState.HURT)
-	
-	await get_tree().create_timer(0.2).timeout
-	if current_state != PlayerState.DEAD:
-		_switch_state(PlayerState.IDLE)
-	
-func _handle_knockback(delta: float):
-	velocity = velocity_knockback
-	velocity_knockback = velocity_knockback.lerp(Vector2.ZERO, 5 * delta)
-
-# ========================== 死亡 ==========================
-func die():
-	_switch_state(PlayerState.DEAD)
-	velocity = Vector2.ZERO
-	queue_free()
+func _on_skill_damage_requested(damage_data: Dictionary) -> void:
+	var target = damage_data.get("target")
+	var damage = damage_data.get("damage", 0)
+	if target and target.has_method("take_damage"):
+		target.take_damage(damage)

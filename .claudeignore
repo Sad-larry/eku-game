@@ -1,31 +1,19 @@
-# 依赖目录
-node_modules/
-vendor/
-venv/
-env/
-__pycache__/
+# Godot 导入系统
+.godot/
 
-# 构建输出
-dist/
-build/
-out/
-*.exe
-*.dll
-*.so
-*.dylib
+# 第三方插件（不需要关注）
+addons/
 
-# 日志和临时文件
-*.log
-*.tmp
-*.temp
-*.swp
-.cache/
+# 运行时日志输出
+logs/
+
+# 启停脚本（仅用于运行项目，不需要关注）
+run_scripts/
 
 # 版本控制
 .git/
 .gitignore
 .gitattributes
-.svn/
 
 # 环境配置
 .env
@@ -38,21 +26,31 @@ out/
 .vscode/
 *.sublime-*
 
-# 特定文件类型
+# 日志和临时文件
+*.log
+*.tmp
+*.temp
+*.swp
+.cache/
+
+# Godot 导出构建产物
+*.exe
+*.dll
+*.so
+*.dylib
+
+# 二进制资源文件
 *.png
 *.jpg
 *.jpeg
 *.gif
 *.ico
+*.webp
+*.svg
 *.mp4
 *.mp3
-
-# 测试和覆盖率
-coverage/
-.nyc_output/
-*.test.js
-*.spec.ts
-
-# Godot 项目示例
-*.import
-.import/
+*.ogg
+*.wav
+*.ttf
+*.otf
+*.blend

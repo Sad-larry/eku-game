@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://n3jc3550spy2"]
+
+[ext_resource type="Script" uid="uid://1plc26dw2wm5" path="res://scenes/lobby/game_lobby.gd" id="1_amqei"]
+[ext_resource type="PackedScene" uid="uid://d2miww5iawxo" path="res://scenes/ui/hud/hud.tscn" id="2_1qxaf"]
+[ext_resource type="PackedScene" uid="uid://dohnbnw4ew3hp" path="res://prefabs/entities/player/player.tscn" id="3_0040f"]
+[ext_resource type="PackedScene" uid="uid://dwk7a6af021ro" path="res://scenes/game/room_base.tscn" id="4_ywo5l"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bxtry"]
+radius = 32.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_w6ykx"]
+radius = 32.0
+
+[node name="GameLobby" type="Node2D" unique_id=540314176]
+script = ExtResource("1_amqei")
+
+[node name="HUD" parent="." unique_id=134044149 instance=ExtResource("2_1qxaf")]
+
+[node name="Player" parent="." unique_id=386607487 instance=ExtResource("3_0040f")]
+position = Vector2(253, 311)
+
+[node name="RoomBase" parent="." unique_id=447668660 instance=ExtResource("4_ywo5l")]
+
+[node name="Area2D" type="Area2D" parent="." unique_id=980483599]
+
+[node name="Label" type="Label" parent="Area2D" unique_id=1386427304]
+offset_left = 466.0
+offset_top = 251.0
+offset_right = 530.0
+offset_bottom = 274.0
+text = "进入游戏"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=854218237]
+position = Vector2(489, 311)
+shape = SubResource("CircleShape2D_bxtry")
+
+[node name="Area2D2" type="Node2D" parent="." unique_id=2032365675]
+position = Vector2(-113, 192)
+
+[node name="Label" type="Label" parent="Area2D2" unique_id=229771673]
+offset_left = 466.0
+offset_top = 251.0
+offset_right = 530.0
+offset_bottom = 274.0
+text = "稻草人"
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="Area2D2" unique_id=1958870801]
+collision_layer = 4
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D2/CharacterBody2D" unique_id=1634170362]
+light_mask = 2
+position = Vector2(489, 311)
+shape = SubResource("CircleShape2D_w6ykx")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

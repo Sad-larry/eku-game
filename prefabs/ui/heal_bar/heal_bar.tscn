@@ -1,0 +1,60 @@
+[gd_scene format=3 uid="uid://br2dueqw0003l"]
+
+[ext_resource type="Script" uid="uid://7ehdie65bttm" path="res://prefabs/ui/heal_bar/heal_bar.gd" id="1_3t3un"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3t3un"]
+bg_color = Color(0.4745748, 0.6361257, 0.64089817, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n0h8n"]
+bg_color = Color(0.97167903, 0.3851414, 0.23140523, 1)
+
+[node name="HealBar" type="Control" unique_id=1550863263]
+custom_minimum_size = Vector2(96, 10)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1184.0
+offset_bottom = -710.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_3t3un")
+
+[node name="DelayBar" type="ProgressBar" parent="." unique_id=482399216]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+step = 1.0
+show_percentage = false
+
+[node name="ProgressBar" type="ProgressBar" parent="." unique_id=721163940]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_3t3un")
+theme_override_styles/fill = SubResource("StyleBoxFlat_n0h8n")
+step = 1.0
+show_percentage = false
+
+[node name="HealthAmount" type="Label" parent="." unique_id=90772924]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -28.0
+offset_right = 20.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1

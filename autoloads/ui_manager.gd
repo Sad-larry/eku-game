@@ -1,4 +1,4 @@
-# ui_manager.gd
+# autoloads/ui_manager.gd
 extends Node
 
 # ========================== 资源预加载 ==========================
@@ -7,50 +7,74 @@ const PAUSE_MENU_SCENE = preload("uid://b0to31obmue6u")
 const SETTINGS_SCENE = preload("uid://c2l1texcrid4e")
 const GAME_OVER_SCENE = preload("uid://c2dh8ol77s0lp")
 
+# ========================== 调试开关 ==========================
+const DEBUG_MODE: bool = true
+
 # ========================== 资源实例变量 ==========================
 var _pause_menu_instance: Node = null
 var _settings_menu_instance: Node = null
 var _game_over_instance: Node = null
 
+# ========================== 生命周期 ==========================
+func _ready() -> void:
+	# 连接输入管理器的暂停信号
+	if InputManager.has_signal("pause_requested"):
+		InputManager.pause_requested.connect(_on_pause_requested)
+
+func _on_pause_requested() -> void:
+	"""响应暂停键：切换暂停菜单的打开/关闭"""
+	if _pause_menu_instance and is_instance_valid(_pause_menu_instance):
+		close_pause_menu()
+	else:
+		open_pause_menu()
+
+# 使用场景资源路径作为键
 var _ui_state_map: Dictionary = {
-	PAUSE_MENU_SCENE: GameManager.GameState.PAUSED,
-	SETTINGS_SCENE: GameManager.GameState.SETTINGS,
-	GAME_OVER_SCENE: GameManager.GameState.GAME_OVER
+	PAUSE_MENU_SCENE.resource_path: GameManager.GameState.PAUSED,
+	SETTINGS_SCENE.resource_path: GameManager.GameState.SETTINGS,
+	GAME_OVER_SCENE.resource_path: GameManager.GameState.GAME_OVER
 	# 其他模态 UI 映射...
 }
 
 # ========================== 模态 UI 栈（手动关闭） ==========================
-var _modal_stack: Array[Dictionary] = []  # [{scene: PackedScene, instance: Node, state: GameState}]
+# [{scene: PackedScene, instance: Node, state: GameState}]
+var _modal_stack: Array[Dictionary] = []
 
 # ========================== 通知队列（自动消失） ==========================
-var _notification_queue: Array[Dictionary] = []   # {text, duration}
+ # {text, duration}
+var _notification_queue: Array[Dictionary] = []
 var _is_showing_notification: bool = false
 
 # ========================== 模态 UI 栈 API ==========================
+## 添加一个模态 UI 到栈顶（需要手动 pop 或自动监听销毁）
+## 返回创建的 UI 实例
 func push_ui(ui_scene: PackedScene) -> Control:
-	"""添加一个模态 UI 到栈顶（需要手动 pop 或自动监听销毁）"""
 	var instance = ui_scene.instantiate()
-	var state = _ui_state_map.get(ui_scene, null)
-	get_tree().root.add_child(instance)
-	_modal_stack.append({scene = ui_scene, instance = instance, state = state})
+	var scene_path = ui_scene.resource_path
+	var state = _ui_state_map.get(scene_path, null)
+	
 	# 自动管理状态栈
 	if state != null:
 		GameManager.push_state(state)
+	
+	get_tree().root.add_child(instance)
+	_modal_stack.append({scene_path = scene_path, instance = instance, state = state})
+	
 	# 监听 UI 自动销毁（如点击关闭按钮时会 queue_free），自动从栈中移除
 	instance.tree_exited.connect(_on_ui_closed.bind(instance))
 	return instance
 
+## 关闭栈顶的模态 UI（销毁实例，状态恢复由 _on_ui_closed 统一处理）
 func pop_ui() -> void:
-	"""关闭栈顶的模态 UI（销毁实例，状态恢复由 _on_ui_closed 统一处理）"""
 	if _modal_stack.is_empty():
 		return
-	var last_dict = _modal_stack.pop_back()
-	var last_instance = last_dict.instance
-	if last_instance and is_instance_valid(last_instance):
-		last_instance.queue_free()
+	var top = _modal_stack.pop_back()
+	if top.instance and is_instance_valid(top.instance):
+		top.instance.queue_free()
+	# 注意：不立即从栈中删除，等待 _on_ui_closed 回调清理
 	
+## 从 UI 栈中移除指定的 UI 实例（如果存在）并销毁，状态恢复由 _on_ui_closed 处理
 func remove_ui(ui_instance: Node) -> void:
-	"""从 UI 栈中移除指定的 UI 实例（如果存在）并销毁，状态恢复由 _on_ui_closed 处理"""
 	if not ui_instance or not is_instance_valid(ui_instance):
 		return
 	var found_idx = -1
@@ -61,15 +85,13 @@ func remove_ui(ui_instance: Node) -> void:
 	if found_idx == -1:
 		return
 		
-	var removed_dict = _modal_stack[found_idx]
-	#_modal_stack.remove_at(found_idx)
-	# 销毁实例（会触发 tree_exited，进入 _on_ui_closed）
-	if removed_dict.instance and is_instance_valid(removed_dict.instance):
-		removed_dict.instance.queue_free()
-		
+	var record = _modal_stack[found_idx]
+	if record.instance and is_instance_valid(record.instance):
+		record.instance.queue_free()
+	# 不在此时从栈中移除，等待 tree_exited 信号统一处理
 
+## UI 自动销毁时的回调（清理栈记录并恢复状态）
 func _on_ui_closed(ui: Node):
-	"""当 UI 自动销毁时，从栈中移除引用；如果是当前栈顶，则恢复上一个游戏状态"""
 	if not ui or not is_instance_valid(ui):
 		return
 		
@@ -83,13 +105,15 @@ func _on_ui_closed(ui: Node):
 		return  # 可能已经被清理过了
 		
 	var was_top = (idx == _modal_stack.size() - 1)
-	var scene = _modal_stack[idx].scene
+	var record = _modal_stack[idx]
+	var scene_path = record.scene_path
+	var state = record.state
 	
 	# 从栈中移除该 UI 的记录
 	_modal_stack.remove_at(idx)
 	
 	# 如果被销毁的 UI 是栈顶，且它对应一个需要状态管理的场景，则恢复之前的状态
-	if was_top and scene and _ui_state_map.has(scene):
+	if was_top and state != null and _ui_state_map.has(scene_path):
 		GameManager.pop_state()   # 恢复上一个游戏状态
 		
 func _get_scene_from_instance(instance: Node) -> PackedScene:
@@ -99,53 +123,35 @@ func _get_scene_from_instance(instance: Node) -> PackedScene:
 
 # ========================== 暂停菜单专用 ==========================
 func open_pause_menu():
-	_show_pause_menu()
-	
-func close_pause_menu():
-	_hide_pause_menu()
-
-func _show_pause_menu():
 	# 避免重复创建
 	if _pause_menu_instance and is_instance_valid(_pause_menu_instance):
 		return
 	_pause_menu_instance = push_ui(PAUSE_MENU_SCENE)
 
-func _hide_pause_menu():
+func close_pause_menu():
 	if _pause_menu_instance and is_instance_valid(_pause_menu_instance):
 		remove_ui(_pause_menu_instance)
 		_pause_menu_instance = null
 		
 # ========================== 设置菜单专用 ==========================
-func open_settings_menu():
-	_show_settings_menu()
-
-func close_settings_menu():
-	_hide_settings_menu()
-
-func _show_settings_menu() -> void:
+func open_settings_menu() -> void:
 	# 避免重复创建
 	if _settings_menu_instance and is_instance_valid(_settings_menu_instance):
 		return
 	_settings_menu_instance = push_ui(SETTINGS_SCENE)
 	
-func _hide_settings_menu():
+func close_settings_menu():
 	if _settings_menu_instance and is_instance_valid(_settings_menu_instance):
 		remove_ui(_settings_menu_instance)
 		_settings_menu_instance = null
 		
 # ========================== 游戏结束专用 ==========================
-func open_game_over():
-	_show_game_over()
-
-func close_game_over():
-	_hide_game_over()
-
-func _show_game_over() -> void:
+func open_game_over() -> void:
 	if _game_over_instance and is_instance_valid(_game_over_instance):
 		return
 	_game_over_instance = push_ui(GAME_OVER_SCENE)
 	
-func _hide_game_over():
+func close_game_over():
 	if _game_over_instance and is_instance_valid(_game_over_instance):
 		remove_ui(_game_over_instance)
 		_game_over_instance = null
@@ -169,5 +175,5 @@ func _show_next_notification():
 	
 	# 等待通知显示完成（自动淡出并销毁）
 	await notifi.show_message(msg.text, msg.duration)
-	await notifi.tree_exited   # 等待节点真正销毁
+	await notifi.tree_exited
 	_show_next_notification()

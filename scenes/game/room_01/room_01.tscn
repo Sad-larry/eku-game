@@ -2,13 +2,19 @@
 
 [ext_resource type="PackedScene" uid="uid://dwk7a6af021ro" path="res://scenes/game/room_base.tscn" id="1_w7yj3"]
 [ext_resource type="PackedScene" uid="uid://dohnbnw4ew3hp" path="res://prefabs/entities/player/player.tscn" id="2_4lbwc"]
+[ext_resource type="PackedScene" uid="uid://d2miww5iawxo" path="res://scenes/ui/hud/hud.tscn" id="2_p68yu"]
+[ext_resource type="PackedScene" uid="uid://ceolu6sw8qgju" path="res://prefabs/entities/enemies/common/enemy_common.tscn" id="3_rmovg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4lbwc"]
 size = Vector2(50, 140)
 
 [node name="Room01" unique_id=447668660 instance=ExtResource("1_w7yj3")]
+room_id = "room01"
+is_battle_room = null
 
-[node name="Start" type="Area2D" parent="." index="3" unique_id=317832889]
+[node name="HUD" parent="." index="0" unique_id=134044149 instance=ExtResource("2_p68yu")]
+
+[node name="Start" type="Area2D" parent="." index="4" unique_id=317832889]
 
 [node name="Label" type="Label" parent="Start" index="0" unique_id=814478569]
 offset_left = 96.0
@@ -21,7 +27,8 @@ text = "开始"
 position = Vector2(110, 351)
 shape = SubResource("RectangleShape2D_4lbwc")
 
-[node name="End" type="Area2D" parent="." index="4" unique_id=1027445576]
+[node name="End" type="Area2D" parent="." index="5" unique_id=1027445576]
+position = Vector2(-870, 13)
 
 [node name="Label" type="Label" parent="End" index="0" unique_id=994075854]
 offset_left = 1188.0
@@ -34,7 +41,13 @@ text = "死亡"
 position = Vector2(1200, 340)
 shape = SubResource("RectangleShape2D_4lbwc")
 
-[node name="Player" parent="." index="5" unique_id=386607487 instance=ExtResource("2_4lbwc")]
+[node name="Player" parent="." index="6" unique_id=386607487 instance=ExtResource("2_4lbwc")]
 position = Vector2(110, 352)
+
+[node name="EneryCommon" parent="." index="7" unique_id=1067563861 instance=ExtResource("3_rmovg")]
+position = Vector2(205, 187)
+
+[node name="EneryCommon2" parent="." index="8" unique_id=278248480 instance=ExtResource("3_rmovg")]
+position = Vector2(309, 206)
 
 [connection signal="body_entered" from="End" to="." method="_on_end_body_entered"]

@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://b7ou7km35gbj4"]
+
+[ext_resource type="Script" uid="uid://bpj8jntvs0p7b" path="res://prefabs/components/faction_component/faction_component.gd" id="1_16n5w"]
+
+[node name="FactionComponent" type="Node" unique_id=1607377695]
+script = ExtResource("1_16n5w")

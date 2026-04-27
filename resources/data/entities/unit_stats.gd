@@ -13,15 +13,15 @@ enum UnitType {
 ## 实体图标
 @export var icon: Texture2D
 ## 实体速度
-@export var speed := 300
+@export var speed := 100
 ## 实体生命值
-@export var max_health := 1.0
+@export var max_health := 1
 ## 实体能量值
 @export var max_energy := 1
 ## 实体每秒回能
 @export var energy_regen: float = 1
 ## 实体伤害值
-@export var base_attack_damage := 1.0
+@export var base_attack_damage := 1
 ## 实体攻速
 @export var attack_speed: float = 1.0
 ## 实体暴击率

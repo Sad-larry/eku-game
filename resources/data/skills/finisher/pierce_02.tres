@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SkillEffect" format=3 uid="uid://dhisf6cqhgmeg"]
+
+[ext_resource type="Script" uid="uid://db3ag7dk47lhq" path="res://resources/data/skills/skill_effect.gd" id="1_xiyw7"]
+
+[resource]
+script = ExtResource("1_xiyw7")
+id = "finisher02"
+name = "pierce_02"
+cooldown = 2.0
+type = 2
+skill_duration = 4.0
+anim_base_name = "pierce_02"
+metadata/_custom_type_script = "uid://db3ag7dk47lhq"

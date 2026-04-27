@@ -29,11 +29,15 @@ func _ready():
 	update_combo_display()
 	
 	# 监听全局信号（关联Global单例）
-	if Global:
-		Global.connect("health_updated", _on_health_updated)
-		Global.connect("energy_updated", _on_energy_updated)
-		Global.connect("combo_updated", _on_combo_updated)
+	EventBus.connect("health_updated", _on_health_updated)
+	EventBus.connect("energy_updated", _on_energy_updated)
+	EventBus.connect("combo_updated", _on_combo_updated)
 		
+	
+func _exit_tree() -> void:
+	EventBus.disconnect("health_updated", _on_health_updated)
+	EventBus.disconnect("energy_updated", _on_energy_updated)
+	EventBus.disconnect("combo_updated", _on_combo_updated)
 	
 # 更新生命值显示（文本+进度条）
 func update_health_display():

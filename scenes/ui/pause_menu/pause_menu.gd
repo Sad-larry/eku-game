@@ -19,7 +19,7 @@ func _on_settings_btn_pressed() -> void:
 # 返回主菜单
 func _on_back_to_menu_btn_pressed() -> void:
 	UIManager.close_pause_menu()
-	get_tree().change_scene_to_file(Global.START_MENU_SCENE_PATH)
+	get_tree().change_scene_to_file(Global.MAIN_MENU_SCENE_PATH)
 
 # 退出游戏
 func _on_quit_btn_pressed() -> void:

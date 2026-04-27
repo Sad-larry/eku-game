@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://b53rbsmx5vd7e"]
+
+[ext_resource type="Script" uid="uid://dkb3g37j6jjqq" path="res://prefabs/fx/skills/fx_boot.gd" id="1_mkc7s"]
+
+[node name="FxBoot" type="Node2D" unique_id=870866829]
+script = ExtResource("1_mkc7s")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=598854451]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1123815184]

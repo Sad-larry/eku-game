@@ -1,34 +1,94 @@
-[gd_scene format=3 uid="uid://n3jc3550spy2"]
+[gd_scene format=3 uid="uid://bv7ni74an015u"]
 
-[ext_resource type="Script" uid="uid://1plc26dw2wm5" path="res://scenes/main/main_menu.gd" id="1_w6ykx"]
-[ext_resource type="PackedScene" uid="uid://d2miww5iawxo" path="res://scenes/ui/hud/hud.tscn" id="2_hiibk"]
-[ext_resource type="PackedScene" uid="uid://dohnbnw4ew3hp" path="res://prefabs/entities/player/player.tscn" id="3_swlpu"]
-[ext_resource type="PackedScene" uid="uid://dwk7a6af021ro" path="res://scenes/game/room_base.tscn" id="4_nm0l4"]
+[ext_resource type="Script" uid="uid://qdxruj1rkf0j" path="res://scenes/main/main_menu.gd" id="1_5vafy"]
+[ext_resource type="Texture2D" uid="uid://cvelh55b3d7xr" path="res://assets/sprites/BG/StartBG.png" id="2_byqcc"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_bxtry"]
-radius = 32.0
+[sub_resource type="LabelSettings" id="LabelSettings_sd5it"]
+font_size = 86
 
-[node name="MainMenu" type="Node2D" unique_id=540314176]
-script = ExtResource("1_w6ykx")
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5vafy"]
 
-[node name="HUD" parent="." unique_id=134044149 instance=ExtResource("2_hiibk")]
+[node name="MainMenu" type="Control" unique_id=974426141]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_5vafy")
 
-[node name="Player" parent="." unique_id=386607487 instance=ExtResource("3_swlpu")]
-position = Vector2(253, 311)
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1845673694]
 
-[node name="RoomBase" parent="." unique_id=447668660 instance=ExtResource("4_nm0l4")]
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer" unique_id=485382517]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Area2D" type="Area2D" parent="." unique_id=980483599]
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/MarginContainer" unique_id=19435844]
+layout_mode = 2
+texture = ExtResource("2_byqcc")
+expand_mode = 1
+stretch_mode = 5
 
-[node name="Label" type="Label" parent="Area2D" unique_id=1386427304]
-offset_left = 466.0
-offset_top = 251.0
-offset_right = 530.0
-offset_bottom = 274.0
-text = "进入游戏"
+[node name="TitleContainer" type="VBoxContainer" parent="CanvasLayer" unique_id=801330740]
+custom_minimum_size = Vector2(1280, 200)
+offset_right = 1280.0
+offset_bottom = 200.0
+alignment = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=854218237]
-position = Vector2(489, 311)
-shape = SubResource("CircleShape2D_bxtry")
+[node name="TitleLabel" type="Label" parent="CanvasLayer/TitleContainer" unique_id=560193410]
+layout_mode = 2
+text = "Eku Game"
+label_settings = SubResource("LabelSettings_sd5it")
+horizontal_alignment = 1
 
-[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[node name="ButtonContainer" type="VBoxContainer" parent="CanvasLayer" unique_id=193496284]
+custom_minimum_size = Vector2(300, 200)
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = -100.0
+offset_right = -180.0
+offset_bottom = 100.0
+grow_horizontal = 0
+grow_vertical = 2
+alignment = 1
+
+[node name="StartButton" type="Button" parent="CanvasLayer/ButtonContainer" unique_id=1636823087]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "开始游戏"
+
+[node name="SettingsButton" type="Button" parent="CanvasLayer/ButtonContainer" unique_id=229821178]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "设置"
+
+[node name="QuitButton" type="Button" parent="CanvasLayer/ButtonContainer" unique_id=1820331317]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "退出游戏"
+
+[node name="FooterLabel" type="Label" parent="CanvasLayer" unique_id=632612889]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -35.5
+offset_top = -23.0
+offset_right = 35.5
+grow_horizontal = 2
+grow_vertical = 0
+text = "版本 1.0/版权 无"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1399497922]
+libraries/ = SubResource("AnimationLibrary_5vafy")
+
+[connection signal="pressed" from="CanvasLayer/ButtonContainer/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/ButtonContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/ButtonContainer/QuitButton" to="." method="_on_quit_button_pressed"]

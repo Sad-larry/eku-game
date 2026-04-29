@@ -3,15 +3,3 @@
 [ext_resource type="PackedScene" uid="uid://dugie7jwjpd23" path="res://prefabs/entities/enemies/enemy.tscn" id="1_ybiwj"]
 
 [node name="EneryCommon" unique_id=1067563861 instance=ExtResource("1_ybiwj")]
-collision_layer = 2
-collision_mask = 0
-
-[node name="HitboxComponent" parent="StatsComponents" parent_id_path=PackedInt32Array(2005283585) index="0" unique_id=1295885130]
-collision_layer = 8
-collision_mask = 16
-
-[node name="HurtboxComponent" parent="StatsComponents" parent_id_path=PackedInt32Array(2005283585) index="1" unique_id=1445624055]
-collision_layer = 32
-collision_mask = 4
-
-[connection signal="damaged" from="StatsComponents/HurtboxComponent" to="." method="_on_hurtbox_component_damaged"]

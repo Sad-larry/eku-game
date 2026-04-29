@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://dijvy0qjtoc24"]
+
+[ext_resource type="Script" uid="uid://dkqswtt6vene3" path="res://prefabs/objects/pickups/pickup_base.gd" id="1_glcil"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_glcil"]
+radius = 31.06445
+
+[node name="Coin" type="Area2D" unique_id=594610829]
+script = ExtResource("1_glcil")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=592385868]
+shape = SubResource("CircleShape2D_glcil")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1642211597]

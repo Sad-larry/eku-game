@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://b288f7cxs8puj"]
+
+[ext_resource type="Script" uid="uid://ct26kyxlorp0l" path="res://prefabs/ui/skill_slot/skill_slot.gd" id="1_42tli"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_42tli"]
+font_size = 12
+
+[node name="SkillSlot" type="MarginContainer" unique_id=1815731791]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_42tli")
+
+[node name="Button" type="TextureButton" parent="." unique_id=2102347774]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SkillIcon" type="TextureRect" parent="Button" unique_id=1496593993]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="CooldownOverlay" type="ColorRect" parent="Button" unique_id=437184437]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0.44796598, 0.44796598, 0.44796598, 0.36600003)
+
+[node name="CooldownLabel" type="Label" parent="Button" unique_id=1375214755]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -7.0
+offset_right = 20.0
+offset_bottom = 7.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "1.0s"
+label_settings = SubResource("LabelSettings_42tli")
+horizontal_alignment = 1
+vertical_alignment = 1

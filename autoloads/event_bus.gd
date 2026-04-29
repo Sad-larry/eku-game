@@ -1,21 +1,42 @@
-# autoloads/events_bus.gd
-# 全局单例：全局信号总线
+# ==============================================================================
+#   events_bus.gd
+#   功能：全局信号总线（Autoload 单例），提供跨场景、跨组件的松耦合通信机制。
+#        所有信号均在此声明，任何模块均可连接或发射这些信号。
+#   自动加载配置：在 Project -> Project Settings -> Autoload 中添加，命名为 EventsBus
+# ==============================================================================
 extends Node
 
-# ========================== 信号定义 ==========================
+# ========================== 信号声明模块 ==========================
+# 使用 @warning_ignore 抑制"信号未使用"的警告（因为信号仅在此声明，在其他模块中使用）
 @warning_ignore_start("unused_signal")
-# 健康值变化（通知型）
+
+## 触发时机：角色的健康值发生变化时（受伤、治疗等）
+## 参数：new_health (int) - 当前生命值，new_max_health (int) - 最大生命值
 signal health_updated(new_health: int, new_max_health: int)
-# 角色死亡（通知型）
+
+## 触发时机：玩家角色死亡时
 signal player_died()
-# 能量值变化（通知型）
+
+## 触发时机：角色的能量值发生变化时（消耗、恢复等）
+## 参数：new_energy (int) - 当前能量值，new_max_energy (int) - 最大能量值
 signal energy_updated(new_energy: int, new_max_energy: int)
-# 连击数变化（通知型）
+
+## 触发时机：连击数发生变化时（攻击命中、连击中断等）
+## 参数：new_combo (int) - 当前连击数
 signal combo_updated(new_combo: int)
-# 请求造成技能伤害（请求型，期望接收方调用 apply_damage）
-# TODO 新建资源类型来传递damage_data
+
+## 触发时机：需要造成技能伤害时（请求型信号）
+## 说明：期望接收方响应信号并调用伤害应用逻辑（如 apply_damage）
+## 参数：damage_data (Dictionary) - 伤害数据字典，包含伤害值、来源、目标等信息
+## TODO: 新建资源类型（如 DamageData）来替代 Dictionary 传递伤害数据
 signal skill_damage_requested(damage_data: Dictionary)
-# 房间完成（通知型）
-# 参数 room: 已完成房间的实例
+
+## 触发时机：房间完成通关时
+## 参数：room (RoomBase) - 已完成通关的房间实例
 signal room_completed(room: RoomBase)
+
+## 触发时机：玩家收集到硬币时
+## 参数：amount (int) - 本次收集的硬币数量
+signal coin_collected(amount: int)
+
 @warning_ignore_restore("unused_signal")

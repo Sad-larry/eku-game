@@ -874,6 +874,9 @@ height = 72.0
 radius = 23.0
 height = 46.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_hi78x"]
+radius = 80.0
+
 [node name="Player" type="CharacterBody2D" unique_id=386607487]
 z_index = 10
 collision_mask = 0
@@ -890,9 +893,6 @@ vframes = 24
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=978171756]
 position = Vector2(0, -4)
 shape = SubResource("CapsuleShape2D_mcok7")
-
-[node name="Camera2D" type="Camera2D" parent="." unique_id=2072985802]
-zoom = Vector2(3, 3)
 
 [node name="PlayerAnimationController" type="Node2D" parent="." unique_id=1843588943]
 script = ExtResource("10_lvq1n")
@@ -947,8 +947,15 @@ autostart = true
 [node name="PlayerStateMachine" type="Node" parent="." unique_id=1729514535]
 script = ExtResource("11_7lor6")
 
-[node name="MovementComponent" type="Node" parent="." unique_id=369357841]
+[node name="PlayerMovementComponent" type="Node" parent="." unique_id=369357841 groups=["player"]]
 script = ExtResource("13_t7ebs")
+
+[node name="TargetDetector" type="Area2D" parent="." unique_id=1944330769]
+unique_name_in_owner = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TargetDetector" unique_id=220245288]
+position = Vector2(0, -5)
+shape = SubResource("CircleShape2D_hi78x")
 
 [connection signal="damaged" from="StatsComponents/HurtboxComponent" to="." method="_on_hurtbox_component_damaged"]
 [connection signal="timeout" from="TestTimer" to="." method="_on_timer_timeout"]

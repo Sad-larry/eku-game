@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://b2nih7c5f403o"]
+
+[ext_resource type="Script" uid="uid://dkqswtt6vene3" path="res://prefabs/objects/pickups/pickup_base.gd" id="1_847l0"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_yo2uq"]
+
+[node name="EnergyOrb" type="Area2D" unique_id=336077113]
+script = ExtResource("1_847l0")
+pickup_type = 2
+value = 10.0
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=533612912]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1993981125]
+shape = SubResource("CapsuleShape2D_yo2uq")

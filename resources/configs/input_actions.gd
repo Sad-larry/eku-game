@@ -1,18 +1,23 @@
+# ==============================================================================
+#   input_actions.gd
+#   功能：输入动作配置资源，定义游戏中所有输入动作的映射配置（类型、按键绑定、
+#        优先级、描述、分类等），用于动态生成 InputMap 或运行时校验。
+#   注意：当前为配置数据类，实际 InputMap 映射需通过其他脚本加载。
+# ==============================================================================
 extends Resource
 class_name INPUTACTIONS
 
-# TODO 快捷键需要修改，技能1为Q，技能2为2，技能3为3，技能4为E，UI确认为Z，UI取消为X
-# region 输入映射配置
-# 输入映射配置
-# 字段说明：
-# - type: 输入类型（action/axis）
-# - bufferable: 是否支持输入缓冲（战斗核心操作开启）
-# - keyboard: 键鼠按键（主/备选）
-# - priority: 输入优先级（1-5，5最高，用于冲突处理）
-# - description: 功能描述（多语言适配预留）
-# - category: 分类（movement/combat/ui/debug）
+# ========================== 常量定义模块 ==========================
+## 输入映射配置字典
+## 字段说明：
+##   - type: 输入类型（action/axis）
+##   - bufferable: 是否支持输入缓冲（战斗核心操作需开启）
+##   - keyboard: 键鼠按键列表（主/备选按键）
+##   - priority: 输入优先级（1-5，数值越高优先级越高，用于冲突处理）
+##   - description: 功能描述（多语言适配预留）
+##   - category: 分类（movement/combat/ui/debug）
 const INPUT_ACTIONS_DICTIONARY: Dictionary[String, Dictionary] = {
-	# 移动类（Movement）
+	# ========================== 移动类（Movement）==========================
 	"move_left": {
 		"type": "axis",
 		"bufferable": false,
@@ -54,7 +59,7 @@ const INPUT_ACTIONS_DICTIONARY: Dictionary[String, Dictionary] = {
 		"category": "movement"
 	},
 
-	# 战斗核心类（Combat）
+	# ========================== 战斗核心类（Combat）==========================
 	"attack": {
 		"type": "action",
 		"bufferable": true,
@@ -104,7 +109,7 @@ const INPUT_ACTIONS_DICTIONARY: Dictionary[String, Dictionary] = {
 		"category": "combat"
 	},
 
-	# UI/系统类（UI/System）
+	# ========================== UI/系统类（UI/System）==========================
 	"pause": {
 		"type": "action",
 		"bufferable": false,
@@ -130,4 +135,14 @@ const INPUT_ACTIONS_DICTIONARY: Dictionary[String, Dictionary] = {
 		"category": "ui"
 	}
 }
-# endregion
+
+# ========================== TODO 待修改项 ==========================
+# TODO: 快捷键需要修改，技能1为 Q，技能2为 2，技能3为 3，技能4为 E，UI确认为 Z，UI取消为 X
+# 当前配置中：
+#   - skill_1 已配置为 "1"
+#   - skill_2 已配置为 "2"
+#   - skill_3 已配置为 "3"
+#   - skill_4 已配置为 "4"
+#   - ui_confirm_q 已配置为 "Q"
+#   - ui_cancel_e 已配置为 "E"
+# 待根据实际需求调整按键映射值。

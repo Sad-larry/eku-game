@@ -1,0 +1,40 @@
+[gd_resource type="TileSet" format=3 uid="uid://tgwgapoxqqm4"]
+
+[ext_resource type="Texture2D" uid="uid://bcag523w4cg4v" path="res://assets/sprites/map/abstractTiles_sheet.png" id="1_72f45"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5livc"]
+texture = ExtResource("1_72f45")
+separation = Vector2i(1, 1)
+texture_region_size = Vector2i(111, 128)
+2:5/0 = 0
+2:5/0/texture_origin = Vector2i(0, -32)
+1:5/0 = 0
+1:5/0/texture_origin = Vector2i(0, -32)
+1:5/0/physics_layer_0/polygon_0/points = PackedVector2Array(-55.354866, 64.03565, -0.08705139, 96.01794, 55.45188, 63.98294, 0, 32)
+3:2/0 = 0
+3:2/0/texture_origin = Vector2i(0, -32)
+2:1/0 = 0
+2:1/0/texture_origin = Vector2i(0, -32)
+0:0/0 = 0
+0:0/0/texture_origin = Vector2i(0, -32)
+1:0/0 = 0
+1:0/0/texture_origin = Vector2i(0, -32)
+2:0/0 = 0
+2:0/0/texture_origin = Vector2i(0, -32)
+3:0/0 = 0
+3:0/0/texture_origin = Vector2i(0, -32)
+4:0/0 = 0
+4:0/0/texture_origin = Vector2i(0, -32)
+4:1/0 = 0
+4:1/0/texture_origin = Vector2i(0, -32)
+3:1/0 = 0
+3:1/0/texture_origin = Vector2i(0, -32)
+2:6/0 = 0
+2:6/0/texture_origin = Vector2i(0, -32)
+
+[resource]
+tile_shape = 1
+tile_layout = 5
+tile_size = Vector2i(111, 64)
+physics_layer_0/collision_layer = 1
+sources/2 = SubResource("TileSetAtlasSource_5livc")

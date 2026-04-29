@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://xsxfh8qkn8v1" path="res://scenes/transitions/transition_overlay.gd" id="1_3fu73"]
 
 [node name="TransitionOverlay" type="CanvasLayer" unique_id=999555865]
+layer = 99
 script = ExtResource("1_3fu73")
 
 [node name="ProgressLabel" type="Label" parent="." unique_id=789962627]

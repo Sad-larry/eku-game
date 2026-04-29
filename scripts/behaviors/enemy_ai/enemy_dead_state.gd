@@ -1,10 +1,23 @@
+# ==============================================================================
+#   EnemyDeadState.gd
+#   功能：敌人死亡状态，播放死亡动画后销毁敌人节点。
+#        可扩展添加死亡特效、掉落物等逻辑。
+# ==============================================================================
 extends EnemyState
 class_name EnemyDeadState
 
-
+# ========================== 状态生命周期模块 ==========================
+## 功能：进入死亡状态时播放死亡动画，并标记敌人待销毁
+## 说明：当前实现为立即销毁（未等待动画完成），如需等待动画，可启用注释的定时器
 func enter() -> void:
 	play_animation("dead")
-	# 禁用碰撞、停止移动
-	# 延迟销毁或播放死亡特效
-	#await get_tree().create_timer(1.5).timeout
+	
+	# TODO: 可选延迟销毁以配合死亡动画时长
+	# await get_tree().create_timer(1.5).timeout
+	
+	# 禁用碰撞、停止移动等逻辑（需在 Enemy 类中实现）
+	# _enemy.disable_collision()
+	# _enemy.movement.stop_immediately()
+	
+	# 从场景树中移除敌人节点
 	_enemy.queue_free()

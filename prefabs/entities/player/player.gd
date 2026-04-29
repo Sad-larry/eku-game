@@ -1,35 +1,68 @@
-# prefabs/entities/player/player.gd
-# 玩家核心脚本：处理8方向移动、状态管理、动画切换
-# 挂载节点：Player (CharacterBody2D)
+# ==============================================================================
+#   player.gd
+#   功能：玩家核心控制器，处理移动输入、动画状态机、生命值/能量管理、技能系统、
+#        战斗判定连接等。继承自 CharacterBody2D，作为玩家实体的主体脚本。
+# ==============================================================================
 extends CharacterBody2D
 class_name Player
 
-# ========================== 导出参数（可在编辑器调整） ==========================
-@export var stats_resource: Resource  # 在编辑器拖入 Stats 资源
+# ========================== 导出变量模块 ==========================
+## 玩家属性配置资源（包含生命值、能量值等基础属性）
+@export var stats_resource: Resource
 
-# ========================== 节点引用（自动获取） ==========================
+# ========================== 节点引用模块 ==========================
+## 动画树节点（用于驱动混合动画）
 @onready var anim_tree: AnimationTree = $AnimationTree
+
+## 动画状态机播放控制器（用于控制移动状态机）
 @onready var move_state_machine: AnimationNodeStateMachinePlayback = anim_tree.get("parameters/MoveStateMachine/playback")
+
+## 攻击组件（管理连击窗口、判定帧等）
 @onready var attack_component: AttackComponent = %AttackComponent
+
+## 生命值组件（位于 StatsComponents 子节点下）
 @onready var health_component: HealthComponent = $StatsComponents/HealthComponent
+
+## 攻击判定框组件（用于主动攻击命中敌人）
+@onready var hitbox_component: HitboxComponent = $StatsComponents/HitboxComponent
+
+## 玩家动画控制器（处理移动方向与动画的参数传递）
 @onready var anim_controller: PlayerAnimationController = $PlayerAnimationController
-@onready var movement_component: MovementComponent = $MovementComponent
+
+## 玩家移动组件（处理速度、加速度、移动逻辑）
+@onready var movement_component: PlayerMovementComponent = $PlayerMovementComponent
+
+## 玩家状态机（管理 idle、move、attack、hurt、dead、recovery、skill 等状态）
 @onready var player_state_machine: PlayerStateMachine = $PlayerStateMachine
 
-# ========================== 全局变量 ==========================
+## 目标检测区域（用于技能/攻击时寻找最近的敌人）
+@onready var target_detector: Area2D = %TargetDetector
 
-var last_direction: Vector2 = Vector2.DOWN         # 记录最后朝向
-var velocity_knockback: Vector2 = Vector2.ZERO     # 击退速度
-var is_attacking: bool = false                     # 是否攻击
+# ========================== 变量定义模块 ==========================
+## 最后一次移动方向（用于动画朝向、攻击朝向等）
+var last_direction: Vector2 = Vector2.DOWN
 
+## 面朝方向（由 WASD 最后按下方向决定，无输入时保持最后朝向）
+var _facing_direction: Vector2 = Vector2.DOWN
+
+## 击退速度向量（受击时的临时位移）
+var velocity_knockback: Vector2 = Vector2.ZERO
+
+## 是否处于攻击状态（用于逻辑判断，如移动限制）
+var is_attacking: bool = false
+
+## 技能运行器字典（key: 技能 ID, value: SkillRunner 实例）
 var _skill_runners: Dictionary = {}
-# 技能槽配置（保留这 4 个预加载，作为技能槽的配置）
+
+## 技能槽数据数组（预加载的四个技能资源配置）
 var _skill_slot_data: Array[SkillEffect] = [
 	preload("res://resources/data/skills/initiator/slash_01.tres"),
 	preload("res://resources/data/skills/initiator/slash_02.tres"),
 	preload("res://resources/data/skills/finisher/pierce_01.tres"),
 	preload("res://resources/data/skills/finisher/pierce_02.tres"),
 ]
+
+## 输入动作名到技能槽索引的映射表
 const SKILL_SLOT_MAP: Dictionary = {
 	"skill_1": 0,
 	"skill_2": 1,
@@ -37,66 +70,83 @@ const SKILL_SLOT_MAP: Dictionary = {
 	"skill_4": 3,
 }
 
-# ========================== 生命周期 ==========================
+# ========================== 生命周期模块 ==========================
+## 功能：节点就绪时初始化玩家属性、组件、状态机、信号连接
 func _ready():
+	# 将玩家添加到 "player" 组，并注册到全局单例
+	add_to_group("player")
+	Global.player = self
+	
+	# 连接生命值组件信号
 	health_component.connect("health_updated", _on_health_forward_to_bus)
-	health_component.connect("unit_died", _on_died)
-	# 立即发射信号刷新HUD显示，初始化顺序不可变
+	health_component.connect("unit_died", _on_unit_died)
+	
+	# 初始化生命值组件（必须在使用 health_component.current_health 之前调用）
 	health_component.setup(stats_resource)
 	
-	# 输入处理 – 仅转换信号为状态机命令
+	# 连接输入管理器信号
 	InputManager.action_triggered.connect(_on_input_action)
 	InputManager.movement_vector_changed.connect(_on_movement_changed)
+	
+	# 初始化状态机
 	_init_state_machine()
 	
+	# 连接全局事件总线信号
 	EventBus.skill_damage_requested.connect(_on_skill_damage_requested)
 	EventBus.player_died.connect(_on_player_died)
 	
-	# 通过 InputManager 信号接收输入（替代直接每帧查询）
 	print("Player: 初始化完成")
 
-func _on_player_died() -> void:
-	UIManager.open_game_over()
+## 功能：节点退出场景树时清理全局引用，避免悬挂指针
+func _exit_tree() -> void:
+	if Global.player == self:
+		Global.player = null
 
+## 功能：每物理帧更新玩家移动与状态
+## 参数：delta (float) - 物理帧间隔时间（秒）
 func _physics_process(delta: float):
-	# 只在 idle/move 状态下更新移动
-	if player_state_machine.current_state_name in ["idle", "move"]:
+	# 仅在允许移动的状态下（idle / move）更新移动输入
+	if player_state_machine.is_movement_allowed():
 		var input_dir = InputManager.get_movement_vector()
 		movement_component.update_movement(input_dir, delta)
 		var move_dir = movement_component.get_movement_direction()
 		if move_dir != Vector2.ZERO:
 			last_direction = move_dir
-	# 攻击/受击状态下保持 velocity 不变（由状态自己的 logic 控制）
-	# 将方向传递给动画控制器
+	
+	# 将玩家朝向传递给动画控制器
 	anim_controller.set_movement_direction(last_direction)
-	# 状态机更新 —— 改为调用状态机的 _process 机制，而非调用不存在的 update()
-	# 这里改由 Godot 引擎自动调用 player_state_machine._process(delta)
-	# 所以只需要：
-	#   move_and_slide()
-
+	
+	# 应用速度并移动
 	move_and_slide()
 
+# ========================== 输入处理模块 ==========================
+## 功能：输入动作触发时的回调（由 InputManager.action_triggered 信号触发）
+## 参数：action (String) - 输入动作名称（如 "attack"、"skill_1" 等）
+## TODO: 这里将所有的输入事件都派发给状态机，可是还有其他输入事件如 ui_confirm_q、ui_cancel_e 等状态机是处理不了的
+##       后续可根据输入动作分类，仅将战斗/移动相关动作转发给状态机
 func _on_input_action(action: String):
-	# TODO 这里将所有的输入事件都派发给状态机，可是还有其他输入事件如ui_confirm_q、ui_cancel_e等状态机是处理不了的
 	# 将所有输入事件派发给状态机，由当前状态决定是否响应
 	player_state_machine.send_event(action)
-	
+
+## 功能：移动向量变化时的回调（由 InputManager.movement_vector_changed 信号触发）
+## 参数：dir (Vector2) - 当前移动方向（单位向量）
 func _on_movement_changed(dir: Vector2) -> void:
-	# 只在 idle / move 状态下响应移动事件
-	# 攻击/受击状态不响应，由状态自己的 on_event 决定
 	if dir != Vector2.ZERO:
+		_facing_direction = dir.normalized()
 		player_state_machine.send_event("move")
 	else:
 		player_state_machine.send_event("idle")
 
-func _init_state_machine() -> void:	
+# ========================== 状态机初始化模块 ==========================
+## 功能：创建技能运行器池并注册所有玩家状态
+func _init_state_machine() -> void:
 	# 创建持久化 SkillRunner 池
 	for slot_data in _skill_slot_data:
 		var runner = SkillRunner.new(slot_data, self)
-		# 加入场景树
-		add_child(runner)
+		add_child(runner)  # 加入场景树
 		_skill_runners[slot_data.id] = runner
 	
+	# 创建所有状态实例并注册到状态机
 	var states = {
 		"idle":     PlayerIdleState.new(),
 		"move":     PlayerMoveState.new(),
@@ -110,40 +160,83 @@ func _init_state_machine() -> void:
 		states[state_name].setup(self)
 		player_state_machine.add_state(state_name, states[state_name])
 	
+	# 启动状态机，初始状态为待机
 	player_state_machine.change_to("idle")
 
+# ========================== 公共 API 模块 ==========================
+## 功能：根据技能 ID 获取对应的技能运行器
+## 参数：skill_id (String) - 技能唯一标识
+## 返回值：SkillRunner - 技能运行器实例，若未找到则返回 null
 func get_skill_runner(skill_id: String) -> SkillRunner:
 	return _skill_runners.get(skill_id)
 
+## 功能：根据输入动作名称获取对应技能槽的技能数据
+## 参数：action_name (String) - 输入动作名称（如 "skill_1"）
+## 返回值：SkillEffect - 技能资源，若未找到则返回 null
 func get_skill_data_by_action(action_name: String) -> SkillEffect:
 	var idx = SKILL_SLOT_MAP.get(action_name, -1)
 	if idx < 0 or idx >= _skill_slot_data.size():
 		return null
 	return _skill_slot_data[idx]
 
+## 功能：获取当前攻击/技能的目标（最近的敌人）
+## 返回值：Node - 目标敌人节点，若无有效目标则返回 null
+## TODO: 实现完整的目标检测逻辑：
+##       1. 检测前方扇形/圆形范围内最近的敌人
+##       2. 使用射线检测或 Area2D 重叠区域 + 方向过滤
+##       3. 示例代码已预留，需根据实际物理射线查询完善
 func get_target() -> Node:
-	# TODO: 实现目标检测逻辑
-	# 思路：检测前方扇形/圆形范围内最近的敌人
+	# 实现思路：检测前方扇形/圆形范围内最近的敌人
 	# var space_state = get_world_2d().direct_space_state
 	# var query = PhysicsRayQueryParameters2D.create(global_position, global_position + last_direction * 50)
 	# var result = space_state.intersect_ray(query)
 	# return result.collider if result else null
-	return null
+	
+	var candidates: Array[Area2D] = target_detector.get_overlapping_areas()
+	var nearest: Enemy = null
+	var nearest_dist: float = INF
 
-## 连接HurtboxComponent信号
+	for area in candidates:
+		var enemy: Enemy = area.owner as Enemy
+		if enemy == null:
+			continue
+		# 过滤面朝方向外的敌人（点积 > 0.5，即 ±45° 锥形范围）
+		var to_enemy: Vector2 = (enemy.global_position - global_position).normalized()
+		if to_enemy.dot(_facing_direction) < 0.5:
+			continue
+		var d: float = global_position.distance_squared_to(enemy.global_position)
+		if d < nearest_dist:
+			nearest_dist = d
+			nearest = enemy
+
+	return nearest
+
+# ========================== 信号回调模块 ==========================
+## 功能：受击框组件受到伤害时的回调（需手动连接 HurtboxComponent 的 damaged 信号）
+## 参数：hitbox (HitboxComponent) - 攻击来源的判定框组件
 func _on_hurtbox_component_damaged(hitbox: HitboxComponent) -> void:
-	# 已死亡则不再处理
+	# 已死亡则不再处理伤害
 	if health_component.current_health <= 0:
 		return
 	health_component.take_damage(hitbox.damage)
 	player_state_machine.send_event("hurt")
 
+## 功能：将生命值变化转发到全局事件总线（供 HUD 等界面监听）
+## 参数：new_health (int) - 当前生命值；max_health (int) - 最大生命值
 func _on_health_forward_to_bus(new_health: int, max_health: int) -> void:
 	EventBus.health_updated.emit(new_health, max_health)
 
-func _on_died() -> void:
+## 功能：单位死亡时的回调（触发玩家死亡状态）
+func _on_unit_died() -> void:
 	player_state_machine.send_event("dead")
 
+## 功能：玩家死亡全局事件回调（由 EventsBus.player_died 触发）
+func _on_player_died() -> void:
+	UIManager.open_game_over()
+
+## 功能：技能伤害请求回调（由 EventsBus.skill_damage_requested 触发）
+## 参数：damage_data (Dictionary) - 伤害数据字典（需包含 target 和 damage 字段）
+## TODO: 建议将 damage_data 类型从 Dictionary 替换为强类型资源 DamageData
 func _on_skill_damage_requested(damage_data: Dictionary) -> void:
 	var target = damage_data.get("target")
 	var damage = damage_data.get("damage", 0)

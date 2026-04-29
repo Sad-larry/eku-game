@@ -2,5 +2,5 @@
 
 [ext_resource type="Script" uid="uid://bc21t5drm6in1" path="res://prefabs/components/health_component/health_component.gd" id="1_6rb08"]
 
-[node name="HealthComponent" type="Node" unique_id=775894249]
+[node name="HealthComponent" type="Node2D" unique_id=222661138]
 script = ExtResource("1_6rb08")

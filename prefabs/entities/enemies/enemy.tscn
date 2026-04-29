@@ -308,6 +308,9 @@ vframes = 7
 position = Vector2(0, 2)
 shape = SubResource("RectangleShape2D_icc4u")
 
+[node name="EnemyAnimationController" type="Node2D" parent="." unique_id=1812909964]
+script = ExtResource("10_s5we3")
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=594148717]
 libraries/ = SubResource("AnimationLibrary_tf0rl")
 
@@ -333,10 +336,8 @@ debug_color = Color(0.8997795, 0.3007212, 0.2542769, 0.41960785)
 
 [node name="HealthComponent" parent="StatsComponents" unique_id=775894249 instance=ExtResource("5_lvdfl")]
 
-[node name="FactionComponent" parent="StatsComponents" unique_id=1607377695 instance=ExtResource("6_cyomr")]
-faction = 1
-
-[node name="HealBar" parent="StatsComponents" unique_id=1550863263 instance=ExtResource("7_c66hi")]
+[node name="HealBar" parent="StatsComponents/HealthComponent" unique_id=1550863263 instance=ExtResource("7_c66hi")]
+unique_name_in_owner = true
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -350,15 +351,13 @@ back_color = Color(1, 0, 0, 1)
 fill_color = Color(0, 0.72605973, 0, 1)
 delay_color = Color(0, 0.95234615, 0, 1)
 
+[node name="FactionComponent" parent="StatsComponents" unique_id=1607377695 instance=ExtResource("6_cyomr")]
+faction = 1
+
 [node name="AttackComponent" parent="." unique_id=1844350517 instance=ExtResource("8_fj4ri")]
 
 [node name="EnemyStateMachine" type="Node" parent="." unique_id=1046580169]
 script = ExtResource("10_8b3tw")
 
-[node name="EnemyAnimationController" type="Node2D" parent="." unique_id=1812909964]
-script = ExtResource("10_s5we3")
-
 [node name="EnemyMovementComponent" type="Node" parent="." unique_id=1998489952]
 script = ExtResource("11_s5we3")
-
-[connection signal="unit_hit" from="StatsComponents/HealthComponent" to="." method="_on_health_component_unit_hit"]

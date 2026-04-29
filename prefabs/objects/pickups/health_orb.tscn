@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://r7x07tixvlgo"]
+
+[ext_resource type="Script" uid="uid://dkqswtt6vene3" path="res://prefabs/objects/pickups/pickup_base.gd" id="1_1yudt"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_pcqmd"]
+
+[node name="HealthOrb" type="Area2D" unique_id=2084783663]
+script = ExtResource("1_1yudt")
+pickup_type = 1
+value = 3.0
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1670682196]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=794713146]
+shape = SubResource("CapsuleShape2D_pcqmd")

@@ -1,8 +1,23 @@
-# resources/data/rooms/room_resource.gd
+# ==============================================================================
+#   room_resource.gd
+#   功能：房间资源数据类（当前为旧版占位，建议使用 RoomConfig 替代）。
+#        记录房间的波次配置和默认敌人场景。
+#   注意：此文件可能已被 RoomConfig 取代，保留仅为兼容旧代码。
+# ==============================================================================
 extends Resource
 class_name RoomResource
 
-@export var waves: Array[WaveData]        # 波次列表
-@export var default_enemy_scene: PackedScene   # 默认敌人场景（无波次时用）
+# ========================== 导出变量模块 ==========================
+## 波次数据列表（支持多波次战斗配置）
+@export var waves: Array[WaveData]
 
-# 如果需要房间奖励，可添加 loot_table 字段
+## 默认敌人场景（当房间无波次配置时，使用此场景生成敌人）
+@export var default_enemy_scene: PackedScene
+
+# ========================== TODO 待完善事项 ==========================
+# TODO: 如果需要房间奖励，可添加 loot_table 字段
+# @export var loot_table: Resource  # 掉落表资源
+
+# ========================== 使用建议 ==========================
+# 建议：新项目请使用 RoomConfig + RoomLayout 组合替代本资源，
+#       RoomResource 仅作为过渡期兼容或简单场景使用。

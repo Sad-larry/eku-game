@@ -1,0 +1,42 @@
+[gd_scene format=4 uid="uid://cid6ctcxuhehs"]
+
+[ext_resource type="Script" uid="uid://blel2cfdsi8ge" path="res://scripts/components/damage_popup_spawner.gd" id="1_20hbm"]
+[ext_resource type="Script" uid="uid://dxpod4b436ctq" path="res://scripts/systems/camera/isometric_camera.gd" id="1_q0j28"]
+[ext_resource type="TileSet" uid="uid://tgwgapoxqqm4" path="res://resources/data/tilesets/tileset_iso_basic.tres" id="2_q0j28"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_60nf8"]
+size = Vector2(1450, 20)
+
+[node name="GameWorld" type="Node2D" unique_id=1535492381]
+
+[node name="DamagePopupLayer" type="CanvasLayer" parent="." unique_id=203547879]
+
+[node name="DamagePopupSpawner" type="Node" parent="DamagePopupLayer" unique_id=94779699]
+script = ExtResource("1_20hbm")
+
+[node name="IsometricCamera" type="Camera2D" parent="." unique_id=219797462]
+script = ExtResource("1_q0j28")
+
+[node name="TileMap" type="Node2D" parent="." unique_id=946135734]
+
+[node name="Layer1" type="TileMapLayer" parent="TileMap" unique_id=1984386502]
+tile_map_data = PackedByteArray("AAD+//3/AgADAAIAAAD+//7/AgADAAIAAAD+////AgADAAIAAAD+/wAAAgADAAIAAAD+/wEAAgADAAIAAAD+/wIAAgADAAIAAAD+/wMAAgADAAIAAAD///3/AgADAAIAAAD///7/AgADAAIAAAD/////AgADAAIAAAD//wAAAgADAAIAAAD//wEAAgADAAIAAAD//wIAAgADAAIAAAD//wMAAgADAAIAAAAAAP3/AgADAAIAAAAAAP7/AgADAAIAAAAAAP//AgADAAIAAAAAAAAAAgADAAIAAAAAAAEAAgADAAIAAAAAAAIAAgADAAIAAAAAAAMAAgADAAIAAAABAP3/AgADAAIAAAABAP7/AgADAAIAAAABAP//AgADAAIAAAABAAAAAgADAAIAAAABAAEAAgADAAIAAAABAAIAAgADAAIAAAABAAMAAgADAAIAAAACAP3/AgADAAIAAAACAP7/AgADAAIAAAACAP//AgADAAIAAAACAAAAAgADAAIAAAACAAEAAgADAAIAAAACAAIAAgADAAIAAAACAAMAAgADAAIAAAD8//3/AgADAAIAAAD8//7/AgADAAIAAAD8////AgADAAIAAAD8/wAAAgADAAIAAAD8/wEAAgADAAIAAAD8/wIAAgADAAIAAAD8/wMAAgADAAIAAAD9//3/AgADAAIAAAD9//7/AgADAAIAAAD9////AgADAAIAAAD9/wAAAgADAAIAAAD9/wEAAgADAAIAAAD9/wIAAgADAAIAAAD9/wMAAgADAAIAAAA=")
+tile_set = ExtResource("2_q0j28")
+
+[node name="Environment" type="Node2D" parent="." unique_id=1427429912]
+
+[node name="Obstacle1" type="StaticBody2D" parent="Environment" unique_id=2125853209]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Obstacle1" unique_id=133096020]
+position = Vector2(643, 0)
+shape = SubResource("RectangleShape2D_60nf8")
+
+[node name="Entities" type="Node2D" parent="." unique_id=2081639972]
+
+[node name="PlayerSpawn" type="Marker2D" parent="Entities" unique_id=1694627983]
+position = Vector2(125, 386)
+
+[node name="EnemySpawns" type="Node2D" parent="Entities" unique_id=1369588455]
+
+[node name="SpawnPoint1" type="Marker2D" parent="Entities/EnemySpawns" unique_id=246272809]
+position = Vector2(319, 259)

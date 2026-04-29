@@ -17,6 +17,7 @@ size = Vector2(44, 776)
 [node name="RoomBase" type="Node2D" unique_id=447668660]
 script = ExtResource("1_rgfqh")
 room_id = "empty_room"
+is_battle_room = null
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1331762951]
 layer = -1
@@ -67,3 +68,5 @@ position = Vector2(982, 207)
 
 [node name="ItemSpawn" type="Marker2D" parent="SpawnPoints" unique_id=367669205]
 position = Vector2(142, 150)
+
+[node name="TileMap" type="Node2D" parent="." unique_id=1318295696]

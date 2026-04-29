@@ -4,10 +4,11 @@
 [ext_resource type="Texture2D" uid="uid://dijqgty4hucmm" path="res://icon.svg" id="2_hqnrr"]
 
 [node name="HUD" type="CanvasLayer" unique_id=134044149]
-layer = 99
+layer = 9
 script = ExtResource("1_0mwgc")
 
 [node name="Background" type="ColorRect" parent="." unique_id=1527594160]
+visible = false
 modulate = Color(1, 1, 1, 0.2)
 custom_minimum_size = Vector2(1280, 60)
 anchors_preset = 7
@@ -46,7 +47,7 @@ size_flags_vertical = 4
 theme_override_constants/separation = 48
 alignment = 1
 
-[node name="HealthContainer" type="VBoxContainer" parent="MarginContainer/StatusContainer" unique_id=1420053544]
+[node name="HealthContainer" type="MarginContainer" parent="MarginContainer/StatusContainer" unique_id=1678567506]
 layout_mode = 2
 
 [node name="HealthLabel" type="Label" parent="MarginContainer/StatusContainer/HealthContainer" unique_id=1326323560]
@@ -56,9 +57,13 @@ text = "HP：100/100"
 
 [node name="HealthBar" type="ProgressBar" parent="MarginContainer/StatusContainer/HealthContainer" unique_id=1530119292]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 27)
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+show_percentage = false
 
-[node name="EnergyContainer" type="VBoxContainer" parent="MarginContainer/StatusContainer" unique_id=576122582]
+[node name="EnergyContainer" type="MarginContainer" parent="MarginContainer/StatusContainer" unique_id=327042777]
 layout_mode = 2
 
 [node name="EnergyLabel" type="Label" parent="MarginContainer/StatusContainer/EnergyContainer" unique_id=1009974462]
@@ -68,7 +73,9 @@ text = "MP：50/50"
 
 [node name="EnergyBar" type="ProgressBar" parent="MarginContainer/StatusContainer/EnergyContainer" unique_id=553210866]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 27)
 layout_mode = 2
+show_percentage = false
 
 [node name="ComboMargin" type="MarginContainer" parent="MarginContainer/StatusContainer" unique_id=598242744]
 layout_mode = 2
@@ -77,6 +84,14 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 text = "Combo：0"
+
+[node name="CoinMargin" type="MarginContainer" parent="MarginContainer/StatusContainer" unique_id=597194633]
+layout_mode = 2
+
+[node name="CoinLabel" type="Label" parent="MarginContainer/StatusContainer/CoinMargin" unique_id=1473579914]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Coin：0"
 
 [node name="SkillSlotContainer" type="GridContainer" parent="MarginContainer" unique_id=210307090]
 custom_minimum_size = Vector2(250, 48)

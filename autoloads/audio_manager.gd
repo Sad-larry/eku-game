@@ -49,12 +49,13 @@ var ui_volume: float = DEFAULT_UI_VOLUME
 # ========================== 生命周期模块 ==========================
 ## 功能：节点初始化，创建音效池、加载音量设置、连接游戏状态信号
 func _ready() -> void:
+	# TODO: 项目最后才处理音频管理，因此，现在把初始化方法全部注释掉
 	# 创建 SFX 播放器池
-	_create_sfx_player_pool()
-	# 加载音量设置
-	_load_volume_settings()
-	# 应用初始音量
-	_apply_volume_settings()
+	#_create_sfx_player_pool()
+	## 加载音量设置
+	#_load_volume_settings()
+	## 应用初始音量
+	#_apply_volume_settings()
 	# 监听游戏状态变化（用于暂停/恢复音乐）
 	# TODO: 取消注释并确保 GameManager 存在且包含 game_state_changed 信号
 	#if GameManager and GameManager.has_signal("game_state_changed"):

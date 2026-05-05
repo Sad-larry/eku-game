@@ -102,8 +102,17 @@ func reset_to_main_menu() -> void:
 ## 功能：游戏状态变更时的内部响应（例如控制 UI 显示/隐藏）
 ## 参数：new_state (GameState) - 新状态；_old_state (GameState) - 旧状态（未使用）
 func _on_game_state_changed(new_state: GameState, _old_state: GameState) -> void:
+	# 退出游戏时场景树可能已被销毁，防止 get_tree() 为 null 导致崩溃
+	if not get_tree():
+		return
 	match new_state:
 		GameState.IN_GAME, GameState.LOBBY:
 			UIManager.show_hud()
+			get_tree().paused = false
+		GameState.PAUSED:
+			get_tree().paused = true
+		GameState.MAIN_MENU:
+			UIManager.hide_hud()
+			get_tree().paused = false
 		_:
 			UIManager.hide_hud()

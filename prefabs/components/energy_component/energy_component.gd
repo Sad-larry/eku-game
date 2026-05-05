@@ -35,7 +35,7 @@ func setup(stats: UnitStats) -> void:
 ## 功能：消耗能量发动攻击
 ## 参数：value (int) - 本次攻击消耗的能量值
 ## 说明：若当前能量不足则不执行消耗；消耗后若能量归零则触发 unit_exhausted 信号
-func attack(value: int) -> void:
+func consume(value: int) -> void:
 	if current_energy <= 0:
 		return
 	
@@ -48,3 +48,18 @@ func attack(value: int) -> void:
 	if current_energy <= 0:
 		current_energy = 0
 		unit_exhausted.emit()
+
+## 功能：增加能量
+## 参数：value (int) - 能量值
+func add(value: int) -> void:
+	if value <= 0:
+		return
+	
+	var old_energy = current_energy
+	current_energy += value
+	current_energy = min(current_energy, max_energy)
+	
+	# 只有能量真正发生变化时才发射信号
+	if current_energy != old_energy:
+		energy_changed.emit(current_energy, max_energy)
+	

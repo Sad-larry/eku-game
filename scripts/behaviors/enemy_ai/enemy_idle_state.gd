@@ -14,6 +14,6 @@ func enter() -> void:
 ## 参数：_delta (float) - 帧间隔时间（秒，本状态中未直接使用）
 func update(_delta: float) -> void:
 	# 检测玩家是否在索敌范围内
-	if is_player_in_range(_enemy.detection_range):
+	if is_player_in_range(0.0):
 		# 范围内则切换到追击状态
 		state_machine.change_to("chase")

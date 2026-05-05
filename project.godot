@@ -27,12 +27,17 @@ UIManager="*uid://bmt1y7i4o2tcb"
 EventBus="*uid://cdct4y70gla8s"
 RoomManager="*uid://s78qdkpjcod5"
 SceneLoader="*res://autoloads/scene_loader.gd"
+SignalLens="*uid://85rkx60vm7a7"
 
 [display]
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/signal_lens/plugin.cfg")
 
 [input]
 

@@ -13,7 +13,6 @@ func enter() -> void:
 	play_animation("dead")
 	
 	# TODO: 可选延迟销毁以配合死亡动画时长
-	# await get_tree().create_timer(1.5).timeout
 	
 	# 禁用碰撞、停止移动等逻辑（需在 Enemy 类中实现）
 	# _enemy.disable_collision()

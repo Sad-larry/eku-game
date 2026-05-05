@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(python3 *)",
-      "Bash(python *)"
+      "Bash(python *)",
+      "Bash(xxd \"D:/MyAppData/Godot/eku-game/scripts/systems/map_generation/chunk_manager.gd\")"
     ]
   }
 }

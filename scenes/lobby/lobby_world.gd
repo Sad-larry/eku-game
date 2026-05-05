@@ -36,3 +36,11 @@ func _on_portal_to_dungeon_body_entered(body: Node2D) -> void:
 		# 通过 SceneLoader 执行淡入淡出场景切换
 		# TODO: 后续可根据实际关卡 ID 动态传入场景路径
 		SceneLoader.change_scene(Global.ROOM_01_SCENE_PATH)
+
+## 功能：传送门的身体进入检测回调，用于切换到冒险关卡
+## 参数：body (Node2D) - 进入传送门的实体（通常为玩家）
+func _on_portal_to_boss_body_entered(body: Node2D) -> void:
+		if body is Player:
+			# 通过 SceneLoader 执行淡入淡出场景切换
+			# TODO: 后续可根据实际关卡 ID 动态传入场景路径
+			SceneLoader.change_scene(Global.ROOM_02_SCENE_PATH)

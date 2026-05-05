@@ -10,6 +10,9 @@ extends Node
 # 使用 @warning_ignore 抑制"信号未使用"的警告（因为信号仅在此声明，在其他模块中使用）
 @warning_ignore_start("unused_signal")
 
+## 触发时机：玩家实体初始化完成时
+signal player_ready()
+
 ## 触发时机：角色的健康值发生变化时（受伤、治疗等）
 ## 参数：new_health (int) - 当前生命值，new_max_health (int) - 最大生命值
 signal health_updated(new_health: int, new_max_health: int)
@@ -38,5 +41,21 @@ signal room_completed(room: RoomBase)
 ## 触发时机：玩家收集到硬币时
 ## 参数：amount (int) - 本次收集的硬币数量
 signal coin_collected(amount: int)
+
+## 触发时机：玩家更改了技能槽技能（请求型信号）
+## 参数：slot_index (int) - 技能槽索引（0~3）
+signal skill_slot_changed(slot_index: int)
+
+## 触发时机：玩家通过鼠标点击了某个技能槽（请求型信号）
+## 参数：slot_index (int) - 技能槽索引（0~3）
+signal skill_slot_clicked(slot_index: int)
+
+## 触发时机：技能冷却进度更新（供 UI 更新冷却遮罩和 CD 文本）
+## 参数：slot_index (int) - 技能槽索引；remaining (float) - 剩余冷却秒数；total (float) - 总冷却秒数
+signal skill_cooldown_updated(slot_index: int, remaining: float, total: float)
+
+## 触发时机：技能冷却结束（供 UI 隐藏冷却遮罩）
+## 参数：slot_index (int) - 技能槽索引
+signal skill_cooldown_finished(slot_index: int)
 
 @warning_ignore_restore("unused_signal")

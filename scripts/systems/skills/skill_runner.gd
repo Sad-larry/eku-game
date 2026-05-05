@@ -6,18 +6,25 @@
 extends Node
 class_name SkillRunner
 
+# ========================== 信号声明模块 ==========================
+## 触发时机：冷却进度更新（每 0.1 秒发射一次）
+signal cooldown_updated(remaining: float, total: float)
+
+## 触发时机：冷却结束
+signal cooldown_finished()
+
 # ========================== 变量定义模块 ==========================
 ## 技能数据资源（包含冷却、伤害、特效等配置）
 var skill_data: SkillEffect
-
-## 上次使用时间（毫秒时间戳，用于冷却判定）
-var _last_use_time: int = 0
 
 ## 施法者（通常是战斗实体，如玩家）
 var caster: Node2D
 
 ## 伤害计算器实例（复用减少内存分配）
 var _calculator = DamageCalculator.new()
+
+## 剩余冷却时间（秒），0 表示无冷却
+var _cooldown_remaining: float = 0.0
 
 # ========================== 生命周期模块 ==========================
 ## 功能：初始化技能运行器
@@ -26,45 +33,63 @@ func _init(p_skill_data: SkillEffect, p_caster: Node2D) -> void:
 	skill_data = p_skill_data
 	caster = p_caster
 
+func _ready() -> void:
+	# 确保节点每帧更新，且遵循树的暂停状态
+	process_mode = Node.PROCESS_MODE_INHERIT
+	set_process(true)
+	
+func _process(delta: float) -> void:
+	# 游戏暂停时不更新冷却
+	if get_tree() and get_tree().paused:
+		return
+	if _cooldown_remaining > 0.0:
+		_cooldown_remaining -= delta
+		if _cooldown_remaining <= 0.0:
+			_cooldown_remaining = 0.0
+			cooldown_finished.emit()
+		# 每帧发射信号可能会过于频繁，保持与原 Timer 相似的 0.1 秒间隔
+		# 为了性能，可以用一个局部变量累计时间再发射，这里为了简单仍每帧发射
+		cooldown_updated.emit(_cooldown_remaining, skill_data.cooldown)
+		
 # ========================== 冷却管理模块 ==========================
 ## 功能：检查技能是否就绪（未处于冷却中）
 ## 返回值：bool - true 表示可用，false 表示冷却中
 func is_ready() -> bool:
 	if skill_data.cooldown <= 0.0:
 		return true
-	var now = Time.get_ticks_msec()
-	return (now - _last_use_time) >= (skill_data.cooldown * 1000.0)
+	return _cooldown_remaining <= 0.0
 
 ## 功能：开始冷却（通常在技能执行后调用）
 func start_cooldown() -> void:
-	_last_use_time = Time.get_ticks_msec()
+	if skill_data.cooldown > 0.0:
+		_cooldown_remaining = skill_data.cooldown
+		cooldown_updated.emit(_cooldown_remaining, skill_data.cooldown)
 
 ## 功能：获取剩余冷却时间（秒）
 ## 返回值：float - 剩余冷却秒数，若无需冷却则返回 0.0
 func get_remaining_cooldown() -> float:
-	if skill_data.cooldown <= 0.0:
-		return 0.0
-	var now = Time.get_ticks_msec()
-	var elapsed = (now - _last_use_time) / 1000.0
-	return maxf(0.0, skill_data.cooldown - elapsed)
+	return maxf(0.0, _cooldown_remaining)
 
 # ========================== 技能执行模块 ==========================
-## 功能：执行技能（对目标造成伤害，播放特效，开始冷却）
-## 参数：target (Node) - 目标节点（必须拥有接受伤害的方法或组件），可为 null（空放）
-func execute(target: Node = null) -> void:
+## 功能：执行技能（对目标造成伤害，播放特效）
+## 参数：target (Node) - 目标节点；auto_cooldown (bool) - 是否立即开始冷却，默认 true
+## 返回值：bool - 是否成功执行技能
+func execute(target: Node = null, auto_cooldown: bool = true) -> bool:
 	# 1. 仅当存在目标时，才应用伤害
 	if target:
 		_apply_damage(target)
 	# 2. 播放特效
 	_play_effect(target)
-	# 3. 开始冷却
-	start_cooldown()
+	# 3. 根据参数决定是否立即开始冷却
+	if auto_cooldown:
+		start_cooldown()
 
 	# 打印日志（适配无目标的情况）
 	if target:
 		print("[SkillRunner] 技能执行: ", skill_data.name, " 对 ", target.name)
 	else:
 		print("[SkillRunner] 技能空放执行: ", skill_data.name)
+	return true
 
 # ========================== 伤害计算模块 ==========================
 ## 功能：对目标应用伤害

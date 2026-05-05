@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="SkillEffect" format=3 uid="uid://bpesntbwo7qn3"]
+
+[ext_resource type="PackedScene" uid="uid://dws3wekfus74s" path="res://prefabs/fx/skills/fx_vortex.tscn" id="1_0o54d"]
+[ext_resource type="Texture2D" uid="uid://dll5jlqaomfkk" path="res://assets/sprites/skills/icon_vortex_01.png" id="1_7i005"]
+[ext_resource type="Script" uid="uid://db3ag7dk47lhq" path="res://resources/data/skills/skill_effect.gd" id="1_ry6kc"]
+
+[resource]
+script = ExtResource("1_ry6kc")
+id = "vortex_01"
+name = "龙卷风"
+icon = ExtResource("1_7i005")
+description = "龙卷风摧毁停车场"
+energy_cost = 1
+damage = 2.0
+skill_multiplier = 1.5
+type = 3
+skill_duration = 0.5
+recovery_duration = 0.1
+fx_scene = ExtResource("1_0o54d")
+effect_attach_type = 2
+anim_base_name = "fireball"
+metadata/_custom_type_script = "uid://db3ag7dk47lhq"

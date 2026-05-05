@@ -1,10 +1,14 @@
 # ==============================================================================
 #   SkillSlot.gd
 #   功能：技能快捷栏槽位控件，显示技能图标、冷却遮罩和冷却时间文本。
-#        支持运行时更新技能数据以及实时显示剩余冷却进度。
+#        支持鼠标点击触发技能、键盘触发的按下闪烁反馈、运行时冷却进度显示。
 # ==============================================================================
 extends MarginContainer
 class_name SkillSlot
+
+# ========================== 信号声明模块 ==========================
+## 触发时机：技能槽被鼠标点击时
+signal slot_clicked(slot_index: int)
 
 # ========================== 导出变量模块 ==========================
 ## 技能槽位索引（用于标识第几个技能槽）
@@ -23,6 +27,11 @@ class_name SkillSlot
 ## 冷却倒计时文本标签
 @onready var _cd_label: Label = %CooldownLabel
 
+# ========================== 生命周期模块 ==========================
+## 功能：节点就绪时连接按钮点击信号
+func _ready() -> void:
+	_button.pressed.connect(_on_button_pressed)
+
 # ========================== 公共 API 模块 ==========================
 ## 功能：设置技能槽的技能数据
 ## 参数：data (SkillEffect) - 技能资源，若为 null 则清空槽位
@@ -30,35 +39,47 @@ func set_skill_data(data: SkillEffect) -> void:
 	if data:
 		_icon.texture = data.icon
 		_button.disabled = false
+		tooltip_text = data.name
 	else:
 		_icon.texture = null
 		_button.disabled = true
+		tooltip_text = ""
+
+## 功能：播放按键按下反馈（键盘触发时调用，短暂闪烁槽位）
+func flash_pressed() -> void:
+	_button.button_pressed = true
+	await get_tree().create_timer(0.08).timeout
+	if is_inside_tree():
+		_button.button_pressed = false
 
 ## 功能：更新冷却显示（进度遮罩和倒计时文本）
 ## 参数：remaining (float) - 当前剩余冷却时间（秒）；total (float) - 技能总冷却时间（秒）
 func update_cooldown(remaining: float, total: float) -> void:
-	# 总冷却时间为 0 或负数时，代表无冷却，隐藏冷却相关 UI
 	if total <= 0.0:
 		_overlay.visible = false
 		_cd_label.visible = false
 		return
-
-	# 计算冷却进度比例（剩余 / 总时长）
 	var ratio: float = remaining / total
-	
-	# 显示冷却遮罩（剩余时间 > 0 时才显示）
 	_overlay.visible = ratio > 0.0
-	
-	# 通过着色器参数控制冷却进度（方案一：使用 Shader 绘制扇形/径向填充）
-	_overlay.material.set_shader_parameter("fill_ratio", ratio)
-	
-	# 方案二：手动调整遮罩的缩放或位置（备用降级方案）
-	# 根据父容器的尺寸动态设置遮罩高度，实现自上而下的填充效果
+	# 通过着色器参数控制冷却进度
+	if _overlay.material:
+		_overlay.material.set_shader_parameter("fill_ratio", ratio)
+
+	# 备用方案：手动调整遮罩高度
 	_overlay.size.y = _overlay.get_parent().size.y * ratio
 
-	# 显示冷却倒计时文本（剩余时间 > 0 时显示）
 	if remaining > 0.0:
 		_cd_label.visible = true
-		_cd_label.text = "%.1f" % remaining  # 保留一位小数
+		_cd_label.text = "%.1f" % remaining
 	else:
 		_cd_label.visible = false
+
+## 功能：隐藏冷却显示（冷却结束时调用）
+func hide_cooldown() -> void:
+	_overlay.visible = false
+	_cd_label.visible = false
+
+# ========================== 信号回调模块 ==========================
+## 功能：按钮被点击时发射 clicked 信号
+func _on_button_pressed() -> void:
+	slot_clicked.emit(skill_index)

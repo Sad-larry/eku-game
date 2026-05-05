@@ -8,7 +8,7 @@ class_name PlayerMovementComponent
 
 # ========================== 导出变量模块 ==========================
 ## 移动速度（像素/秒）
-@export var speed: float = 200.0
+@export var speed: float = 150.0
 
 ## 是否启用加速度（平滑移动），若不启用则速度瞬间变化
 @export var use_acceleration: bool = false
@@ -35,7 +35,7 @@ const EIGHT_DIRECTIONS: Array[Vector2] = [
 	Vector2.RIGHT,          # 0°   → 右
 	Vector2(1, 1),          # 45°  → 右下
 	Vector2.DOWN,           # 90°  → 下
-	Vector2(1, -1),         # 135° → 右上（注：标准数学角度中 135° 为左上，此处为适配等距或其他需求）
+	Vector2(1, -1),         # 135° → 右上
 	Vector2.LEFT,           # 180° → 左
 	Vector2(-1, -1),        # 225° → 左上
 	Vector2.UP,             # 270° → 上
@@ -62,8 +62,8 @@ func update_movement(input_direction: Vector2, delta: float) -> void:
 	# 将输入向量规范化为8方向向量
 	current_direction = normalize_8_direction(input_direction)
 	
-	# 计算目标速度
-	var target_velocity: Vector2 = current_direction * speed
+	# 计算目标速度，需要进行归一化
+	var target_velocity: Vector2 = current_direction.normalized() * speed
 	
 	if use_acceleration:
 		# 平滑到达目标速度
@@ -111,7 +111,7 @@ static func normalize_8_direction(dir: Vector2) -> Vector2:
 	if dir.length() < 0.01:
 		return Vector2.ZERO
 	
-	var normalized = dir.normalized()
+	var normalized = dir
 	var angle = normalized.angle()
 	
 	# 找到最接近的预设方向

@@ -27,6 +27,15 @@ const ISO_INVERSE: Transform2D = Transform2D(
 	Vector2.ZERO          # 原点偏移
 )
 
+# ========================== 导出变量（可在编辑器调整） ==========================
+## 最小缩放倍数（值越大画面越远，最小不能 <=0）
+@export var min_zoom: float = 0.5
+## 最大缩放倍数（值越小画面越近）
+@export var max_zoom: float = 20.0
+## 缩放灵敏度（滚轮每滚动一格，缩放变化倍数因子）
+@export var zoom_speed: float = 0.1
+
+
 # ========================== 生命周期模块 ==========================
 ## 功能：节点就绪时初始化摄像机参数并添加到指定组
 func _ready() -> void:
@@ -42,7 +51,24 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	# 玩家存在时，让摄像机位置实时跟随玩家
 	if is_instance_valid(Global.player):
-		global_position = Global.player.global_position
+		global_position = lerp(global_position, Global.player.global_position, 0.8)
+
+# ========================== 输入处理模块（新增） ==========================
+func _input(event: InputEvent) -> void:
+	# 仅处理鼠标滚轮事件
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			_zoom_at_mouse(-1)   # 放大（减小 zoom 值）
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			_zoom_at_mouse(1)    # 缩小（增大 zoom 值）
+
+# ========================== 内部缩放逻辑（通用） ==========================
+## 功能：以当前鼠标位置为缩放中心，改变摄像机缩放倍数
+## 参数：direction (int) - 缩放方向，-1 为放大，1 为缩小
+func _zoom_at_mouse(direction: int) -> void:
+	zoom *= (1.0 - direction * zoom_speed)
+	zoom.x = clamp(zoom.x, min_zoom, max_zoom)
+	zoom.y = clamp(zoom.y, min_zoom, max_zoom)
 
 # ========================== 公共静态方法模块（坐标转换）==========================
 ## 功能：将等距世界坐标转换为屏幕坐标

@@ -5,7 +5,6 @@
 # ==============================================================================
 extends CharacterBody2D
 class_name Player
-
 # ========================== 导出变量模块 ==========================
 ## 玩家属性配置资源（包含生命值、能量值等基础属性）
 @export var stats_resource: Resource
@@ -22,6 +21,9 @@ class_name Player
 
 ## 生命值组件（位于 StatsComponents 子节点下）
 @onready var health_component: HealthComponent = $StatsComponents/HealthComponent
+
+## 能量值组件（位于 StatsComponents 子节点下）
+@onready var energy_component: EnergyComponent = $StatsComponents/EnergyComponent
 
 ## 攻击判定框组件（用于主动攻击命中敌人）
 @onready var hitbox_component: HitboxComponent = $StatsComponents/HitboxComponent
@@ -56,8 +58,8 @@ var _skill_runners: Dictionary = {}
 
 ## 技能槽数据数组（预加载的四个技能资源配置）
 var _skill_slot_data: Array[SkillEffect] = [
-	preload("res://resources/data/skills/initiator/slash_01.tres"),
-	preload("res://resources/data/skills/initiator/slash_02.tres"),
+	preload("res://resources/data/skills/initiator/fireball_01.tres"),
+	preload("res://resources/data/skills/control/vortex_01.tres"),
 	preload("res://resources/data/skills/finisher/pierce_01.tres"),
 	preload("res://resources/data/skills/finisher/pierce_02.tres"),
 ]
@@ -80,9 +82,11 @@ func _ready():
 	# 连接生命值组件信号
 	health_component.connect("health_updated", _on_health_forward_to_bus)
 	health_component.connect("unit_died", _on_unit_died)
+	energy_component.connect("energy_changed", _on_energy_forward_to_bus)
 	
 	# 初始化生命值组件（必须在使用 health_component.current_health 之前调用）
 	health_component.setup(stats_resource)
+	energy_component.setup(stats_resource)
 	
 	# 连接输入管理器信号
 	InputManager.action_triggered.connect(_on_input_action)
@@ -90,11 +94,16 @@ func _ready():
 	
 	# 初始化状态机
 	_init_state_machine()
+	# 初始化技能槽
+	_init_skill_runner()
 	
 	# 连接全局事件总线信号
+	EventBus.skill_slot_clicked.connect(_on_skill_slot_clicked)
 	EventBus.skill_damage_requested.connect(_on_skill_damage_requested)
 	EventBus.player_died.connect(_on_player_died)
 	
+	 # 通知全局系统玩家已就绪
+	EventBus.player_ready.emit()
 	print("Player: 初始化完成")
 
 ## 功能：节点退出场景树时清理全局引用，避免悬挂指针
@@ -162,6 +171,16 @@ func _init_state_machine() -> void:
 	
 	# 启动状态机，初始状态为待机
 	player_state_machine.change_to("idle")
+	
+## 连接所有 SkillRunner 的冷却信号，转发到 EventBus（供 UI 更新）
+func _init_skill_runner() -> void:
+	for i in range(_skill_slot_data.size()):
+		var data: SkillEffect = _skill_slot_data[i]
+		var runner: SkillRunner = _skill_runners.get(data.id, null)
+		if runner:
+			runner.cooldown_updated.connect(_on_runner_cooldown_updated.bind(i))
+			runner.cooldown_finished.connect(_on_runner_cooldown_finished.bind(i))
+	
 
 # ========================== 公共 API 模块 ==========================
 ## 功能：根据技能 ID 获取对应的技能运行器
@@ -226,6 +245,11 @@ func _on_hurtbox_component_damaged(hitbox: HitboxComponent) -> void:
 func _on_health_forward_to_bus(new_health: int, max_health: int) -> void:
 	EventBus.health_updated.emit(new_health, max_health)
 
+## 功能：将能量值变化转发到全局事件总线（供 HUD 等界面监听）
+## 参数：new_energy (int) - 当前能量值；max_energy (int) - 最大能量值
+func _on_energy_forward_to_bus(new_energy: int, max_energy: int) -> void:
+	EventBus.energy_updated.emit(new_energy, max_energy)
+
 ## 功能：单位死亡时的回调（触发玩家死亡状态）
 func _on_unit_died() -> void:
 	player_state_machine.send_event("dead")
@@ -242,3 +266,20 @@ func _on_skill_damage_requested(damage_data: Dictionary) -> void:
 	var damage = damage_data.get("damage", 0)
 	if target and target.has_method("take_damage"):
 		target.take_damage(damage)
+
+## 功能：鼠标点击技能槽时触发（映射为对应输入动作，复用键盘输入路径）
+## 参数：slot_index (int) - 技能槽索引（0~3）
+func _on_skill_slot_clicked(slot_index: int) -> void:
+	var action_names := ["skill_1", "skill_2", "skill_3", "skill_4"]
+	if slot_index >= 0 and slot_index < action_names.size():
+		_on_input_action(action_names[slot_index])
+
+## 功能：SkillRunner 冷却进度更新时转发到 EventBus（供 HUD 显示）
+## 参数：remaining (float) - 剩余冷却秒数；total (float) - 总冷却秒数；slot_index (int) - 技能槽索引
+func _on_runner_cooldown_updated(remaining: float, total: float, slot_index: int) -> void:
+	EventBus.skill_cooldown_updated.emit(slot_index, remaining, total)
+
+## 功能：SkillRunner 冷却结束时转发到 EventBus（供 HUD 隐藏遮罩）
+## 参数：slot_index (int) - 技能槽索引
+func _on_runner_cooldown_finished(slot_index: int) -> void:
+	EventBus.skill_cooldown_finished.emit(slot_index)

@@ -121,17 +121,24 @@ func send_event(event_name: String) -> void:
 ## 功能：每帧更新（转发给当前状态）
 ## 参数：delta (float) - 帧间隔时间（秒）
 func _process(delta: float) -> void:
+	# 暂停状态下阻止状态机继续推进
+	if get_tree() and get_tree().paused:
+		return
 	if _current_state:
 		_current_state.update(delta)
 
 ## 功能：物理帧更新（转发给当前状态）
 ## 参数：delta (float) - 物理帧间隔时间（秒）
 func _physics_process(delta: float) -> void:
+	if get_tree() and get_tree().paused:
+		return
 	if _current_state:
 		_current_state.physics_update(delta)
 
 ## 功能：输入事件处理（转发给当前状态）
 ## 参数：event (InputEvent) - 输入事件对象
 func _input(event: InputEvent) -> void:
+	if get_tree() and get_tree().paused:
+		return
 	if _current_state:
 		_current_state.handle_input(event)

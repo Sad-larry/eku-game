@@ -40,8 +40,6 @@ func _process(_delta: float) -> void:
 ## 说明：开始游戏过渡（当前直接调用 _load_game_scene 加载场景）
 func _on_start_button_pressed() -> void:
 	# TODO: 可在此处添加过渡动画，延迟加载场景以适配动画时长
-	# 延迟加载场景（适配动画时长）
-	# await get_tree().create_timer(0.3).timeout
 	_load_game_scene()
 
 ## 功能：设置按钮被按下时的回调

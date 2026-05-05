@@ -9,7 +9,7 @@ class_name SkillEffect
 # ========================== 枚举定义模块 ==========================
 ## 技能类别枚举
 enum SkillType {
-	UNKNOWN = -1,   ## 未知/彩蛋技能
+	UNKNOWN,        ## 未知/彩蛋技能
 	INITIATOR,      ## 起手技（连击起始）
 	FINISHER,       ## 连携技（连击终结）
 	CONTROL,        ## 场控技（控制效果）
@@ -40,7 +40,7 @@ enum EffectAttachType {
 @export var cooldown := 1.0
 
 ## 技能消耗能量值
-@export var energy_cost: float = 10.0
+@export var energy_cost: int = 10
 
 ## 技能基础伤害值
 @export var damage := 1.0

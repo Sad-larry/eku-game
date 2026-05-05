@@ -18,6 +18,16 @@ class_name PauseMenu
 ## 退出游戏按钮（需在场景中通过 %QuitBtn 唯一命名）
 @onready var quit_btn: Button = %QuitBtn
 
+# ========================== 生命周期模块 ==========================
+func _ready() -> void:
+	process_mode = PROCESS_MODE_ALWAYS
+
+func _input(event: InputEvent) -> void:
+	# 暂停后 InputManager 的 _process() 不再运行，无法再检测暂停键
+	if event.is_action_pressed("pause"):
+		get_viewport().set_input_as_handled()
+		UIManager.close_pause_menu()
+
 # ========================== UI 按钮事件模块 ==========================
 ## 功能：继续游戏按钮被按下时，关闭暂停菜单
 func _on_continue_btn_pressed() -> void:
@@ -29,9 +39,12 @@ func _on_settings_btn_pressed() -> void:
 
 ## 功能：返回主菜单按钮被按下时，关闭暂停菜单并切换场景到主菜单
 func _on_back_to_menu_btn_pressed() -> void:
+	GameManager.reset_to_main_menu()
 	UIManager.close_pause_menu()
 	get_tree().change_scene_to_file(Global.MAIN_MENU_SCENE_PATH)
 
 ## 功能：退出游戏按钮被按下时，退出应用程序
 func _on_quit_btn_pressed() -> void:
+	GameManager.reset_to_main_menu()
+	UIManager.close_pause_menu()
 	get_tree().quit()

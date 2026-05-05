@@ -9,6 +9,10 @@ class_name Settings
 ## 返回按钮节点（需在场景中通过 %BackButton 唯一命名）
 @onready var button: Button = %BackButton
 
+# ========================== 生命周期模块 ==========================
+func _ready() -> void:
+	process_mode = PROCESS_MODE_ALWAYS
+	
 # ========================== UI 按钮事件模块 ==========================
 ## 功能：返回按钮被按下时，关闭设置菜单（委托给 UIManager）
 func _on_button_pressed() -> void:

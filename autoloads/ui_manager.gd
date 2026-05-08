@@ -40,7 +40,7 @@ var _game_over_instance: Node = null
 ## HUD 实例
 var _hud_instance: HUD = null
 
-## 场景资源路径 → 游戏状态映射表（用于自动状态管理）
+## 场景资源路径 -> 游戏状态映射表（用于自动状态管理）
 var _ui_state_map: Dictionary = {
 	PAUSE_MENU_SCENE.resource_path: GameManager.GameState.PAUSED,
 	SETTINGS_SCENE.resource_path: GameManager.GameState.SETTINGS,

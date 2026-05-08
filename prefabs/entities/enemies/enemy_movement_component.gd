@@ -7,9 +7,6 @@ extends Node
 class_name EnemyMovementComponent
 
 # ========================== 导出变量模块 ==========================
-## 最大移动速度（像素/秒）
-@export var speed: float = 100.0
-
 ## 加速度（像素/秒²），控制速度提升的平滑度
 @export var acceleration: float = 800.0
 
@@ -32,7 +29,7 @@ func _ready() -> void:
 ## 功能：向指定方向移动（带加速度平滑）
 ## 参数：direction (Vector2) - 标准化移动方向；delta (float) - 物理帧间隔时间
 func move_toward(direction: Vector2, delta: float) -> void:
-	var target_velocity: Vector2 = direction * speed
+	var target_velocity: Vector2 = direction * _enemy.get_speed()
 	_velocity = _velocity.move_toward(target_velocity, acceleration * delta)
 	_enemy.velocity = _velocity
 

@@ -25,7 +25,7 @@ var skill_data: SkillEffect
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 # ========================== 生命周期模块 ==========================
-## 功能：特效实例化后自动执行完整生命周期：定位 → 播动画 → 销毁
+## 功能：特效实例化后自动执行完整生命周期：定位 -> 播动画 -> 销毁
 func _ready():
 	# 1. 特效自己决定位置（子类可重写）
 	setup_position()

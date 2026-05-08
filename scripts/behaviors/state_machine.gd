@@ -11,13 +11,17 @@ class_name StateMachine
 const DEBUG_MODE := true
 
 # ========================== 变量定义模块 ==========================
+# 添加一个变量，用于标识此状态机所属的实体名称
+## 状态机所属实体名称（用于调试日志）
+var entity_name: String = ""
+
 ## 所有已注册状态的字典：{state_name (String): FSMState}
 var _states: Dictionary = {}
 
 ## 懒加载状态工厂字典：{state_name (String): Callable}，用于延迟创建状态实例
 var _state_factories: Dictionary = {}
 
-## 状态转换守卫字典：{"from→to": Callable}，守卫返回 false 时会阻止转换
+## 状态转换守卫字典：{"from->to": Callable}，守卫返回 false 时会阻止转换
 var _transition_guards: Dictionary = {}
 
 ## 当前激活的状态实例
@@ -56,10 +60,11 @@ func register_state(state_name: String, factory: Callable) -> void:
 ##       若目标状态尚未实例化且存在懒加载工厂，则自动创建实例
 func change_to(state_name: String) -> void:
 	if DEBUG_MODE:
-		print("[FSM] %s → %s" % [current_state_name, state_name])
+		var tag: String = entity_name if entity_name else "Unknown"
+		print("[FSM][%s] %s -> %s" % [tag, current_state_name, state_name])
 	
 	var from = current_state_name
-	var key = "%s→%s" % [from, state_name]
+	var key = "%s->%s" % [from, state_name]
 	
 	# 守卫检查：若存在对应转换守卫且守卫返回 false，则阻止转换
 	if _transition_guards.has(key):
@@ -86,10 +91,10 @@ func change_to(state_name: String) -> void:
 	current_state_name = state_name
 	_current_state.enter()
 
-## 功能：添加状态转换守卫（在 from → to 转换前执行校验）
+## 功能：添加状态转换守卫（在 from -> to 转换前执行校验）
 ## 参数：from (String) - 源状态名称；to (String) - 目标状态名称；guard (Callable) - 守卫函数，返回 bool
 func add_transition_guard(from: String, to: String, guard: Callable) -> void:
-	var key = "%s→%s" % [from, to]
+	var key = "%s->%s" % [from, to]
 	_transition_guards[key] = guard
 
 # ========================== 状态查询模块 ==========================

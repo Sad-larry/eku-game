@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b2mf2eg24uu13" path="res://resources/data/waves/wave_data.gd" id="1_hhaet"]
 [ext_resource type="Script" uid="uid://dj4ukm643q60w" path="res://resources/data/waves/wave_unit_data.gd" id="2_4211c"]
-[ext_resource type="PackedScene" uid="uid://ceolu6sw8qgju" path="res://prefabs/entities/enemies/common/enemy_common.tscn" id="3_rwpnf"]
+[ext_resource type="PackedScene" uid="uid://ceolu6sw8qgju" path="res://prefabs/entities/enemies/common/enemy_skeleton.tscn" id="3_rwpnf"]
 
 [sub_resource type="Resource" id="Resource_pr0ed"]
 script = ExtResource("2_4211c")

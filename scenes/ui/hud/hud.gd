@@ -80,11 +80,11 @@ func _ready():
 	
 	# 连接输入管理器的动作触发信号（键盘按下时闪烁技能槽）
 	if InputManager.has_signal("action_triggered"):
-		InputManager.connect("action_triggered", _on_input_action_triggered)
+		InputManager.action_triggered.connect(_on_input_action_triggered)
 
 	# 连接技能槽点击信号（鼠标点击技能槽时转发给 EventBus）
 	for i in range(skill_slots.size()):
-		skill_slots[i].connect("slot_clicked", _on_skill_slot_clicked)
+		skill_slots[i].slot_clicked.connect(_on_skill_slot_clicked)
 
 	# 初始化技能槽图标（兼容 Player 已就绪和尚未就绪两种时序）
 	if EventBus.player_ready.is_connected(_on_player_ready):

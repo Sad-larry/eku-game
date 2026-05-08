@@ -20,7 +20,7 @@ func _process(_delta: float) -> void:
 		_collect_sortable(group, items)
 	
 	 # 按 Y 坐标降序排列（Y越大越靠前）
-	items.sort_custom(func(a, b): return a.global_position.y < b.global_position.y)
+	items.sort_custom(_compare_y)
 	
 	# 分配 z_index，确保按序绘制
 	for i in items.size():
@@ -31,3 +31,7 @@ func _collect_sortable(node: Node2D, output: Array[Node2D]) -> void:
 	for child in node.get_children():
 		if child is CanvasItem:
 			output.append(child)
+
+## 功能：将当前节点的所有子节点按全局 Y 坐标从小到大排序
+static func _compare_y(a: Node2D, b: Node2D) -> bool:
+	return a.global_position.y < b.global_position.y

@@ -1,23 +1,35 @@
 # ==============================================================================
 #   cooldown_state.gd
-#   功能：敌人攻击冷却状态，攻击后进入等待时间，冷却结束后切换回追击状态。
+#   功能：敌人攻击冷却状态，在攻击完成后等待冷却时间结束，
+#        然后根据玩家是否在检测范围内切换回追击或待机状态。
 # ==============================================================================
 extends EnemyState
 class_name EnemyCooldownState
 
 # ========================== 内部变量模块 ==========================
 ## 冷却剩余时间（秒）
-var _timer: float = 0.0
+var _cooldown_remaining: float = 0.0
 
 # ========================== 状态生命周期模块 ==========================
-## 功能：进入冷却状态时，初始化计时器为敌人的攻击冷却时长
-## 说明：需要 Enemy 类中存在 attack_cooldown 属性
 func enter() -> void:
-	_timer = _enemy.attack_cooldown
+	super()
+	get_anim().play_state("idle")
+	
+	_cooldown_remaining = _enemy.stats_resource.attack_cooldown
 
-## 功能：每帧更新，倒计时冷却时间，归零时切换回追击状态
-## 参数：_delta (float) - 帧间隔时间（秒）
-func update(_delta: float) -> void:
-	_timer -= _delta
-	if _timer <= 0.0:
-		state_machine.change_to("chase")
+func exit() -> void:
+	super()
+	_cooldown_remaining = 0.0
+
+func update(delta: float) -> void:
+	if get_tree() and get_tree().paused:
+		return
+	_cooldown_remaining -= delta
+	if _cooldown_remaining > 0.0:
+		return
+	
+	# 冷却结束，根据检测状态切换
+	if _enemy.player_detected:
+		state_machine.change_to("move")
+	else:
+		state_machine.change_to("idle")

@@ -45,8 +45,8 @@ func return_chunk(layer: TileMapLayer) -> void:
 
 	# 断开所有信号连接
 	if layer.is_inside_tree():
-		layer.remove_from_tree()
-
+		layer.get_parent().remove_child(layer)
+		
 	# 重置变换
 	layer.position = Vector2.ZERO
 	layer.scale = Vector2.ONE

@@ -152,9 +152,7 @@ func _load_chunks_around(center: Vector2i) -> void:
 	
 	# 3. 按等距深度 (cx + cy) 升序排列
 	#    深度值小的（更远）先加载/插入场景树，确保渲染在更后面
-	to_load.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
-		return (a.x + a.y) < (b.x + b.y)
-	)
+	to_load.sort_custom(_compare_xy)
 	
 	# 4. 卸载超出范围的区块
 	var to_unload: Array[String] = []
@@ -270,6 +268,8 @@ static func _floor_div(a: int, b: int) -> int:
 func _make_chunk_seed(cx: int, cy: int) -> int:
 	return hash(cx * 73856093 ^ cy * 19349663 ^ world_seed * 83492791)
 
+static func _compare_xy(a: Vector2i, b: Vector2i) -> bool:
+	return (a.x + a.y) < (b.x + b.y)
 # ========================== 公共 API 模块 ==========================
 ## 功能：强制重新加载所有区块（如切换生成器后调用）
 func reload_all() -> void:

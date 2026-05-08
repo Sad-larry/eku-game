@@ -16,17 +16,22 @@ var _enemy: Enemy
 func setup(e: Enemy) -> void:
 	_enemy = e
 
-## 功能：播放敌人动画（委托给 Enemy.play_anim 方法）
-## 参数：anim_name (String) - 动画名称（如 "idle"、"run"、"attack"）
-## 说明：若 _enemy 有效且存在 play_anim 方法，则调用之
-func play_animation(anim_name: String) -> void:
-	if _enemy and _enemy.has_method("play_anim"):
-		_enemy.play_anim(anim_name)
+## 功能：获取敌人的动画控制器组件
+## 返回值：EnemyAnimationController - 动画控制器实例
+func get_anim() -> EnemyAnimationController:
+	return _enemy.anim_controller
+	
+## 功能：获取敌人的移动组件
+## 返回值：EnemyMovementComponent - 移动组件实例
+func get_movement() -> EnemyMovementComponent:
+	return _enemy.movement_component
 
 ## 功能：判断玩家是否在指定范围内（占位实现）
 ## 参数：_range_val (float) - 检测半径范围（像素）
 ## 返回值：bool - 是否存在玩家且在范围内（当前返回 false，待子类或后续实现）
-## TODO: 实际实现需要获取玩家坐标并与敌人自身坐标进行距离计算
-func is_player_in_range(_range_val: float) -> bool:
-	# 伪代码占位，具体逻辑需在各状态子类中实现或在此处统一实现
-	return false
+func is_player_in_range(range_val: float) -> bool:
+	var target: Node2D = _enemy.get_target()
+	if target == null:
+		return false
+	var dist: float = _enemy.global_position.distance_to(target.global_position)
+	return dist <= range_val

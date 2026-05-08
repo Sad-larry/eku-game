@@ -7,12 +7,30 @@
 extends StateMachine
 class_name PlayerStateMachine
 
-# 注意：当前文件仅为类型声明占位，实际状态机的核心逻辑（状态注册、切换、更新）
-# 由通用的 StateMachine 基类提供。玩家状态机的具体使用方式：
-#
-# 1. 在 Player._init_state_machine() 中创建各状态实例并通过 add_state() 注册
-# 2. 调用 change_to() 切换初始状态
-# 3. 通过 send_event() 向当前状态发送事件
-#
-# 若后续需要扩展玩家特有的状态机逻辑（如跳跃状态管理、连招队列等），
-# 可在此类中添加相应方法。
+# ========================== 变量定义模块 ==========================
+## 玩家实例引用（通过 init_states 注入）
+var player: Player = null
+
+# ========================== 公共 API 模块 ==========================
+## 功能：初始化状态机，创建所有状态并注册，初始切换至待机状态
+## 参数：p (Player) - 玩家实体实例
+func init_states(p: Player) -> void:
+	player = p
+	entity_name = "Player(%s)" % player.name
+	
+	# 创建所有状态实例并注册到状态机
+	var states = {
+		"idle":     PlayerIdleState.new(),
+		"move":     PlayerMoveState.new(),
+		"attack":   PlayerAttackState.new(),
+		"hurt":     PlayerHurtState.new(),
+		"dead":     PlayerDeadState.new(),
+		"recovery": PlayerRecoveryState.new(),
+		"skill":    PlayerSkillState.new()
+	}
+	for state_name in states:
+		states[state_name].setup(player)
+		add_state(state_name, states[state_name])
+	
+	# 启动状态机，初始状态为待机
+	change_to("idle")

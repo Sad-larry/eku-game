@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://br2dueqw0003l"]
 
-[ext_resource type="Script" uid="uid://7ehdie65bttm" path="res://prefabs/ui/heal_bar/heal_bar.gd" id="1_3t3un"]
+[ext_resource type="Script" uid="uid://7ehdie65bttm" path="res://prefabs/ui/heal_bar/health_bar.gd" id="1_453nw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3t3un"]
 bg_color = Color(0.4745748, 0.6361257, 0.64089817, 1)
@@ -8,7 +8,7 @@ bg_color = Color(0.4745748, 0.6361257, 0.64089817, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n0h8n"]
 bg_color = Color(0.97167903, 0.3851414, 0.23140523, 1)
 
-[node name="HealBar" type="Control" unique_id=1550863263]
+[node name="HealthBar" type="Control" unique_id=1550863263]
 custom_minimum_size = Vector2(96, 10)
 layout_mode = 3
 anchors_preset = 15
@@ -18,7 +18,7 @@ offset_right = -1184.0
 offset_bottom = -710.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_3t3un")
+script = ExtResource("1_453nw")
 
 [node name="DelayBar" type="ProgressBar" parent="." unique_id=482399216]
 layout_mode = 1

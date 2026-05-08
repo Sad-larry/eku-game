@@ -17,7 +17,7 @@ var _timer: float = 0.0
 ## 功能：进入受击状态时初始化计时器并播放受击动画
 func enter() -> void:
 	_timer = _hurt_duration
-	_player.anim_controller.play_state("hurt")
+	get_anim().play_state("hurt")
 
 ## 功能：每物理帧更新，倒计时硬直时间，结束后切换回待机状态
 ## 参数：delta (float) - 物理帧间隔时间（秒）

@@ -32,14 +32,14 @@ var _parent: CharacterBody2D = null
 # ========================== 常量定义模块 ==========================
 ## 8方向预设向量（顺序：右、右下、下、左下、左、左上、上、右上）
 const EIGHT_DIRECTIONS: Array[Vector2] = [
-	Vector2.RIGHT,          # 0°   → 右
-	Vector2(1, 1),          # 45°  → 右下
-	Vector2.DOWN,           # 90°  → 下
-	Vector2(1, -1),         # 135° → 右上
-	Vector2.LEFT,           # 180° → 左
-	Vector2(-1, -1),        # 225° → 左上
-	Vector2.UP,             # 270° → 上
-	Vector2(-1, 1)          # 315° → 左下
+	Vector2.RIGHT,          # 0°   -> 右
+	Vector2(1, 1),          # 45°  -> 右下
+	Vector2.DOWN,           # 90°  -> 下
+	Vector2(1, -1),         # 315° -> 右上
+	Vector2.LEFT,           # 180° -> 左
+	Vector2(-1, -1),        # 225° -> 左上
+	Vector2.UP,             # 270° -> 上
+	Vector2(-1, 1)          # 135° -> 左下
 ]
 
 # ========================== 生命周期模块 ==========================

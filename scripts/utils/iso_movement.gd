@@ -11,10 +11,10 @@ class_name IsoMovement
 ## 参数：input (Vector2) - 原始输入向量（x: 左负右正，y: 上负下正）
 ## 返回值：Vector2 - 等距坐标系下的单位移动方向向量
 ## 映射规则（标准 2:1 等距）：
-##   - 右（+x）   → 右下方向（iso_x = +1, iso_y = +0.5）
-##   - 左（-x）   → 左上方向（iso_x = -1, iso_y = -0.5）
-##   - 上（-y）   → 右上方向（iso_x = +1, iso_y = -0.5）
-##   - 下（+y）   → 左下方向（iso_x = -1, iso_y = +0.5）
+##   - 右（+x）   -> 右下方向（iso_x = +1, iso_y = +0.5）
+##   - 左（-x）   -> 左上方向（iso_x = -1, iso_y = -0.5）
+##   - 上（-y）   -> 右上方向（iso_x = +1, iso_y = -0.5）
+##   - 下（+y）   -> 左下方向（iso_x = -1, iso_y = +0.5）
 ## 公式推导：
 ##   iso_x = input.x - input.y
 ##   iso_y = (input.x + input.y) * 0.5

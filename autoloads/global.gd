@@ -17,11 +17,9 @@ const MAIN_MENU_SCENE_PATH: String = "res://scenes/main/main_menu.tscn"
 ## 游戏大厅场景路径
 const GAME_LOBBY_SCENE_PATH: String = "res://scenes/lobby/lobby_world.tscn"
 
-## 第一关房间场景路径
-const ROOM_01_SCENE_PATH: String = "res://scenes/game/rooms/room_01.tscn"
+## 游戏场景路径
+const GAME_WORLD_SCENE_PATH: String = "res://scenes/game/game_world.tscn"
 
-## 第二关房间场景路径
-const ROOM_02_SCENE_PATH: String = "res://scenes/game/rooms/room_02.tscn"
 
 # ========================== 运行时实体引用模块 ==========================
 ## 全局玩家对象引用

@@ -19,17 +19,17 @@ func enter() -> void:
 func on_event(event_name: String) -> void:
 	match event_name:
 		"move":
-			# 移动输入 → 切换到移动状态
+			# 移动输入 -> 切换到移动状态
 			state_machine.change_to("move")
 		"attack":
-			# 攻击输入 → 切换到攻击状态
+			# 攻击输入 -> 切换到攻击状态
 			state_machine.change_to("attack")
 		"hurt":
-			# 受击事件 → 切换到受击状态
+			# 受击事件 -> 切换到受击状态
 			state_machine.change_to("hurt")
 		"dead":
-			# 死亡事件 → 切换到死亡状态
+			# 死亡事件 -> 切换到死亡状态
 			state_machine.change_to("dead")
 		"skill_1", "skill_2", "skill_3", "skill_4":
-			# 技能输入 → 切换到技能状态（通过辅助方法）
+			# 技能输入 -> 切换到技能状态（通过辅助方法）
 			_transition_to_skill(event_name)

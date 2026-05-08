@@ -196,10 +196,6 @@ func deactivate_room() -> void:
 	_clear_drops()
 	state = RoomState.INACTIVE
 
-## 功能：房间出口碰撞体进入回调（预留用于游戏结束判定）
-## 参数：_body (Node2D) - 进入的实体
-func _on_end_body_entered(_body: Node2D) -> void:
-	UIManager.open_game_over()
 
 ## 功能：判断房间是否已完成
 ## 返回值：bool - true 表示已完成

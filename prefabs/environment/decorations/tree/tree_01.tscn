@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://huk10bs2vmpa"]
+
+[ext_resource type="PackedScene" uid="uid://5etvsavf0ypo" path="res://prefabs/environment/decorations/tree/base_tree.tscn" id="1_eqac4"]
+[ext_resource type="Texture2D" uid="uid://bii1ahy6vr4ue" path="res://assets/sprites/map/spr_tree_1.png" id="2_ux6gf"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7ykms"]
+radius = 37.215588
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_a771r"]
+radius = 6.0
+
+[node name="Tree01" unique_id=938608496 instance=ExtResource("1_eqac4")]
+
+[node name="Sprite2D" parent="." index="0" unique_id=500862827]
+texture = ExtResource("2_ux6gf")
+
+[node name="CollisionShape2D" parent="Sprite2D/OccluderComponent" parent_id_path=PackedInt32Array(907143281) index="0" unique_id=1815956841]
+shape = SubResource("CircleShape2D_7ykms")
+
+[node name="CollisionShape2D" parent="." index="1" unique_id=1666267459]
+shape = SubResource("CapsuleShape2D_a771r")

@@ -66,7 +66,7 @@ func _on_body_entered(body: Node2D) -> void:
 
 ## 功能：生命周期超时回调，执行淡出动画后销毁
 func _on_timeout() -> void:
-	# 淡出动画（透明度 1 → 0，耗时 0.5 秒）
+	# 淡出动画（透明度 1 -> 0，耗时 0.5 秒）
 	var tween: Tween = create_tween()
 	tween.tween_property(self, "modulate:a", 0.0, 0.5)
 	tween.tween_callback(queue_free)

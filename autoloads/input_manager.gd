@@ -29,7 +29,7 @@ const DEBUG_MODE: bool = false
 ## 输入缓冲时长（毫秒），超过此时长的缓冲输入将失效
 const INPUT_BUFFER_DURATION_MS: int = 150
 
-## 按键名称 → Godot Key 枚举映射表（用于动态注册 InputMap）
+## 按键名称 -> Godot Key 枚举映射表（用于动态注册 InputMap）
 const KEY_NAME_MAP: Dictionary = {
 	"A": KEY_A, "B": KEY_B, "C": KEY_C, "D": KEY_D,
 	"E": KEY_E, "F": KEY_F, "P": KEY_P, "Q": KEY_Q,
@@ -78,10 +78,13 @@ func _ready() -> void:
 	if DEBUG_MODE:
 		print("InputManager: 初始化完成，已注册 ", _action_names.size(), " 个可检测动作")
 
+## 功能：接收 GUI 未消费的输入事件，检测游戏动作（天然解决 UI 贯穿问题）
+func _unhandled_input(event: InputEvent) -> void:
+	_handle_pause_input()
+	_detect_actions(event)
+
 ## 功能：每帧更新（处理暂停输入、动作检测、移动向量检测、缓冲过期清理）
 func _process(_delta: float) -> void:
-	_handle_pause_input()
-	_detect_actions()
 	_emit_movement_vector()
 	_clean_expired_buffer()
 
@@ -163,11 +166,11 @@ func _handle_pause_input() -> void:
 		print("[InputManager] pause_requested 信号发出")
 
 ## 功能：遍历动作名列表，检测按键按下后自动缓冲并发射 action_triggered 信号
-func _detect_actions() -> void:
+func _detect_actions(event: InputEvent) -> void:
 	if input_locked:
 		return
 	for action_name: String in _action_names:
-		if Input.is_action_just_pressed(action_name):
+		if event.is_action_pressed(action_name):
 			var config: Dictionary = INPUT_ACTIONS[action_name]
 			# 若该动作支持输入缓冲，则存入缓冲队列
 			if config["bufferable"]:

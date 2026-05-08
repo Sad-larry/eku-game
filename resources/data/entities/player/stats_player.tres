@@ -1,16 +1,15 @@
-[gd_resource type="Resource" script_class="UnitStats" format=3 uid="uid://777gcwve8r0e"]
+[gd_resource type="Resource" script_class="PlayerStats" format=3 uid="uid://777gcwve8r0e"]
 
-[ext_resource type="Script" uid="uid://cc78t6x0o34on" path="res://resources/data/entities/unit_stats.gd" id="1_foemc"]
+[ext_resource type="Script" uid="uid://cc78t6x0o34on" path="res://resources/data/entities/player/player_stats.gd" id="1_foemc"]
 [ext_resource type="Texture2D" uid="uid://dijqgty4hucmm" path="res://icon.svg" id="1_yteja"]
 
 [resource]
 script = ExtResource("1_foemc")
-name = "Eku"
-icon = ExtResource("1_yteja")
-speed = 200
-max_health = 10
 max_energy = 40
 energy_regen = 2.0
-base_attack_damage = 5.0
 attack_speed = 10.0
+name = "Eku"
+icon = ExtResource("1_yteja")
+max_health = 100
+speed = 200
 metadata/_custom_type_script = "uid://cc78t6x0o34on"

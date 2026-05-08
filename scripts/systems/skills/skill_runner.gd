@@ -26,6 +26,9 @@ var _calculator = DamageCalculator.new()
 ## 剩余冷却时间（秒），0 表示无冷却
 var _cooldown_remaining: float = 0.0
 
+## 节流计时时间
+var _cooldown_emit_timer: float = 0.0
+
 # ========================== 生命周期模块 ==========================
 ## 功能：初始化技能运行器
 ## 参数：p_skill_data (SkillEffect) - 技能数据资源；p_caster (Node2D) - 施法者节点
@@ -44,12 +47,13 @@ func _process(delta: float) -> void:
 		return
 	if _cooldown_remaining > 0.0:
 		_cooldown_remaining -= delta
+		_cooldown_emit_timer += delta
+		if _cooldown_emit_timer >= 0.1:
+			_cooldown_emit_timer = 0.0
+			cooldown_updated.emit(_cooldown_remaining, skill_data.cooldown)
 		if _cooldown_remaining <= 0.0:
 			_cooldown_remaining = 0.0
 			cooldown_finished.emit()
-		# 每帧发射信号可能会过于频繁，保持与原 Timer 相似的 0.1 秒间隔
-		# 为了性能，可以用一个局部变量累计时间再发射，这里为了简单仍每帧发射
-		cooldown_updated.emit(_cooldown_remaining, skill_data.cooldown)
 		
 # ========================== 冷却管理模块 ==========================
 ## 功能：检查技能是否就绪（未处于冷却中）

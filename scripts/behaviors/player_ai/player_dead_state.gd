@@ -11,7 +11,7 @@ class_name PlayerDeadState
 func enter() -> void:
 	# 调用父类 enter 方法（设置 _is_active = true）
 	super()
-	_player.anim_controller.play_state("dead")
+	get_anim().play_state("dead")
 	_player.velocity = Vector2.ZERO
 	
 	# 禁用玩家的处理函数（可选，防止死亡后仍有物理响应）
@@ -19,7 +19,7 @@ func enter() -> void:
 	_player.set_physics_process(false)
 	
 	# 等待死亡动画播放完成（替代硬编码计时器）
-	var finished_state = await _player.anim_controller.animation_finished
+	var finished_state = await get_anim().anim_finished
 	
 	# 安全检查：确保等待到的确实是 "dead" 状态的动画信号，且当前状态仍处于激活状态
 	if finished_state != "dead" or not _is_active:

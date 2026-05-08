@@ -91,7 +91,7 @@ func cancel_loading() -> void:
 func _start_async_load() -> void:
 	var err := ResourceLoader.load_threaded_request(_target_path)
 	if err != OK:
-		_abort("SceneLoader: 无法启动异步加载 [%s] → 错误码 %d" % [_target_path, err])
+		_abort("SceneLoader: 无法启动异步加载 [%s] -> 错误码 %d" % [_target_path, err])
 		return
 
 	set_process(true)
@@ -165,7 +165,7 @@ func _on_load_complete() -> void:
 	_target_path = ""
 	loading_completed.emit()
 	if DEBUG_MODE:
-		print("[SceneLoader] 场景加载完成 → ", get_tree().current_scene.name)
+		print("[SceneLoader] 场景加载完成 -> ", get_tree().current_scene.name)
 
 ## 功能：加载失败时的错误处理与清理
 ## 参数：error_msg (String) - 错误描述信息

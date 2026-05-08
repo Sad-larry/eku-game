@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://5etvsavf0ypo"]
+
+[ext_resource type="Script" uid="uid://be3cypj0ayn5j" path="res://scripts/components/occluder_component.gd" id="2_1xrph"]
+
+[node name="BaseTree" type="StaticBody2D" unique_id=938608496]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=500862827]
+position = Vector2(0, -40)
+
+[node name="OccluderComponent" type="Area2D" parent="Sprite2D" unique_id=907143281]
+script = ExtResource("2_1xrph")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sprite2D/OccluderComponent" unique_id=1815956841]
+position = Vector2(0, -8)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1666267459]
+rotation = 1.5707964

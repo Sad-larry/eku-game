@@ -5,23 +5,22 @@
 extends EnemyState
 class_name EnemyHurtState
 
-# ========================== 内部变量模块 ==========================
-## 受击硬直剩余时间（秒）
-var _timer: float = 0.0
-
 # ========================== 状态生命周期模块 ==========================
 ## 功能：进入受击状态时播放受击动画，并初始化硬直计时器
 ## 说明：需要 Enemy 类中存在 hurt_duration 属性（受击硬直时长）
 func enter() -> void:
-	play_animation("hurt")
-	_timer = _enemy.hurt_duration
+	# 调用父类 enter 方法（设置 _is_active = true）
+	super()
+	get_anim().play_state("hurt")
+	# 等待死亡动画播放完成（替代硬编码计时器）
+	var finished_state = await get_anim().anim_finished
+	# 安全检查：确保等待到的确实是 "hurt" 状态的动画信号，且当前状态仍处于激活状态
+	if finished_state != "hurt" or not _is_active:
+		return
+	state_machine.change_to("idle")
 
-## 功能：每帧更新，倒计时硬直时间，结束后根据玩家是否在索敌范围内切换状态
-## 参数：_delta (float) - 帧间隔时间（秒）
-func update(_delta: float) -> void:
-	_timer -= _delta
-	if _timer <= 0.0:
-		# 根据玩家是否在索敌范围内，切换到追击或待机状态
-		state_machine.change_to(
-			"chase" if is_player_in_range(_enemy.detection_range) else "idle"
-		)
+# ========================== 事件处理模块 ==========================
+## 功能：受击状态不可被其他事件打断
+## 参数：_event_name (String) - 事件名称（未使用）
+func on_event(_event_name: String) -> void:
+	pass  # 受击状态不可打断

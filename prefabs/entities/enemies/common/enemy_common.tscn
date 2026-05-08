@@ -1,5 +1,0 @@
-[gd_scene format=3 uid="uid://ceolu6sw8qgju"]
-
-[ext_resource type="PackedScene" uid="uid://dugie7jwjpd23" path="res://prefabs/entities/enemies/enemy.tscn" id="1_ybiwj"]
-
-[node name="EneryCommon" unique_id=1067563861 instance=ExtResource("1_ybiwj")]

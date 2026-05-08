@@ -64,5 +64,5 @@ enum EffectAttachType {
 @export var effect_attach_type: EffectAttachType = EffectAttachType.CASTER
 
 ## 技能动画基础名称（用于构建完整动画名：skill_{anim_base_name}_{direction}）
-## 例如：anim_base_name = "slash" → 动画名可能为 "skill_slash_down"、"skill_slash_up" 等
+## 例如：anim_base_name = "slash" -> 动画名可能为 "skill_slash_down"、"skill_slash_up" 等
 @export var anim_base_name: String = ""

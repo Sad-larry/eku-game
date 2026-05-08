@@ -13,8 +13,8 @@ var _attack_timer: float = 0.0
 # ========================== 状态生命周期模块 ==========================
 ## 功能：进入攻击状态时触发攻击逻辑、播放动画并初始化计时器
 func enter() -> void:
-	_player.anim_controller.play_state("attack")
-	_player.movement_component.stop_immediately()
+	get_anim().play_state("attack")
+	get_movement().stop_immediately()
 	_player.attack_component.start_attack("light_attack", 1.0)
 	_attack_timer = 1.0
 

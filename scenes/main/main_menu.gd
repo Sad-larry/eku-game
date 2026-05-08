@@ -31,7 +31,7 @@ func _ready() -> void:
 ## 说明：此处的测试代码会立即自动加载游戏场景，实际项目中应移除或根据需求调整。
 func _process(_delta: float) -> void:
 	# 测试代码：自动加载游戏场景（仅执行一次）
-	if not is_loading:
+	if not is_loading and Global.DEBUG_MODE:
 		_load_game_scene()
 		is_loading = true
 

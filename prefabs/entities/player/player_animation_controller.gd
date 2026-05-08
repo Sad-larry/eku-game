@@ -9,7 +9,7 @@ class_name PlayerAnimationController
 # ========================== 信号声明模块 ==========================
 ## 触发时机：动画播放完成时触发（用于状态机感知动画结束）
 ## 参数：state_name (String) - 动画对应的状态名称（如 "dead"、"attack"）
-signal animation_finished(state_name: String)
+signal anim_finished(state_name: String)
 
 # ========================== 节点引用模块 ==========================
 ## 动画树节点（需在场景中通过 %AnimationTree 唯一命名）
@@ -105,7 +105,7 @@ func play_state(state: String) -> void:
 	playback.travel(state)
 
 # ========================== 信号回调模块 ==========================
-## 功能：动画完成时的回调（解析动画名称并发射 animation_finished 信号）
+## 功能：动画完成时的回调（解析动画名称并发射 anim_finished 信号）
 ## 参数：anim_name (StringName) - 完成的动画名称
 ## 命名约定：各状态的动画文件命名格式为 "<state>_<direction>"
 ## 示例：dead_down、dead_up、idle_down、move_right、attack_left、hurt_up、skill_slash_down
@@ -115,5 +115,5 @@ func _on_anim_finished(anim_name: StringName) -> void:
 	for prefix in ["dead", "idle_", "move_", "attack_", "hurt_", "skill_"]:
 		if name_str.begins_with(prefix):
 			# 去掉末尾的下划线，取出状态名（如 "dead"、"idle"）
-			animation_finished.emit(prefix.trim_suffix("_"))
+			anim_finished.emit(prefix.trim_suffix("_"))
 			break

@@ -31,16 +31,16 @@ func enter() -> void:
 	# 使用技能数据驱动动画播放（根据玩家最后一次移动方向确定朝向）
 	var dir = _player.last_direction
 	# 1. 使用直接播放方式播放技能动画（技能基础名称 + 方向）
-	_player.anim_controller.play_skill_directly(_skill_data.anim_base_name, dir)
+	get_anim().play_skill_directly(_skill_data.anim_base_name, dir)
 	# 2. 立即停止移动
-	_player.movement_component.stop_immediately()
+	get_movement().stop_immediately()
 	# 3. 初始化主动画计时器（从技能数据获取时长）
 	_active_timer = _skill_data.skill_duration
 
 ## 功能：退出技能状态时恢复 AnimationTree 控制权
 func exit() -> void:
 	super()
-	_player.anim_controller.restore_anim_tree()
+	get_anim().restore_anim_tree()
 
 ## 功能：每帧更新，倒计时主动画时长，结束后切换至后摇状态
 ## 参数：delta (float) - 帧间隔时间（秒）
@@ -54,8 +54,8 @@ func update(delta: float) -> void:
 	_active_timer -= delta
 	if _active_timer <= 0.0:
 		# 先恢复 AnimationTree 再切换状态，确保后摇能正确控制动画
-		_player.anim_controller.restore_anim_tree()
-		# 主动画结束 → 进入后摇状态
+		get_anim().restore_anim_tree()
+		# 主动画结束 -> 进入后摇状态
 		var recovery_state = state_machine.get_state("recovery") as PlayerRecoveryState
 		if recovery_state:
 			# 将当前技能数据传递给后摇状态（用于读取后摇时长）
@@ -110,13 +110,15 @@ func _execute_skill() -> bool:
 		# 能量不足，技能无法释放，回到待机状态
 		print("能量不足，需要: ", _skill_data.energy_cost)
 		return false
+	var pre_energy = energy.current_energy
 	# 消耗能量
 	energy.consume(_skill_data.energy_cost)
+	var actual_cost_energy = pre_energy - energy.current_energy
 	# 执行技能，不立即开始冷却
 	var success = runner.execute(_player.get_target(), false)
 	if not success:
-		# 执行失败 → 退还能量
-		energy.add(_skill_data.energy_cost)   # 需在 EnergyComponent 实现 add()
+		# 执行失败 -> 退还能量,仅退还实际消耗的部分
+		energy.add(actual_cost_energy)
 		print("技能执行失败，已退还能量")
 		return false
 	return true

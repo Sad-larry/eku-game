@@ -27,6 +27,9 @@ const ISO_INVERSE: Transform2D = Transform2D(
 	Vector2.ZERO          # 原点偏移
 )
 
+## 跟随速度，值越大越快
+const FOLLOW_SPEED: float = 8.0
+
 # ========================== 导出变量（可在编辑器调整） ==========================
 ## 最小缩放倍数（值越大画面越远，最小不能 <=0）
 @export var min_zoom: float = 0.5
@@ -48,10 +51,10 @@ func _ready() -> void:
 
 ## 功能：每帧更新摄像机位置，跟随玩家
 ## 参数：_delta (float) - 帧间隔时间（未直接使用）
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	# 玩家存在时，让摄像机位置实时跟随玩家
 	if is_instance_valid(Global.player):
-		global_position = lerp(global_position, Global.player.global_position, 0.8)
+		global_position = lerp(global_position, Global.player.global_position, 1.0 - exp(-FOLLOW_SPEED * delta))
 
 # ========================== 输入处理模块（新增） ==========================
 func _input(event: InputEvent) -> void:

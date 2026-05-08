@@ -1,5 +1,5 @@
 # ==============================================================================
-#   notification_manager.gd
+#   notification_msgbox.gd
 #   功能：通知消息浮窗控件，支持淡入淡出动画显示文本消息，显示指定时长后自动淡出并销毁自身。
 #        通常由 UIManager 动态实例化并添加到场景中。
 # ==============================================================================
@@ -26,14 +26,14 @@ func show_message(text: String, duration: float = 2.0) -> void:
 	label.text = text
 	panel.visible = true
 	
-	# 淡入动画（透明度 0 → 1，耗时 0.2 秒）
+	# 淡入动画（透明度 0 -> 1，耗时 0.2 秒）
 	var tween = create_tween()
 	tween.tween_property(panel, "modulate:a", 1.0, 0.2)
 	
 	# 等待指定显示时长
 	await get_tree().create_timer(duration).timeout
 	
-	# 淡出动画（透明度 1 → 0，耗时 0.2 秒）
+	# 淡出动画（透明度 1 -> 0，耗时 0.2 秒）
 	tween = create_tween()
 	tween.tween_property(panel, "modulate:a", 0.0, 0.2)
 	await tween.finished

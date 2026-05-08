@@ -12,37 +12,31 @@ class_name Player
 # ========================== 节点引用模块 ==========================
 ## 动画树节点（用于驱动混合动画）
 @onready var anim_tree: AnimationTree = $AnimationTree
-
 ## 动画状态机播放控制器（用于控制移动状态机）
 @onready var move_state_machine: AnimationNodeStateMachinePlayback = anim_tree.get("parameters/MoveStateMachine/playback")
-
 ## 攻击组件（管理连击窗口、判定帧等）
 @onready var attack_component: AttackComponent = %AttackComponent
-
 ## 生命值组件（位于 StatsComponents 子节点下）
 @onready var health_component: HealthComponent = $StatsComponents/HealthComponent
-
 ## 能量值组件（位于 StatsComponents 子节点下）
 @onready var energy_component: EnergyComponent = $StatsComponents/EnergyComponent
-
 ## 攻击判定框组件（用于主动攻击命中敌人）
 @onready var hitbox_component: HitboxComponent = $StatsComponents/HitboxComponent
-
 ## 玩家动画控制器（处理移动方向与动画的参数传递）
 @onready var anim_controller: PlayerAnimationController = $PlayerAnimationController
-
 ## 玩家移动组件（处理速度、加速度、移动逻辑）
 @onready var movement_component: PlayerMovementComponent = $PlayerMovementComponent
-
-## 玩家状态机（管理 idle、move、attack、hurt、dead、recovery、skill 等状态）
+## 玩家状态机（管理玩家等状态）
 @onready var player_state_machine: PlayerStateMachine = $PlayerStateMachine
-
 ## 目标检测区域（用于技能/攻击时寻找最近的敌人）
 @onready var target_detector: Area2D = %TargetDetector
 
 # ========================== 变量定义模块 ==========================
 ## 最后一次移动方向（用于动画朝向、攻击朝向等）
 var last_direction: Vector2 = Vector2.DOWN
+
+## 输入是否被禁用（用于对话框等场景，阻断信号驱动的输入）
+var input_disabled: bool = false
 
 ## 面朝方向（由 WASD 最后按下方向决定，无输入时保持最后朝向）
 var _facing_direction: Vector2 = Vector2.DOWN
@@ -80,9 +74,9 @@ func _ready():
 	Global.player = self
 	
 	# 连接生命值组件信号
-	health_component.connect("health_updated", _on_health_forward_to_bus)
-	health_component.connect("unit_died", _on_unit_died)
-	energy_component.connect("energy_changed", _on_energy_forward_to_bus)
+	health_component.health_updated.connect(_on_health_forward_to_bus)
+	health_component.unit_died.connect(_on_unit_died)
+	energy_component.energy_changed.connect( _on_energy_forward_to_bus)
 	
 	# 初始化生命值组件（必须在使用 health_component.current_health 之前调用）
 	health_component.setup(stats_resource)
@@ -93,7 +87,7 @@ func _ready():
 	InputManager.movement_vector_changed.connect(_on_movement_changed)
 	
 	# 初始化状态机
-	_init_state_machine()
+	player_state_machine.init_states(self)
 	# 初始化技能槽
 	_init_skill_runner()
 	
@@ -134,12 +128,16 @@ func _physics_process(delta: float):
 ## TODO: 这里将所有的输入事件都派发给状态机，可是还有其他输入事件如 ui_confirm_q、ui_cancel_e 等状态机是处理不了的
 ##       后续可根据输入动作分类，仅将战斗/移动相关动作转发给状态机
 func _on_input_action(action: String):
+	if input_disabled:
+		return
 	# 将所有输入事件派发给状态机，由当前状态决定是否响应
 	player_state_machine.send_event(action)
 
 ## 功能：移动向量变化时的回调（由 InputManager.movement_vector_changed 信号触发）
 ## 参数：dir (Vector2) - 当前移动方向（单位向量）
 func _on_movement_changed(dir: Vector2) -> void:
+	if input_disabled:
+		return
 	if dir != Vector2.ZERO:
 		_facing_direction = dir.normalized()
 		player_state_machine.send_event("move")
@@ -147,39 +145,17 @@ func _on_movement_changed(dir: Vector2) -> void:
 		player_state_machine.send_event("idle")
 
 # ========================== 状态机初始化模块 ==========================
-## 功能：创建技能运行器池并注册所有玩家状态
-func _init_state_machine() -> void:
-	# 创建持久化 SkillRunner 池
-	for slot_data in _skill_slot_data:
-		var runner = SkillRunner.new(slot_data, self)
-		add_child(runner)  # 加入场景树
-		_skill_runners[slot_data.id] = runner
-	
-	# 创建所有状态实例并注册到状态机
-	var states = {
-		"idle":     PlayerIdleState.new(),
-		"move":     PlayerMoveState.new(),
-		"attack":   PlayerAttackState.new(),
-		"hurt":     PlayerHurtState.new(),
-		"dead":     PlayerDeadState.new(),
-		"recovery": PlayerRecoveryState.new(),
-		"skill":    PlayerSkillState.new()
-	}
-	for state_name in states:
-		states[state_name].setup(self)
-		player_state_machine.add_state(state_name, states[state_name])
-	
-	# 启动状态机，初始状态为待机
-	player_state_machine.change_to("idle")
-	
 ## 连接所有 SkillRunner 的冷却信号，转发到 EventBus（供 UI 更新）
 func _init_skill_runner() -> void:
-	for i in range(_skill_slot_data.size()):
-		var data: SkillEffect = _skill_slot_data[i]
-		var runner: SkillRunner = _skill_runners.get(data.id, null)
-		if runner:
-			runner.cooldown_updated.connect(_on_runner_cooldown_updated.bind(i))
-			runner.cooldown_finished.connect(_on_runner_cooldown_finished.bind(i))
+	# 创建持久化 SkillRunner 池
+	for slot_index in _skill_slot_data.size():
+		var slot_data := _skill_slot_data[slot_index]
+		# 创建并挂载技能执行器
+		var runner := SkillRunner.new(slot_data, self)
+		add_child(runner)
+		_skill_runners[slot_data.id] = runner
+		runner.cooldown_updated.connect(_on_runner_cooldown_updated.bind(slot_index))
+		runner.cooldown_finished.connect(_on_runner_cooldown_finished.bind(slot_index))
 	
 
 # ========================== 公共 API 模块 ==========================
@@ -230,6 +206,16 @@ func get_target() -> Node:
 
 	return nearest
 
+## 功能：玩家停止移动
+func disable_movement() -> void:
+	movement_component.stop_immediately()
+	set_physics_process(false)
+	input_disabled = true
+
+## 功能：玩家恢复移动
+func enable_movement() -> void:
+	set_physics_process(true)
+	input_disabled = false
 # ========================== 信号回调模块 ==========================
 ## 功能：受击框组件受到伤害时的回调（需手动连接 HurtboxComponent 的 damaged 信号）
 ## 参数：hitbox (HitboxComponent) - 攻击来源的判定框组件

@@ -104,14 +104,12 @@ func try_perform_buffered_attack(attack_id: String, damage_multiplier: float = 1
 	return false
 
 # ========================== 内部回调模块 ==========================
-## 功能：连携窗口计时器超时时的回调（需手动连接 Timer.timeout 信号）
-## 说明：此函数不会自动连接，请在 _ready() 或编辑器中将 ComboTimer.timeout 连接到本函数
+## 功能：连携窗口计时器超时时的回调
 func _on_combo_timer_timeout() -> void:
 	_combo_window_active = false
 	print("[AttackComponent] 连携窗口超时关闭")
 
-## 功能：判定帧计时器超时时的回调（需手动连接 Timer.timeout 信号）
-## 说明：此函数不会自动连接，请在 _ready() 或编辑器中将 HitTimer.timeout 连接到本函数
+## 功能：判定帧计时器超时时的回调
 ## TODO: 判定帧结束后自动结束攻击？根据设计，也可以让动画结束信号调用 end_attack
 ##       目前不自动 end_attack，留给外部调用决定
 func _on_hit_timer_timeout() -> void:

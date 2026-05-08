@@ -41,7 +41,7 @@ func update(delta: float) -> void:
 		return
 	_recovery_timer -= delta
 	if _recovery_timer <= 0.0:
-		# 后摇结束 → 检查输入缓冲队列
+		# 后摇结束 -> 检查输入缓冲队列
 		var next_action = InputManager.get_buffered_input()
 		if next_action:
 			# 若缓冲输入为技能动作，则切换到技能状态
@@ -52,13 +52,13 @@ func update(delta: float) -> void:
 					if runner and runner.is_ready():
 						_transition_to_skill(next_action)
 						return
-				# 冷却中或找不到 runner → 忽略缓冲，继续后续逻辑
+				# 冷却中或找不到 runner -> 忽略缓冲，继续后续逻辑
 			else:
 				# 非技能动作（如 attack）直接切换
 				state_machine.change_to(next_action)
 				return
 		
-		# 无缓冲输入 → 根据移动输入决定切换到移动或待机状态
+		# 无缓冲输入 -> 根据移动输入决定切换到移动或待机状态
 		if InputManager.get_movement_vector() != Vector2.ZERO:
 			state_machine.change_to("move")
 		else:

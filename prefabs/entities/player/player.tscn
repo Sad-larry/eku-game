@@ -13,9 +13,9 @@
 [ext_resource type="Script" uid="uid://d2rhuevbaubek" path="res://prefabs/entities/player/player_state_machine.gd" id="11_7lor6"]
 [ext_resource type="Script" uid="uid://ct0u3grlde78u" path="res://prefabs/entities/player/player_movement_component.gd" id="13_t7ebs"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_mcok7"]
-radius = 5.0
-height = 18.0
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_t7ebs"]
+radius = 3.0
+height = 14.0
 
 [sub_resource type="Animation" id="Animation_uq8qh"]
 length = 0.001
@@ -1041,8 +1041,9 @@ hframes = 6
 vframes = 24
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=978171756]
-position = Vector2(0, -4)
-shape = SubResource("CapsuleShape2D_mcok7")
+position = Vector2(0, 5)
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_t7ebs")
 
 [node name="PlayerAnimationController" type="Node2D" parent="." unique_id=1843588943]
 script = ExtResource("10_lvq1n")
@@ -1063,6 +1064,7 @@ parameters/MoveStateMachine/idle/blend_position = Vector2(-0.0071877837, 0.30303
 parameters/MoveStateMachine/move/blend_position = Vector2(0, 0)
 
 [node name="StatsComponents" type="Node2D" parent="." unique_id=1133705979]
+visible = false
 
 [node name="HitboxComponent" parent="StatsComponents" unique_id=1295885130 instance=ExtResource("5_j35ld")]
 collision_layer = 4
@@ -1100,6 +1102,7 @@ script = ExtResource("13_t7ebs")
 
 [node name="TargetDetector" type="Area2D" parent="." unique_id=1944330769]
 unique_name_in_owner = true
+visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TargetDetector" unique_id=220245288]
 position = Vector2(0, -5)

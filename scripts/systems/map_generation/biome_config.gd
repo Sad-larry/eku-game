@@ -20,7 +20,7 @@ class_name BiomeConfig
 ## 完整地面瓦在图集第 0 行的索引（无水相邻时的满铺瓦片）
 @export var ground_full_index: int = 4
 
-## 地面→水域的过渡瓦片（4 个方向，位置对应 DIR_ORDER）
+## 地面->水域的过渡瓦片（4 个方向，位置对应 DIR_ORDER）
 @export var ground_transition: Array[Vector2i] = []
 
 # ========================== 水域瓦片 ==========================
@@ -30,7 +30,7 @@ class_name BiomeConfig
 ## 完整水域瓦在图集第 1 行的索引（无草地相邻时的满铺瓦片）
 @export var water_full_index: int = 4
 
-## 水域→地面的过渡瓦片（4 个方向，位置对应 DIR_ORDER）
+## 水域->地面的过渡瓦片（4 个方向，位置对应 DIR_ORDER）
 @export var water_transition: Array[Vector2i] = []
 
 # ========================== 生成参数 ==========================

@@ -26,6 +26,10 @@ class_name HealthBar
 ## 延迟伤害条进度条节点（缓慢跟随，模拟受伤后血条渐变效果）
 @onready var delay_bar: ProgressBar = $DelayBar
 
+# ========================== 变量定义模块 ==========================
+## 延迟血条补间tween
+var _delay_tween: Tween
+
 # ========================== 生命周期模块 ==========================
 ## 功能：节点就绪时初始化血条的样式（背景、主填充、延迟填充颜色）
 func _ready() -> void:
@@ -61,8 +65,10 @@ func update_bar(current_health: int, max_health: int) -> void:
 	progress_bar.value = current_health
 	
 	# 延迟条缓慢跟随动画（0.8 秒缓动）
-	var tween = create_tween().set_ease(Tween.EASE_OUT)
-	tween.tween_property(delay_bar, "value", current_health, 0.8)
+	if _delay_tween and _delay_tween.is_valid():
+		_delay_tween.kill()
+	_delay_tween = create_tween().set_ease(Tween.EASE_OUT)
+	_delay_tween.tween_property(delay_bar, "value", current_health, 0.8)
 
 # ========================== 信号回调模块 ==========================
 ## 功能：生命值组件 health_updated 信号的回调

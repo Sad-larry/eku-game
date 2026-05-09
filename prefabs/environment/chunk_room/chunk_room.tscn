@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://cpbskr5egg7pt"]
+
+[ext_resource type="Script" uid="uid://3kahyucaupby" path="res://scripts/systems/map_runtime/chunk_room.gd" id="1_pmief"]
+[ext_resource type="TileSet" uid="uid://da0qlqx0x5l2p" path="res://resources/data/tilesets/tileset_grassland.tres" id="2_7212u"]
+[ext_resource type="Script" uid="uid://ytiyk5nfjbia" path="res://scripts/systems/map_runtime/room_transition.gd" id="3_pmoyg"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_nms8r"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hs1pu"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_y650h"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bh2tm"]
+
+[node name="ChunkRoom" type="Node2D" unique_id=40419773]
+script = ExtResource("1_pmief")
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=405751987]
+unique_name_in_owner = true
+tile_set = ExtResource("2_7212u")
+
+[node name="EventContent" type="Node2D" parent="." unique_id=701734297]
+unique_name_in_owner = true
+
+[node name="RoomTransitions" type="Node2D" parent="." unique_id=1458190313]
+unique_name_in_owner = true
+
+[node name="Exit_North" type="Area2D" parent="RoomTransitions" unique_id=2097483002]
+script = ExtResource("3_pmoyg")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RoomTransitions/Exit_North" unique_id=128756037]
+shape = SubResource("CircleShape2D_nms8r")
+
+[node name="DifficultyLabel" type="Label" parent="RoomTransitions/Exit_North" unique_id=2053945777]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="Exit_South" type="Area2D" parent="RoomTransitions" unique_id=360994536]
+script = ExtResource("3_pmoyg")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RoomTransitions/Exit_South" unique_id=218599077]
+shape = SubResource("CircleShape2D_hs1pu")
+
+[node name="DifficultyLabel" type="Label" parent="RoomTransitions/Exit_South" unique_id=2072157407]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="Exit_West" type="Area2D" parent="RoomTransitions" unique_id=1539189762]
+script = ExtResource("3_pmoyg")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RoomTransitions/Exit_West" unique_id=169238750]
+shape = SubResource("CircleShape2D_y650h")
+
+[node name="DifficultyLabel" type="Label" parent="RoomTransitions/Exit_West" unique_id=460692432]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="Exit_East" type="Area2D" parent="RoomTransitions" unique_id=1190268298]
+script = ExtResource("3_pmoyg")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RoomTransitions/Exit_East" unique_id=1146471821]
+shape = SubResource("CircleShape2D_bh2tm")
+
+[node name="DifficultyLabel" type="Label" parent="RoomTransitions/Exit_East" unique_id=788271111]
+offset_right = 40.0
+offset_bottom = 23.0

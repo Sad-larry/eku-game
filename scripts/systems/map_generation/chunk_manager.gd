@@ -114,7 +114,7 @@ func _process(delta: float) -> void:
 		return
 	_accumulated_time = 0.0
 
-	_update_chunks()
+	#_update_chunks()
 
 # ========================== 核心更新逻辑模块 ==========================
 ## 功能：检查玩家是否跨越了区块边界，若是则增量加载/卸载

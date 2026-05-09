@@ -82,6 +82,8 @@ func _ready():
 	health_component.setup(stats_resource)
 	energy_component.setup(stats_resource)
 	
+	movement_component.setup(stats_resource)
+	
 	# 连接输入管理器信号
 	InputManager.action_triggered.connect(_on_input_action)
 	InputManager.movement_vector_changed.connect(_on_movement_changed)
@@ -182,11 +184,6 @@ func get_skill_data_by_action(action_name: String) -> SkillEffect:
 ##       3. 示例代码已预留，需根据实际物理射线查询完善
 func get_target() -> Node:
 	# 实现思路：检测前方扇形/圆形范围内最近的敌人
-	# var space_state = get_world_2d().direct_space_state
-	# var query = PhysicsRayQueryParameters2D.create(global_position, global_position + last_direction * 50)
-	# var result = space_state.intersect_ray(query)
-	# return result.collider if result else null
-	
 	var candidates: Array[Area2D] = target_detector.get_overlapping_areas()
 	var nearest: Enemy = null
 	var nearest_dist: float = INF

@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="RadialGridConfig" format=3 uid="uid://c0a1op68lstgq"]
+
+[ext_resource type="Script" uid="uid://b3rf0k0rpjj5t" path="res://resources/data/maps/guaranteed_event_info.gd" id="1_vexvs"]
+[ext_resource type="TileSet" uid="uid://da0qlqx0x5l2p" path="res://resources/data/tilesets/tileset_grassland.tres" id="2_h0whh"]
+[ext_resource type="Script" uid="uid://cxqdfol5b21w7" path="res://resources/data/maps/ring_event_pool.gd" id="2_trbvx"]
+[ext_resource type="Script" uid="uid://c6w5eln1lkkuo" path="res://resources/data/maps/radial_grid_config.gd" id="2_vexvs"]
+
+[sub_resource type="Resource" id="Resource_trbvx"]
+script = ExtResource("1_vexvs")
+ring_index = 1
+event_type = 9
+metadata/_custom_type_script = "uid://b3rf0k0rpjj5t"
+
+[sub_resource type="Resource" id="Resource_ac6di"]
+script = ExtResource("1_vexvs")
+ring_index = 2
+event_type = 5
+metadata/_custom_type_script = "uid://b3rf0k0rpjj5t"
+
+[sub_resource type="Resource" id="Resource_kn2ca"]
+script = ExtResource("2_trbvx")
+ring_index = 1
+metadata/_custom_type_script = "uid://cxqdfol5b21w7"
+
+[resource]
+script = ExtResource("2_vexvs")
+max_ring = 5
+tile_set = ExtResource("2_h0whh")
+ring_event_pools = Array[ExtResource("2_trbvx")]([SubResource("Resource_kn2ca")])
+guaranteed_events = Array[ExtResource("1_vexvs")]([SubResource("Resource_trbvx"), SubResource("Resource_ac6di")])
+metadata/_custom_type_script = "uid://c6w5eln1lkkuo"

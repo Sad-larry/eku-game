@@ -11,5 +11,5 @@ attack_speed = 10.0
 name = "Eku"
 icon = ExtResource("1_yteja")
 max_health = 100
-speed = 200
+speed = 200.0
 metadata/_custom_type_script = "uid://cc78t6x0o34on"

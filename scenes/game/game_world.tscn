@@ -1,28 +1,33 @@
 [gd_scene format=3 uid="uid://cid6ctcxuhehs"]
 
 [ext_resource type="Script" uid="uid://bxfo4ttnt5g8j" path="res://scenes/game/game_world.gd" id="1_60nf8"]
-[ext_resource type="Script" uid="uid://begwagd0w8e0k" path="res://scripts/systems/map_generation/chunk_manager.gd" id="2_yeg30"]
+[ext_resource type="Resource" uid="uid://c0a1op68lstgq" path="res://resources/data/maps/radial_grid_config.tres" id="2_nms8r"]
 [ext_resource type="TileSet" uid="uid://da0qlqx0x5l2p" path="res://resources/data/tilesets/tileset_grassland.tres" id="3_jmprd"]
-[ext_resource type="Script" uid="uid://ctnn8d726sofc" path="res://scripts/systems/map_generation/chunk_pool.gd" id="4_lsk7w"]
+[ext_resource type="Script" uid="uid://dp8do6mvyy37q" path="res://scripts/systems/map_runtime/chunk_loader.gd" id="3_nms8r"]
+[ext_resource type="Script" uid="uid://ctnn8d726sofc" path="res://scripts/systems/map_generation/chunk_pool.gd" id="4_60nf8"]
 [ext_resource type="PackedScene" uid="uid://dohnbnw4ew3hp" path="res://prefabs/entities/player/player.tscn" id="5_0jb8d"]
 [ext_resource type="PackedScene" uid="uid://ceolu6sw8qgju" path="res://prefabs/entities/enemies/common/enemy_skeleton.tscn" id="6_bsk45"]
 
 [node name="GameWorld" type="Node2D" unique_id=1535492381]
 script = ExtResource("1_60nf8")
+room_map_config = ExtResource("2_nms8r")
 
-[node name="ChunkManager" type="Node" parent="." unique_id=263753174]
-script = ExtResource("2_yeg30")
-tileset = ExtResource("3_jmprd")
+[node name="ChunkLoader" type="Node" parent="." unique_id=178272235]
+script = ExtResource("3_nms8r")
+tile_set = ExtResource("3_jmprd")
 
-[node name="ChunkContainer" type="Node2D" parent="ChunkManager" unique_id=155596646]
+[node name="ChunkContainer" type="Node2D" parent="ChunkLoader" unique_id=1354218738]
 
-[node name="ChunkPool" type="Node" parent="ChunkManager" unique_id=1971222]
-script = ExtResource("4_lsk7w")
+[node name="ChunkPool" type="Node" parent="ChunkLoader" unique_id=1241745549]
+script = ExtResource("4_60nf8")
 
 [node name="Player" parent="." unique_id=386607487 instance=ExtResource("5_0jb8d")]
+position = Vector2(0, 384)
 
 [node name="EnemySkeleton" parent="." unique_id=1067563861 instance=ExtResource("6_bsk45")]
 position = Vector2(234, -162)
 
 [node name="EnemySkeleton2" parent="." unique_id=615471621 instance=ExtResource("6_bsk45")]
 position = Vector2(-130, -151)
+
+[node name="MapMinimap" type="CanvasLayer" parent="." unique_id=1610804728]

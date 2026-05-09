@@ -7,9 +7,6 @@ extends Node
 class_name PlayerMovementComponent
 
 # ========================== 导出变量模块 ==========================
-## 移动速度（像素/秒）
-@export var speed: float = 150.0
-
 ## 是否启用加速度（平滑移动），若不启用则速度瞬间变化
 @export var use_acceleration: bool = false
 
@@ -20,6 +17,9 @@ class_name PlayerMovementComponent
 @export var deceleration: float = 1800.0
 
 # ========================== 变量定义模块 ==========================
+## 移动速度（像素/秒）
+var _speed: float = 100
+
 ## 当前运动方向（标准化后的向量）
 var current_direction: Vector2 = Vector2.ZERO
 
@@ -51,6 +51,11 @@ func _ready() -> void:
 		queue_free()
 
 # ========================== 公共 API 模块 ==========================
+## 功能：初始化移动组件，根据 UnitStats 资源设置移动速度
+## 参数：stats (UnitStats) - 单位属性资源，需包含 speed 字段
+func setup(stats: UnitStats) -> void:
+	_speed = stats.speed
+	
 ## 功能：每帧更新移动逻辑（应在 _physics_process 中调用）
 ## 参数：input_direction (Vector2) - 原始移动输入向量；delta (float) - 物理帧间隔时间（秒）
 func update_movement(input_direction: Vector2, delta: float) -> void:
@@ -63,7 +68,7 @@ func update_movement(input_direction: Vector2, delta: float) -> void:
 	current_direction = normalize_8_direction(input_direction)
 	
 	# 计算目标速度，需要进行归一化
-	var target_velocity: Vector2 = current_direction.normalized() * speed
+	var target_velocity: Vector2 = current_direction.normalized() * _speed
 	
 	if use_acceleration:
 		# 平滑到达目标速度

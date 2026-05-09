@@ -19,10 +19,10 @@ class_name ChaseBehavior
 @export var duration: float = 2.5
 
 ## 激活时的移动速度倍率（2.0 = 双倍速度）
-@export var speed_multiplier: float = 2.0
+@export var speed_multiplier: float = 1.2
 
 ## 激活时的攻击范围倍率（1.5 = 1.5 倍攻击距离）
-@export var range_multiplier: float = 1.5
+@export var range_multiplier: float = 1.2
 
 ## 触发检测的玩家距离阈值（在此距离内才触发）
 @export var trigger_distance: float = 180.0
@@ -76,7 +76,7 @@ func _activate() -> void:
 	# 同步 Hitbox 尺寸（攻击范围已变）
 	enemy._sync_hitbox_size()
 	
-	print("[ChaseBehavior] 激活: 移速 %.1fx, 攻击范围 %.1fx" % [speed_multiplier, range_multiplier])
+	#print("[ChaseBehavior] 激活: 移速 %.1fx, 攻击范围 %.1fx" % [speed_multiplier, range_multiplier])
 
 func _deactivate() -> void:
 	_phase = Phase.COOLDOWN
@@ -87,7 +87,7 @@ func _deactivate() -> void:
 	enemy.attack_range_multiplier = 1.0
 	enemy._sync_hitbox_size()
 	
-	print("[ChaseBehavior] 结束，进入冷却 %.1f 秒" % cooldown)
+	#print("[ChaseBehavior] 结束，进入冷却 %.1f 秒" % cooldown)
 
 func _on_cleanup() -> void:
 	# 死亡时确保倍率重置

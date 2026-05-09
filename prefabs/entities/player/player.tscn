@@ -1019,12 +1019,12 @@ nodes/MoveStateMachine/position = Vector2(448, 48)
 node_connections = [&"output", 0, &"MoveStateMachine"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hi78x"]
-radius = 36.0
-height = 72.0
+radius = 11.0
+height = 42.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8m0ml"]
-radius = 23.0
-height = 46.0
+radius = 8.0
+height = 36.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hi78x"]
 radius = 80.0
@@ -1064,14 +1064,13 @@ parameters/MoveStateMachine/idle/blend_position = Vector2(-0.0071877837, 0.30303
 parameters/MoveStateMachine/move/blend_position = Vector2(0, 0)
 
 [node name="StatsComponents" type="Node2D" parent="." unique_id=1133705979]
-visible = false
 
 [node name="HitboxComponent" parent="StatsComponents" unique_id=1295885130 instance=ExtResource("5_j35ld")]
 collision_layer = 4
 collision_mask = 32
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StatsComponents/HitboxComponent" unique_id=114663200]
-position = Vector2(0, -6)
+position = Vector2(0, -9)
 shape = SubResource("CapsuleShape2D_hi78x")
 debug_color = Color(0.6701646, 0.40723044, 0.79190224, 0.41960785)
 
@@ -1080,7 +1079,7 @@ collision_layer = 16
 collision_mask = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StatsComponents/HurtboxComponent" unique_id=1260871381]
-position = Vector2(0, -6)
+position = Vector2(0, -9)
 shape = SubResource("CapsuleShape2D_8m0ml")
 debug_color = Color(0.8997795, 0.3007212, 0.2542769, 0.41960785)
 

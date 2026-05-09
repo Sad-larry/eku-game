@@ -17,7 +17,7 @@ class_name UnitStats
 @export var max_health: int = 30
 
 ## 移动速度（像素/秒）
-@export var speed := 100
+@export var speed : float = 100.0
 
 ## 攻击伤害值
 @export var damage: int = 1

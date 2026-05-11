@@ -50,7 +50,7 @@ func _on_body_entered(body: Node) -> void:
 	if not body.is_in_group("player"):
 		return
 	_player_sprite = _find_player_sprite(body)
-	_apply_fade_to(_parent_canvas, occluded_alpha, "_tween_tree")
+	_apply_fade_to(_parent_canvas, occluded_alpha, "_tween_item")
 	if _player_sprite:
 		_apply_fade_to(_player_sprite, player_ghost_alpha, "_tween_player")
 
@@ -58,7 +58,7 @@ func _on_body_entered(body: Node) -> void:
 func _on_body_exited(body: Node) -> void:
 	if not body.is_in_group("player"):
 		return
-	_apply_fade_to(_parent_canvas, 1.0, "_tween_tree")
+	_apply_fade_to(_parent_canvas, 1.0, "_tween_item")
 	if _player_sprite:
 		_apply_fade_to(_player_sprite, 1.0, "_tween_player")
 	_player_sprite = null

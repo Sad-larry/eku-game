@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://dnpbcs7llghsw" path="res://assets/sprites/map/floor/mahogany_stone blocks.png" id="2_cdcab"]
 [ext_resource type="Texture2D" uid="uid://b8jsq2td4rstd" path="res://assets/sprites/map/floor/dirt_blocks.png" id="3_cdcab"]
 [ext_resource type="Texture2D" uid="uid://cnmrjh6cn365a" path="res://assets/sprites/map/floor/darkness_stone blocks.png" id="3_es2ya"]
+[ext_resource type="Texture2D" uid="uid://k78k2ouephmu" path="res://assets/sprites/map/floor/border-block.png" id="5_es2ya"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gxvft"]
 texture = ExtResource("1_cr53v")
@@ -538,10 +539,17 @@ texture_region_size = Vector2i(32, 27)
 2:15/0/terrains_peering_bit/bottom_left_side = 2
 2:15/0/terrains_peering_bit/top_left_side = 2
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3e0fm"]
+texture = ExtResource("5_es2ya")
+texture_region_size = Vector2i(32, 17)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(0, -8, -16, 0, 0, 8, 16, 0)
+
 [resource]
 tile_shape = 1
 tile_layout = 5
 tile_size = Vector2i(32, 16)
+physics_layer_0/collision_layer = 1
 terrain_set_0/mode = 2
 terrain_set_0/terrain_0/name = "Floor1"
 terrain_set_0/terrain_0/color = Color(0.8858366, 0.6912649, 0.1907829, 1)
@@ -553,3 +561,4 @@ sources/0 = SubResource("TileSetAtlasSource_gxvft")
 sources/1 = SubResource("TileSetAtlasSource_x5f4c")
 sources/2 = SubResource("TileSetAtlasSource_y2e8y")
 sources/11 = SubResource("TileSetAtlasSource_es2ya")
+sources/3 = SubResource("TileSetAtlasSource_3e0fm")

@@ -1,0 +1,56 @@
+[gd_scene format=4 uid="uid://bqp4x18f1h6xf"]
+
+[ext_resource type="TileSet" uid="uid://r8i8ojam50px" path="res://resources/data/tilesets/tileset_stone_blocks.tres" id="1_he10n"]
+[ext_resource type="Texture2D" uid="uid://crbxit8gdkhmp" path="res://assets/sprites/map/decorations/bed.png" id="2_otmpl"]
+[ext_resource type="Texture2D" uid="uid://bd2aiorjaymw6" path="res://assets/sprites/map/decorations/bookshelf.png" id="3_kmero"]
+[ext_resource type="Script" uid="uid://be3cypj0ayn5j" path="res://scripts/components/occluder_component.gd" id="4_sjshi"]
+[ext_resource type="PackedScene" uid="uid://clo5p6whwxfes" path="res://prefabs/environment/portal_zone/portal_zone.tscn" id="5_fpfda"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ltqdi"]
+size = Vector2(48, 45)
+
+[node name="Cabin" type="Node2D" unique_id=2119464740]
+
+[node name="TileMap" type="Node2D" parent="." unique_id=560724120]
+
+[node name="Floor" type="TileMapLayer" parent="TileMap" unique_id=1904382083]
+tile_map_data = PackedByteArray("AAD//wAAAAAAAAEAAAD+////AQAAAA8AAAD+/wAAAQAAAAMAAAD+/wEAAgAAAAEAAAD//wEAAQAAAAUAAAAAAAEAAQAAAAoAAAAAAAAAAQAAAAYAAAAAAP//AQAAAA8AAAD/////AQAAAAcAAAD9/wAAAgAAAAEAAAD8/wAAAAAAAAMAAAD7/wAAAgAAAAEAAAD6/wAAAAAAAAYAAAABAAAAAAAAAAQAAAACAAAAAQAAAAUAAAADAAAAAQAAAAkAAAAEAAAAAAAAAAYAAAD///7/AgAAAAEAAAD///3/AAAAAAEAAAD///z/AQAAAAEAAAD///v/AAAAAAcAAAD//wIAAgAAAAEAAAD//wMAAAAAAAEAAAD//wQAAQAAAAEAAAD//wUAAAAAAAcAAAD6/wEAAAAAAA4AAAD6/wIAAAAAAA4AAAD6/wMAAAAAAA4AAAD6/wQAAAAAAAYAAAD6/wUAAAAAAAgAAAD7/wUAAAAAAAcAAAD8/wUAAAAAAA0AAAD9/wUAAAAAAAcAAAD+/wUAAAAAAA0AAAAAAAUAAAAAAA0AAAABAAUAAAAAAAcAAAACAAUAAAAAAA0AAAADAAUAAAAAAAcAAAAEAAUAAAAAAAoAAAD6////AAAAAA4AAAD6//7/AAAAAAYAAAD6//3/AAAAAA4AAAD6//z/AAAAAAYAAAD6//v/AAAAAAsAAAD7//v/AAAAAAcAAAD8//v/AAAAAAcAAAD9//v/AAAAAAcAAAD+//v/AAAAAA8AAAAAAPv/AAAAAAcAAAABAPv/AAAAAA8AAAACAPv/AAAAAAcAAAAEAAEAAAAAAAYAAAAEAAIAAAAAAAYAAAAEAAMAAAAAAAYAAAAEAAQAAAAAAAYAAAADAAQAAQAAAAEAAAAEAP//AAAAAAwAAAAEAP7/AAAAAAYAAAAEAP3/AAAAAAwAAAAEAPz/AAAAAAYAAAAEAPv/AAAAAAkAAAADAPv/AAAAAAcAAAD7/wQAAQAAAAEAAAD7/wIAAAAAAAAAAAD7//7/AQAAAAUAAAD7//z/AQAAAAEAAAD9//z/AQAAAAEAAAABAPz/AAAAAAMAAAADAPz/AQAAAAIAAAD9/wQAAgABAAEAAAABAAQAAQAAAAEAAAADAAIAAQAAAAMAAAADAP7/AQAAAAEAAAD9/wIAAAAAAAIAAAD8/wIAAAAAAAcAAAD8////AAAAAAkAAAD9//7/AgAAAAEAAAD9//3/AAAAAAIAAAD+//7/AAAAAAEAAAABAP7/AgAAAAMAAAAAAPz/AgAAAAEAAAD+//z/AAAAAAMAAAD7////AAAAAAcAAAACAAIAAAAAAAQAAAACAAMAAAAAAAwAAAABAAMAAAAAAAUAAAAAAAMAAgAAAAEAAAD8/wMAAgAAAAEAAAACAP//AgAAAAEAAAD+/wMAAQAAAAoAAAD8/wEAAQAAAAUAAAD7/wEAAAAAAAkAAAABAAEAAAAAAAMAAAAAAP3/AQAAAAEAAAAAAP7/AAAAAAEAAAABAP//AQAAAAIAAAACAP3/AQAAAAMAAAD8//3/AAAAAAcAAAD9/wMAAQAAAAUAAAD+/wIAAQAAAAQAAAD9/wEAAQAAAAIAAAD9////AQAAAAUAAAD8//7/AQAAAAIAAAD+//3/AQAAAAEAAAABAAIAAQAAAAEAAAADAAEAAQAAAAYAAAACAAEAAgAAAAEAAAADAAMAAgAAAAEAAAD8//z/AgAAAAEAAAABAP3/AgACAAQAAAD8/wQAAAAAAAQAAAD7/wMAAAAAAAoAAAD+/wQAAAAAAAQAAAAAAAQAAAAAAAQAAAACAAQAAAAAAAYAAAAAAAIAAAAAAAEAAAADAP//AAAAAAUAAAACAP7/AAAAAAEAAAADAP3/AAAAAAUAAAACAPz/AQAAAAsAAAD7//3/AAAAAAcAAAD6/wYAAwAAAAAAAAD7/wYAAwAAAAAAAAD8/wYAAwAAAAAAAAD9/wYAAwAAAAAAAAD+/wYAAwAAAAAAAAD//wYAAwAAAAAAAAAAAAYAAwAAAAAAAAABAAYAAwAAAAAAAAACAAYAAwAAAAAAAAADAAYAAwAAAAAAAAAEAAYAAwAAAAAAAAAFAAYAAwAAAAAAAAAFAAUAAwAAAAAAAAAFAAQAAwAAAAAAAAAFAAMAAwAAAAAAAAAFAAIAAwAAAAAAAAAFAAEAAwAAAAAAAAAFAPv/AwAAAAAAAAAFAPz/AwAAAAAAAAAFAP3/AwAAAAAAAAAFAP7/AwAAAAAAAAAFAP//AwAAAAAAAAAFAAAAAwAAAAAAAAD5//r/AwAAAAAAAAD6//r/AwAAAAAAAAD7//r/AwAAAAAAAAD8//r/AwAAAAAAAAD9//r/AwAAAAAAAAD+//r/AwAAAAAAAAD///r/AwAAAAAAAAAAAPr/AwAAAAAAAAABAPr/AwAAAAAAAAADAPr/AwAAAAAAAAAEAPr/AwAAAAAAAAAFAPr/AwAAAAAAAAD5//v/AwAAAAAAAAD5//z/AwAAAAAAAAD5//3/AwAAAAAAAAD5//7/AwAAAAAAAAD5////AwAAAAAAAAD5/wAAAwAAAAAAAAD5/wEAAwAAAAAAAAD5/wIAAwAAAAAAAAD5/wMAAwAAAAAAAAD5/wQAAwAAAAAAAAD5/wUAAwAAAAAAAAD5/wYAAwAAAAAAAAACAPr/AwAAAAAAAAA=")
+tile_set = ExtResource("1_he10n")
+
+[node name="Environment" type="Node2D" parent="." unique_id=809385557]
+
+[node name="Bed" type="StaticBody2D" parent="Environment" unique_id=160940272]
+position = Vector2(-104, -5.5)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Bed" unique_id=1699283662]
+position = Vector2(-24, 5)
+polygon = PackedVector2Array(-16, 0, 32, 24, 64, 8, 16, -16)
+
+[node name="Sprite2D" type="Sprite2D" parent="Environment/Bed" unique_id=2100822112]
+texture = ExtResource("2_otmpl")
+
+[node name="Bookshelf" type="StaticBody2D" parent="Environment" unique_id=1357902447]
+position = Vector2(-2, 38.5)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Bookshelf" unique_id=1546071011]
+position = Vector2(-29, 9.5)
+polygon = PackedVector2Array(-1, 8, 31, 24, 47, 16, 15, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Environment/Bookshelf" unique_id=764042902]
+texture = ExtResource("3_kmero")
+
+[node name="OccluderComponent" type="Area2D" parent="Environment/Bookshelf/Sprite2D" unique_id=125529875]
+script = ExtResource("4_sjshi")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Bookshelf/Sprite2D/OccluderComponent" unique_id=1087831832]
+position = Vector2(-6, -10)
+shape = SubResource("RectangleShape2D_ltqdi")
+
+[node name="Interactables" type="Node2D" parent="." unique_id=1468788713]
+
+[node name="GardenPortalZone" parent="Interactables" unique_id=1319413431 groups=["iso_sort_ignore"] instance=ExtResource("5_fpfda")]
+position = Vector2(146, 1)
+portal_id = "cabin_garden"
+target_scene_path = "res://scenes/lobby/garden/garden.tscn"
+target_portal_id = "garden_cabin"
+target_room_name = "花园"

@@ -85,6 +85,16 @@ func update_movement(input_direction: Vector2, delta: float) -> void:
 	# 应用到父节点的 velocity 属性
 	_parent.velocity = current_velocity
 
+## 功能：设置移动速度覆盖值（用于传送减速等临时速度修改）
+## 参数：speed (float) - 新的速度值（像素/秒）
+func set_speed_override(speed: float) -> void:
+	_speed = speed
+
+## 功能：获取当前移动速度
+## 返回值：float - 当前速度（像素/秒）
+func get_current_speed() -> float:
+	return _speed
+
 ## 功能：立即停止移动（重置速度及相关状态）
 func stop_immediately() -> void:
 	current_velocity = Vector2.ZERO

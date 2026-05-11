@@ -28,13 +28,13 @@ const ISO_INVERSE: Transform2D = Transform2D(
 )
 
 ## 跟随速度，值越大越快
-const FOLLOW_SPEED: float = 8.0
+const FOLLOW_SPEED: float = 32.0
 
 # ========================== 导出变量（可在编辑器调整） ==========================
 ## 最小缩放倍数（值越大画面越远，最小不能 <=0）
 @export var min_zoom: float = 0.1
 ## 最大缩放倍数（值越小画面越近）
-@export var max_zoom: float = 20.0
+@export var max_zoom: float = 15.0
 ## 缩放灵敏度（滚轮每滚动一格，缩放变化倍数因子）
 @export var zoom_speed: float = 0.1
 

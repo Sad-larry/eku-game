@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cgyqji5jf063o"
-path="res://.godot/imported/log_stone blocks - 副本.png-5120b9b761e98a882ce879a7fa6c1056.ctex"
+uid="uid://crbxit8gdkhmp"
+path="res://.godot/imported/bed.png-f9c0471b48d39beb419e2b27b6f77113.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/map/floor/log_stone blocks - 副本.png"
-dest_files=["res://.godot/imported/log_stone blocks - 副本.png-5120b9b761e98a882ce879a7fa6c1056.ctex"]
+source_file="res://assets/sprites/map/decorations/bed.png"
+dest_files=["res://.godot/imported/bed.png-f9c0471b48d39beb419e2b27b6f77113.ctex"]
 
 [params]
 

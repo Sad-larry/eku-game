@@ -1,0 +1,168 @@
+[gd_scene format=4 uid="uid://bpe17tl6op5ud"]
+
+[ext_resource type="TileSet" uid="uid://r8i8ojam50px" path="res://resources/data/tilesets/tileset_stone_blocks.tres" id="1_qlacw"]
+[ext_resource type="Script" uid="uid://g3xdb2w6th0t" path="res://scenes/lobby/adventure_gate/adventure_gate.gd" id="1_t3c5m"]
+[ext_resource type="PackedScene" uid="uid://clo5p6whwxfes" path="res://prefabs/environment/portal_zone/portal_zone.tscn" id="2_a0jxp"]
+[ext_resource type="Texture2D" uid="uid://crfh406fjt2w7" path="res://assets/sprites/map/decorations/Sprite-0020-Sheet.png" id="2_s664u"]
+[ext_resource type="Texture2D" uid="uid://bk0uuxevqdrum" path="res://assets/sprites/map/decorations/Sprite-0017.png" id="3_t3c5m"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_em6rn"]
+atlas = ExtResource("2_s664u")
+region = Rect2(0, 0, 80, 102)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ugdgy"]
+atlas = ExtResource("2_s664u")
+region = Rect2(80, 0, 80, 102)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_plq6d"]
+atlas = ExtResource("2_s664u")
+region = Rect2(160, 0, 80, 102)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lfx3i"]
+atlas = ExtResource("2_s664u")
+region = Rect2(240, 0, 80, 102)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i07vg"]
+atlas = ExtResource("2_s664u")
+region = Rect2(320, 0, 80, 102)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bnw7g"]
+atlas = ExtResource("2_s664u")
+region = Rect2(400, 0, 80, 102)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_orypk"]
+atlas = ExtResource("2_s664u")
+region = Rect2(480, 0, 80, 102)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y5uxq"]
+atlas = ExtResource("2_s664u")
+region = Rect2(560, 0, 80, 102)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8mwy1"]
+atlas = ExtResource("2_s664u")
+region = Rect2(640, 0, 80, 102)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f6c8u"]
+atlas = ExtResource("2_s664u")
+region = Rect2(720, 0, 80, 102)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1ikhs"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_em6rn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ugdgy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_plq6d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lfx3i")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i07vg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bnw7g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_orypk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y5uxq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8mwy1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f6c8u")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="AdventureGate" type="Node2D" unique_id=1543590304]
+script = ExtResource("1_t3c5m")
+
+[node name="TileMap" type="Node2D" parent="." unique_id=145665536]
+
+[node name="Floor" type="TileMapLayer" parent="TileMap" unique_id=1574089820]
+tile_map_data = PackedByteArray("AAD9/wIAAQAAAAEAAAD9/wEAAgAAAAgAAAD9/wAAAgAAAAYAAAD9////AgAAAA4AAAD9//7/AgAAAAQAAAD8//7/AAAAAAkAAAD8//3/AgAAAAEAAAD8//z/AAAAAAcAAAD9//z/AAAAAA8AAAD9//3/AAAAAAMAAAD8////AAAAAAwAAAD8/wAAAAAAAAoAAAD8/wEAAQAAAAEAAAD8/wIAAAAAAAkAAAD+/wIAAgAAAAMAAAD+/wMAAAAAAAkAAAD//wMAAgAAAAUAAAD//wIAAQAAAAEAAAAAAAIAAgAAAAYAAAD//wEAAgAAAAcAAAD//wAAAQAAAAEAAAD/////AgAAAAcAAAD///7/AAAAAAoAAAD///3/AAAAAA4AAAD+//3/AgABAAEAAAD+//7/AAAAAAUAAAD+////AgAAAAcAAAD+/wAAAAAAAAEAAAD+/wEAAgAAAA8AAAD+//z/AAAAAAcAAAD///z/AAAAAA8AAAAAAPz/AAAAAA8AAAABAPz/AAAAAA8AAAABAP3/AAAAAAwAAAAAAP7/AgABAAQAAAAAAP//AgAAAA0AAAAAAAEAAgAAAA8AAAAAAAAAAAAAAAEAAAABAP//AgAAAAkAAAABAP7/AAAAAAgAAAAAAP3/AAAAAA0AAAABAAEAAgAAAA0AAAABAAAAAgAAAA4AAAACAAEAAgABAAwAAAABAAIAAAAAAAQAAAABAAMAAAAAAA4AAAAAAAMAAgAAAAoAAAD9/wMAAAAAAA8AAAD8/wMAAAAAAAAAAAACAAIAAgAAAAMAAAACAAAAAgAAAAkAAAACAP//AQAAAAEAAAACAP7/AAAAAAcAAAACAP3/AgACAAEAAAACAPz/AAAAAAcAAAADAPz/AAAAAAkAAAACAAMAAAAAAA8AAAADAAMAAAAAAAwAAAADAAIAAAAAAAYAAAADAAEAAAAAAAYAAAADAAAAAAAAAAYAAAADAP3/AAAAAAYAAAADAP7/AAAAAAwAAAADAP//AAAAAAYAAAD7/wQAAAAAAAgAAAD7/wMAAAAAAA4AAAD7/wIAAAAAAA4AAAD7/wEAAAAAAAYAAAD7/wAAAAAAAA4AAAD7////AAAAAA4AAAD7//7/AAAAAA4AAAD7//3/AAAAAAYAAAD7//z/AAAAAAsAAAD8/wQAAAAAAA0AAAD9/wQAAAAAAA0AAAD+/wQAAAAAAA0AAAD//wQAAAAAAAcAAAAAAAQAAAAAAAcAAAABAAQAAAAAAA0AAAACAAQAAAAAAA0AAAADAAQAAAAAAAoAAAD7/wUAAwAAAAAAAAD8/wUAAwAAAAAAAAD9/wUAAwAAAAAAAAD+/wUAAwAAAAAAAAD//wUAAwAAAAAAAAAAAAUAAwAAAAAAAAABAAUAAwAAAAAAAAACAAUAAwAAAAAAAAADAAUAAwAAAAAAAAAEAAUAAwAAAAAAAAAEAAQAAwAAAAAAAAAEAAMAAwAAAAAAAAAEAAIAAwAAAAAAAAAEAAEAAwAAAAAAAAAEAAAAAwAAAAAAAAAEAP//AwAAAAAAAAAEAP7/AwAAAAAAAAAEAP3/AwAAAAAAAAAEAPz/AwAAAAAAAAAEAPv/AwAAAAAAAAADAPv/AwAAAAAAAAACAPv/AwAAAAAAAAABAPv/AwAAAAAAAAAAAPv/AwAAAAAAAAD///v/AwAAAAAAAAD+//v/AwAAAAAAAAD9//v/AwAAAAAAAAD8//v/AwAAAAAAAAD7//v/AwAAAAAAAAD6//v/AwAAAAAAAAD6//z/AwAAAAAAAAD6//3/AwAAAAAAAAD6//7/AwAAAAAAAAD6////AwAAAAAAAAD6/wAAAwAAAAAAAAD6/wEAAwAAAAAAAAD6/wIAAwAAAAAAAAD6/wMAAwAAAAAAAAD6/wQAAwAAAAAAAAD6/wUAAwAAAAAAAAA=")
+tile_set = ExtResource("1_qlacw")
+
+[node name="Environment" type="Node2D" parent="." unique_id=1344543976]
+
+[node name="PortalToAdventure" type="Area2D" parent="Environment" unique_id=2076383948]
+position = Vector2(23, -31.485)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Environment/PortalToAdventure" unique_id=2145348335]
+position = Vector2(1, -11)
+sprite_frames = SubResource("SpriteFrames_1ikhs")
+autoplay = "default"
+
+[node name="CollisionShape2D" type="CollisionPolygon2D" parent="Environment/PortalToAdventure" unique_id=1107586219]
+position = Vector2(3.0000002, -1.5149996)
+scale = Vector2(0.3, 0.3)
+polygon = PackedVector2Array(-7, -0.5149994, -39, 15.485001, 9, 39.485, 41, 23.485)
+
+[node name="Label" type="Label" parent="Environment/PortalToAdventure" unique_id=769665233]
+offset_left = -28.0
+offset_top = -77.0
+offset_right = 36.0
+offset_bottom = -54.0
+text = "进入挑战"
+metadata/_edit_use_anchors_ = true
+
+[node name="Arrangement1" type="StaticBody2D" parent="Environment" unique_id=1533311280]
+position = Vector2(16, -40)
+
+[node name="Sprite2D" type="Sprite2D" parent="Environment/Arrangement1" unique_id=680436663]
+position = Vector2(0, -14)
+texture = ExtResource("3_t3c5m")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Arrangement1" unique_id=1573458641]
+polygon = PackedVector2Array(-16, 0, 0, 8, 16, 0, 0, -8)
+
+[node name="Arrangement2" type="StaticBody2D" parent="Environment" unique_id=1459004304]
+position = Vector2(-32, -16)
+
+[node name="Sprite2D" type="Sprite2D" parent="Environment/Arrangement2" unique_id=705032178]
+position = Vector2(0, -14)
+texture = ExtResource("3_t3c5m")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Arrangement2" unique_id=212586649]
+polygon = PackedVector2Array(-16, 0, 0, 8, 16, 0, 0, -8)
+
+[node name="Arrangement3" type="StaticBody2D" parent="Environment" unique_id=130370250]
+position = Vector2(32, 16)
+
+[node name="Sprite2D" type="Sprite2D" parent="Environment/Arrangement3" unique_id=21359828]
+position = Vector2(0, -14)
+texture = ExtResource("3_t3c5m")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Arrangement3" unique_id=690516144]
+polygon = PackedVector2Array(-16, 0, 0, 8, 16, 0, 0, -8)
+
+[node name="Arrangement4" type="StaticBody2D" parent="Environment" unique_id=685645516]
+position = Vector2(80, -8)
+
+[node name="Sprite2D" type="Sprite2D" parent="Environment/Arrangement4" unique_id=456875610]
+position = Vector2(0, -14)
+texture = ExtResource("3_t3c5m")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Arrangement4" unique_id=985174217]
+polygon = PackedVector2Array(-16, 0, 0, 8, 16, 0, 0, -8)
+
+[node name="Interactables" type="Node2D" parent="." unique_id=1972749805]
+
+[node name="GardenPortalZone" parent="Interactables" unique_id=1319413431 groups=["iso_sort_ignore"] instance=ExtResource("2_a0jxp")]
+position = Vector2(-112, 0)
+portal_id = "adventure_garden"
+target_scene_path = "res://scenes/lobby/garden/garden.tscn"
+target_portal_id = "garden_adventure"
+target_room_name = "花园"
+
+[connection signal="body_entered" from="Environment/PortalToAdventure" to="." method="_on_portal_to_adventure_body_entered"]

@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://clo5p6whwxfes"]
+
+[ext_resource type="Texture2D" uid="uid://bxyqpb7csxkql" path="res://assets/sprites/map/decorations/Sprite-0021.png" id="1_415dl"]
+[ext_resource type="Script" uid="uid://b86ho013hpqe3" path="res://prefabs/environment/portal_zone/portal_zone.gd" id="1_v452g"]
+
+[node name="PortalZone" type="Area2D" unique_id=1319413431]
+script = ExtResource("1_v452g")
+
+[node name="PortalPrepareCollision" type="CollisionPolygon2D" parent="." unique_id=288655733]
+polygon = PackedVector2Array(-16, 0, 0, 8, 16, 0, 0, -8)
+
+[node name="PortalActiveCollision" type="Area2D" parent="." unique_id=1430080751]
+
+[node name="PortalActiveCollision" type="CollisionPolygon2D" parent="PortalActiveCollision" unique_id=1063533517]
+polygon = PackedVector2Array(-6, 0, 0, 3, 6, 0, 0, -3)
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1783424835]
+texture = ExtResource("1_415dl")
+
+[node name="Label" type="Label" parent="." unique_id=657858955]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "传送方块(测试)"

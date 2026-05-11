@@ -25,9 +25,9 @@ script = ExtResource("4_60nf8")
 position = Vector2(0, 384)
 
 [node name="EnemySkeleton" parent="." unique_id=1067563861 instance=ExtResource("6_bsk45")]
-position = Vector2(234, -162)
+position = Vector2(286, 160)
 
 [node name="EnemySkeleton2" parent="." unique_id=615471621 instance=ExtResource("6_bsk45")]
-position = Vector2(-130, -151)
+position = Vector2(-112, 117)
 
 [node name="MapMinimap" type="CanvasLayer" parent="." unique_id=1610804728]

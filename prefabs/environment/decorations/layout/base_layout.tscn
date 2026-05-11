@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://cmweuujp3rr34"]
+
+[node name="BaseLayout" type="Node2D" unique_id=1929149536]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1057839003]
+position = Vector2(0, -14)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=703679498]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D" unique_id=1222423672]
+polygon = PackedVector2Array(-16, 0, 0, 8, 16, 0, 0, -8)

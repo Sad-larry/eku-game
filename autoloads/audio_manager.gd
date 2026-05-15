@@ -19,6 +19,9 @@ const DEFAULT_MUSIC_VOLUME:  float = 0.8  ## 默认音乐音量
 const DEFAULT_SFX_VOLUME:    float = 0.9  ## 默认音效音量
 const DEFAULT_UI_VOLUME:     float = 0.8  ## 默认 UI 音效音量
 
+## 20/ln(10)
+const DB_CONVERSION_FACTOR: float = 20.0 / log(10.0)
+
 # ========================== 节点引用模块 ==========================
 ## 背景音乐播放器（需在场景中创建或动态生成）
 var music_player: AudioStreamPlayer
@@ -123,7 +126,7 @@ func _apply_volume_settings() -> void:
 func linear_to_db(linear: float) -> float:
 	if linear <= 0:
 		return -80.0  # 静音，Godot 最小有效值为 -80 dB
-	return log(linear) * 8.685889638065036  # 20 * log10(linear)
+	return log(linear) * DB_CONVERSION_FACTOR  # 20 * log10(linear)
 
 # ========================== 公共接口：音量控制模块 ==========================
 ## 功能：设置主音量

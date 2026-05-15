@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SkillEffect" format=3 uid="uid://0sxmye1m7cu2"]
+
+[ext_resource type="Script" uid="uid://db3ag7dk47lhq" path="res://resources/data/skills/skill_effect.gd" id="1_db2un"]
+[ext_resource type="PackedScene" uid="uid://dhuholqpw7y3y" path="res://prefabs/fx/skills/thornfire/fx_thornfire.tscn" id="1_o1ehm"]
+[ext_resource type="Texture2D" uid="uid://6nxerhvk6x14" path="res://assets/sprites/skills/icon_thornfirel_01.png" id="2_byssu"]
+
+[resource]
+script = ExtResource("1_db2un")
+id = "thornfire_01"
+name = "荆棘之火"
+icon = ExtResource("2_byssu")
+description = "荆棘之火"
+cooldown = 2.0
+energy_cost = 1
+damage = 10.0
+skill_multiplier = 1.1
+type = 4
+recovery_duration = 0.2
+fx_scene = ExtResource("1_o1ehm")
+anim_base_name = "thornfire"
+metadata/_custom_type_script = "uid://db3ag7dk47lhq"

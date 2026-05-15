@@ -1,0 +1,82 @@
+[gd_scene format=3 uid="uid://mikttls0jod2"]
+
+[ext_resource type="Script" uid="uid://boo4uppgjf4bi" path="res://prefabs/fx/skills/slash_fire/fx_slash_fire.gd" id="1_aohy3"]
+[ext_resource type="Texture2D" uid="uid://bt5uerrw7bhv5" path="res://assets/sprites/skills/Red-Effect-Skill.png" id="1_g0odv"]
+
+[sub_resource type="Animation" id="Animation_5hiie"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
+}
+
+[sub_resource type="Animation" id="Animation_kijqm"]
+resource_name = "preview"
+length = 0.6
+loop_mode = 1
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.05, 0.1, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [2, 3, 4, 1]
+}
+
+[sub_resource type="Animation" id="Animation_3p3gx"]
+resource_name = "preview"
+length = 0.15
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.05, 0.1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [2, 3, 4]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jwc4c"]
+_data = {
+&"RESET": SubResource("Animation_5hiie"),
+&"preview": SubResource("Animation_kijqm"),
+&"slash": SubResource("Animation_3p3gx")
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5hiie"]
+radius = 12.0
+
+[node name="FxSlashFire" type="Node2D" unique_id=1172299866]
+script = ExtResource("1_aohy3")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=365178775]
+texture = ExtResource("1_g0odv")
+hframes = 20
+vframes = 16
+frame = 2
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1891653047]
+libraries/ = SubResource("AnimationLibrary_jwc4c")
+
+[node name="Collision" type="Area2D" parent="." unique_id=261326052]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Collision" unique_id=1840053838]
+position = Vector2(0, 4)
+shape = SubResource("CircleShape2D_5hiie")

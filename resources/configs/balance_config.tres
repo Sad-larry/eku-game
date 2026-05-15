@@ -1,7 +1,0 @@
-[gd_resource type="Resource" script_class="BalanceConfig" format=3 uid="uid://dokttpi4ger2r"]
-
-[ext_resource type="Script" uid="uid://bl5vbpfe05omp" path="res://resources/configs/balance_config.gd" id="1_gvsjh"]
-
-[resource]
-script = ExtResource("1_gvsjh")
-energy_regen_per_second = 10.0

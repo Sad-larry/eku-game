@@ -6,16 +6,16 @@
 [node name="PortalZone" type="Area2D" unique_id=1319413431]
 script = ExtResource("1_v452g")
 
-[node name="PortalPrepareCollision" type="CollisionPolygon2D" parent="." unique_id=288655733]
-polygon = PackedVector2Array(-16, 0, 0, 8, 16, 0, 0, -8)
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1783424835]
+texture = ExtResource("1_415dl")
 
 [node name="PortalActiveCollision" type="Area2D" parent="." unique_id=1430080751]
 
 [node name="PortalActiveCollision" type="CollisionPolygon2D" parent="PortalActiveCollision" unique_id=1063533517]
-polygon = PackedVector2Array(-6, 0, 0, 3, 6, 0, 0, -3)
+polygon = PackedVector2Array(-10, 0, 0, 5, 10, 0, 0, -5)
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1783424835]
-texture = ExtResource("1_415dl")
+[node name="PortalPrepareCollision" type="CollisionPolygon2D" parent="." unique_id=288655733]
+polygon = PackedVector2Array(-22, 0, 0, 11, 22, 0, 0, -11)
 
 [node name="Label" type="Label" parent="." unique_id=657858955]
 offset_right = 40.0

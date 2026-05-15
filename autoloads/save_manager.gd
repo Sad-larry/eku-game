@@ -18,6 +18,8 @@ var save_data: Dictionary = {
 	"last_session": {}         # 上次会话数据（预留，用于断线重连或临时状态保存）
 }
 
+## 浮点累加器
+var _pending_play_time: float = 0.0
 # ========================== 生命周期模块 ==========================
 ## 功能：节点就绪时加载存档数据
 func _ready() -> void:
@@ -39,10 +41,10 @@ func load_save_data() -> void:
 		file.close()
 	else:
 		# 文件不存在，创建默认存档
-		save_save_data()
+		flush_to_disk()
 
 ## 功能：将存档数据保存到磁盘
-func save_save_data() -> void:
+func flush_to_disk() -> void:
 	var file = FileAccess.open(SAVE_FILE_PATH, FileAccess.WRITE)
 	if file:
 		file.store_var(save_data)
@@ -53,7 +55,7 @@ func save_save_data() -> void:
 
 ## 功能：立即保存（安全版本，使用 call_deferred 避免递归）
 func save_immediately() -> void:
-	call_deferred("save_save_data")
+	call_deferred("flush_to_disk")
 
 # ========================== 数据访问接口模块 ==========================
 ## 功能：增加游戏次数（每次开始新游戏时调用）
@@ -65,8 +67,10 @@ func increment_games_played() -> void:
 ## 参数：seconds (float) - 本次增加的秒数（通常为每帧 delta 累积）
 ## 说明：为性能考虑，不立即保存，避免频繁磁盘写入
 func add_play_time(seconds: float) -> void:
-	save_data["play_time"] += int(seconds)
-	# 不立即保存，避免频繁写入
+	_pending_play_time += seconds
+	if _pending_play_time >= 1.0:
+		save_data["play_time"] += int(_pending_play_time)
+		_pending_play_time = fmod(_pending_play_time, 1.0)
 
 ## 功能：获取格式化的总游戏时间（HH:MM:SS 格式）
 ## 返回值：String - 格式化的时间字符串，如 "01:23:45"
@@ -86,5 +90,5 @@ func reset_save_data() -> void:
 		"games_played": 0,
 		"last_session": {}
 	}
-	save_save_data()
+	flush_to_disk()
 	print("[SaveManager] 存档数据已重置")

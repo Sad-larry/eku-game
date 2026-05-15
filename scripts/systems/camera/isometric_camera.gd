@@ -55,15 +55,17 @@ func _process(delta: float) -> void:
 	# 玩家存在时，让摄像机位置实时跟随玩家
 	if is_instance_valid(Global.player):
 		global_position = lerp(global_position, Global.player.global_position, 1.0 - exp(-FOLLOW_SPEED * delta))
-
+	
 # ========================== 输入处理模块（新增） ==========================
 func _input(event: InputEvent) -> void:
+	if InputManager.input_locked:
+		return
 	# 仅处理鼠标滚轮事件
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
-			_zoom_at_mouse(-1)   # 放大（减小 zoom 值）
+			_zoom_at_mouse(-1)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			_zoom_at_mouse(1)    # 缩小（增大 zoom 值）
+			_zoom_at_mouse(1)
 
 # ========================== 内部缩放逻辑（通用） ==========================
 ## 功能：以当前鼠标位置为缩放中心，改变摄像机缩放倍数

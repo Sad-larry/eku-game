@@ -24,7 +24,7 @@ signal chunk_unloaded(chunk_x: int, chunk_y: int)
 @export var tileset: TileSet
 
 ## 每个区块包含的瓦片数（宽和高均为该值）
-@export var chunk_size: int = 16
+@export var chunk_size: int = 32
 
 ## 玩家加载区块的半径（以区块数为单位）。半径 2 即加载 (2*2+1)² = 25 个区块
 @export var load_radius: int = 2
@@ -55,7 +55,7 @@ var _tile_size: Vector2i = Vector2i(32, 16)
 var _accumulated_time: float = 0.0
 
 ## 用于容纳所有区块 TileMapLayer 的容器节点
-@onready var _chunk_container: Node2D = $ChunkContainer
+var _chunk_container: Node2D = null
 
 ## 对象池引用（可选，若 ChunkPool 子节点存在则自动使用）
 var _pool: ChunkPool = null
@@ -183,6 +183,7 @@ func _load_chunk(cx: int, cy: int) -> void:
 
 	layer.tile_set = tileset
 	layer.name = "Chunk_%d_%d" % [cx, cy]
+	
 	
 	# 设置 z_index 确保区块在实体下方
 	layer.z_index = chunk_z_index

@@ -12,10 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Code Architecture
 
-- 编写代码的硬性指标，包括以下原则： 
-  - （1）对于GDScript 等动态语言，尽可能确保每个代码文件不要超过 300 行
-  - （2）每层文件夹中的文件，尽可能不超过 8 个。如有超过，需要规划为多层子文件夹
-- 除了硬性指标以外，还需要时刻关注优雅的架构设计，避免出现以下可能侵蚀我们代码质量的「坏味道」：
+- 需要时刻关注优雅的架构设计，避免出现以下可能侵蚀我们代码质量的「坏味道」：
   - （1）僵化 (Rigidity): 系统难以变更，任何微小的改动都会引发一连串的连锁修改。
   - （2）冗余 (Redundancy): 同样的代码逻辑在多处重复出现，导致维护困难且容易产生不一致。
   - （3）循环依赖 (Circular Dependency): 两个或多个模块互相纠缠，形成无法解耦的“死结”，导致难以测试与复用。
@@ -23,7 +20,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - （5）晦涩性 (Obscurity): 代码意图不明，结构混乱，导致阅读者难以理解其功能和设计。
   - （6）数据泥团 (Data Clump): 多个数据项总是一起出现在不同方法的参数中，暗示着它们应该被组合成一个独立的对象。 
   - （7）不必要的复杂性 (Needless Complexity): 用“杀牛刀”去解决“杀鸡”的问题，过度设计使系统变得臃肿且难以理解。
-- 【非常重要！！】无论是你自己编写代码，还是阅读或审核他人代码时，都要严格遵守上述硬性指标，以及时刻关注优雅的架构设计。
+- 【非常重要！！】无论是你自己编写代码，还是阅读或审核他人代码时，都要时刻关注优雅的架构设计。
 - 【非常重要！！】无论何时，一旦你识别出那些可能侵蚀我们代码质量的「坏味道」，都应当立即询问用户是否需要优化，并给出合理的优化建议。 
 
 ## Run & Debug
@@ -35,7 +32,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-这是一个面向 Godot 4.6 引擎的项目，项目名称为 EkuGame，是一款以技能构筑为核心的动作类像素肉鸽游戏。游戏主打快节奏战斗，玩家可通过攻击衔接各类技能，打出连续连招。
+这是一个面向 Godot 4.6 引擎的项目，项目名称为 EkuGame，是一款以技能构筑为核心的冒险类像素肉鸽游戏。玩家可通过携带不同技能进入大世界地图进行冒险。
 
 ## Development Environment
 
@@ -116,6 +113,8 @@ D:.
 - `room_manager.gd`：房间管理
 - `scene_loader.gd`：场景加载器
 
+Autoload 的加载顺序约束（从先到后）：Global、EventBus、GameManager、InputManager、UIManager、AudioManager、RoomManager、SkillLibrary、SaveManager、SceneLoader
+
 ### 2. Scenes (`scenes/`)
 游戏流程与界面场景：
 - `main/`: 游戏启动菜单模块（包括开始游戏、系统设置、退出游戏等交互界面）
@@ -165,3 +164,38 @@ D:.
 ## Notes
 
 - 该项目仍处于开发初期，许多目录初始状态下为空
+
+## MCP Memory 使用规范（基于 `server-memory`）
+
+本项目已配置 `@modelcontextprotocol/server-memory`，提供 **9 个工具**用于知识图谱持久化。你必须按以下流程使用：
+
+### 对话开始 – 加载记忆
+
+1. 调用 `search_nodes` 查询与项目名/游戏类型相关的实体（如 `"Project_Context"`、`"Gameplay_Mechanics"`）。
+2. 若找到，调用 `open_nodes` 读取详细内容，恢复上次的架构决策、待办清单、编码偏好。
+3. 若无历史记忆，可以提示用户：“这是我们的首次对话，我会在本次开发中逐步记录关键信息。”，并初始化核心实体：
+   `create_entities` 创建 `Project_Context`（记录游戏类型、风格、目标平台）和 `Todo_List`。
+
+### 对话中 – 主动维护记忆
+
+当发生以下事件时立即更新图谱：
+
+- **架构决策**：`create_entities` 或 `add_observations` 记录“为什么选择状态机 / 为什么用单例”
+- **完成/新增任务**：`create_relations` 关联 `Todo_Item` 与 `Project_Context`，或 `add_observations` 添加完成记录
+- **用户偏好**：创建 `Preference` 实体，例如 `{ name: "user_style", entityType: "pref", observations: ["代码添加注释；函数包括功能、参数(可选)、说明(可选)", "每次定义变量都使用静态类型声明"] }`
+
+使用 `create_relations` 连接实体，例如 `from: "PlayerController", to: "AnimationTree", relationType: "drives"`。
+
+### 对话结束 – 保存记忆
+
+1. `create_entities` 创建一个名为 `Session_YYYY-MM-DD` 的实体，用 `add_observations` 写入本次完成的功能、生成的文件、遇到的难点。
+2. `add_observations` 更新 `Project_Context`，覆盖“最新状态”和“最后修改时间”。
+3. 调用 `read_graph` 可选自检，确保所有待办事项都已正确建模。
+
+### 清理与维护
+
+- `delete_entities`：移除废弃的设计实体（例如已重构的旧类）
+- `delete_observations`：删除错误的观测信息
+- `delete_relations`：断开错误的关系
+
+**重要提醒**：记忆能力的核心是**主动**与**一致**。请始终假设你正在为一个持续数周甚至数月的游戏项目工作，你的记忆力必须通过 MCP 服务(若服务为启动状态)来保持连贯。

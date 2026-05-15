@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://c08w5bd71wvrx"]
+
+[ext_resource type="Script" uid="uid://dhf4j6xhujjbr" path="res://prefabs/environment/interactable/interactable_area.gd" id="1_a4ado"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_a4ali"]
+font_size = 12
+outline_size = 2
+outline_color = Color(0, 0, 0, 1)
+
+[node name="InteractableArea" type="Area2D" unique_id=872337966]
+script = ExtResource("1_a4ado")
+prompt_text = null
+radius = null
+
+[node name="CollisionShape" type="CollisionShape2D" parent="." unique_id=1252502575]
+unique_name_in_owner = true
+
+[node name="PromptLabel" type="Label" parent="." unique_id=712685200]
+unique_name_in_owner = true
+visible = false
+offset_top = -48.0
+offset_bottom = -48.0
+label_settings = SubResource("LabelSettings_a4ali")
+horizontal_alignment = 1

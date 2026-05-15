@@ -37,14 +37,12 @@ func _on_continue_btn_pressed() -> void:
 func _on_settings_btn_pressed() -> void:
 	UIManager.open_settings_menu()
 
-## 功能：返回主菜单按钮被按下时，关闭暂停菜单并切换场景到主菜单
+## 功能：返回主菜单按钮被按下时，通过 EventBus 通知各管理器清空各自数据并切换场景
 func _on_back_to_menu_btn_pressed() -> void:
-	GameManager.reset_to_main_menu()
-	UIManager.close_pause_menu()
+	EventBus.return_to_main_menu_requested.emit()
 	get_tree().change_scene_to_file(Global.MAIN_MENU_SCENE_PATH)
 
-## 功能：退出游戏按钮被按下时，退出应用程序
+## 功能：退出游戏按钮被按下时，通过 EventBus 通知各管理器清空各自数据后退出
 func _on_quit_btn_pressed() -> void:
-	GameManager.reset_to_main_menu()
-	UIManager.close_pause_menu()
+	EventBus.return_to_main_menu_requested.emit()
 	get_tree().quit()

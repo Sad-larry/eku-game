@@ -1,0 +1,63 @@
+[gd_scene format=3 uid="uid://m3pveui60ye6"]
+
+[ext_resource type="Script" uid="uid://bdmdwlmcpxo75" path="res://prefabs/ui/skill_selection_card/skill_selection_card.gd" id="1_a4ado"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_42tli"]
+font_size = 10
+
+[sub_resource type="LabelSettings" id="LabelSettings_43tli"]
+font_size = 8
+
+[node name="SkillSelectionCard" type="Button" unique_id=325204834]
+custom_minimum_size = Vector2(85, 95)
+offset_right = 8.0
+offset_bottom = 8.0
+script = ExtResource("1_a4ado")
+
+[node name="CardIcon" type="TextureRect" parent="." unique_id=230425497]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 85.0
+offset_bottom = 75.0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CardName" type="Label" parent="." unique_id=794200559]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 75.0
+offset_right = 85.0
+offset_bottom = 95.0
+label_settings = SubResource("LabelSettings_42tli")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CardTypeTag" type="Label" parent="." unique_id=708645557]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 85.0
+offset_bottom = 16.0
+label_settings = SubResource("LabelSettings_43tli")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="EquippedMark" type="Label" parent="." unique_id=1820044523]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 60.0
+offset_top = 55.0
+offset_right = 85.0
+offset_bottom = 75.0
+text = "✓"
+label_settings = SubResource("LabelSettings_42tli")
+horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="HighlightBorder" type="Panel" parent="." unique_id=1696724934]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_right = 85.0
+offset_bottom = 95.0
+mouse_filter = 2

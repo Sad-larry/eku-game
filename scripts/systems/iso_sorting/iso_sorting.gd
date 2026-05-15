@@ -18,31 +18,62 @@ class_name IsoSorting
 ##       在 Node 属性面板的 "Groups" 中添加此标签即可。
 const IGNORE_GROUP: StringName = &"iso_sort_ignore"
 
-# ========================== 生命周期模块 ==========================
-## 功能：每帧执行子节点排序逻辑
-## 说明：将 sort_groups 中收集到的所有 Sprite2D/AnimatedSprite2D 叶子节点
-##       按全局 Y 坐标排序，并分配从 sort_base_z_index 开始的 z_index。
-func _process(_delta: float) -> void:
-	var items: Array[Node2D] = []
-	for group in sort_groups:
-		_collect_sortable(group, items)
+# ========================== 缓存与脏标记 ==========================
+var _cached_items: Array[Node2D] = []
+# 当场景子节点发生增删时标记为脏，下次排序时重建列表
+var _dirty: bool = true
 
+# ========================== 生命周期模块 ==========================
+func _ready() -> void:
+	# 监听子节点的增删，以便自动标记脏数据
+	child_entered_tree.connect(_on_child_structure_changed)
+	child_exiting_tree.connect(_on_child_structure_changed)
+
+## 功能：每帧执行子节点排序逻辑
+## 说明：将 sort_groups 中收集到的所有 Sprite2D/AnimatedSprite2D/CanvasGroup
+##       叶子节点按全局 Y 坐标排序，并分配从 sort_base_z_index 开始的 z_index。
+##       CanvasGroup 被视为一个整体排序单元（内部子 Sprite 的层级由 CanvasGroup
+##       自行管理），不递归进入其内部拆分排序。
+func _process(_delta: float) -> void:
+	# 仅在脏标记为 true 时才重新收集排序对象
+	if _dirty:
+		_rebuild_cache()
+		_dirty = false
+
+	# 基于缓存列表进行排序
+	var items: Array[Node2D] = _cached_items.duplicate()
 	items.sort_custom(_compare_y)
 
+	# 分配 z_index
 	for i in items.size():
 		items[i].z_index = sort_base_z_index + i
 
+# ========================== 缓存重建 ==========================
+## 递归收集所有需要排序的视觉叶子节点，并缓存起来。
+## 注意：CanvasGroup 节点被视为单个排序单元，其内部子 Sprite 的排序由
+##       CanvasGroup 自身管理，IsoSorting 不递归进入。
+func _rebuild_cache() -> void:
+	_cached_items.clear()
+	for group in sort_groups:
+		_collect_sortable(group, _cached_items)
+
 ## 功能：递归收集目标节点下所有需要排序的视觉叶子节点
-## 说明：仅收集 Sprite2D 和 AnimatedSprite2D 类型的节点，跳过纯容器 Node2D。
-##       对于包含视觉子节点的容器节点，递归进入其内部继续查找。
-##       这样可以正确处理 Cabin > Furniture > Bed 等多层嵌套结构，
-##       同时避免将无视觉的容器节点加入排序数组。
+## 说明：收集 Sprite2D、AnimatedSprite2D 以及 CanvasGroup 节点。
+##       CanvasGroup 被作为整体排序单元加入（不递归进入内部），
+##       因为 CanvasGroup 内部子 Sprite 的 z_index 由其自行管理。
+##       对于纯容器 Node2D，递归进入其内部继续查找。
 func _collect_sortable(node: Node2D, output: Array[Node2D]) -> void:
 	for child in node.get_children():
 		# 跳过标记为"不参与排序"的节点及其整棵子树
 		if child.is_in_group(IGNORE_GROUP):
 			continue
-		if child is Sprite2D or child is AnimatedSprite2D:
+		# CanvasGroup 是合成单元：将其整体加入排序，不递归进入内部。
+		# 内部子 Sprite 的 z_index 由 CanvasGroup 和其子节点自身的 z_index
+		# 联合管理，IsoSorting 只控制 CanvasGroup 本身的 z_index。
+		if child is CanvasGroup:
+			if _has_visual_descendant(child):
+				output.append(child)
+		elif child is Sprite2D or child is AnimatedSprite2D:
 			output.append(child)
 		elif child is Node2D and _has_visual_descendant(child):
 			_collect_sortable(child, output)
@@ -57,6 +88,23 @@ static func _has_visual_descendant(node: Node2D) -> bool:
 			return true
 	return false
 
-## 功能：按全局 Y 坐标比较两个节点的绘制顺序
+# ========================== 比较函数（稳定排序） ==========================
+## 功能：按实体根部（父物理体）的 Y 坐标比较两个节点的绘制顺序
+## 说明：sprite.global_position.y - sprite.position.y = parent.global_position.y，
+##       即物理体（实体地面接触点）的 Y 坐标。这解决了精灵 position 偏移
+##       导致的排序键偏低问题（如玩家 Sprite2D 的 position=(0,-14)）。
 static func _compare_y(a: Node2D, b: Node2D) -> bool:
-	return a.global_position.y < b.global_position.y
+	# 按父节点（物理体/根节点）的 Y 坐标排序，解决精灵自身偏移问题
+	var y_a = a.global_position.y - a.position.y
+	var y_b = b.global_position.y - b.position.y
+	if y_a == y_b:
+		# 次级比较：使用 instance_id 保证稳定，避免画面闪烁
+		return a.get_instance_id() < b.get_instance_id()
+	return y_a < y_b
+
+# ========================== 脏标记触发器 ==========================
+func _on_child_structure_changed(node: Node) -> void:
+	# 任何子节点的增删都可能改变排序集合，标记需要重建。
+	# 这里做了一个简单判断：只关心 Node2D 类型的变动，避免无意义标记。
+	if node is Node2D:
+		_dirty = true

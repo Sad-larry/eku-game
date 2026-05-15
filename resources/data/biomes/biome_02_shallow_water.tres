@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="BiomeConfig" format=3 uid="uid://oeck5fe2cd1c"]
+
+[ext_resource type="Script" uid="uid://cfw4p3yinl00e" path="res://resources/data/biomes/biome_config.gd" id="1_6s4oh"]
+
+[resource]
+script = ExtResource("1_6s4oh")
+biome_name = "浅水"

@@ -1,4 +1,7 @@
 # Godot 4+ specific ignores
 .godot/
+.claude/
 /android/
 addons/
+docs/
+node_modules/

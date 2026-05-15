@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://dhpnbeumvei1e"]
+
+[ext_resource type="Script" uid="uid://2wsimbhadini" path="res://scenes/game/test_noise_terrain.gd" id="1_cct7i"]
+[ext_resource type="Script" uid="uid://begwagd0w8e0k" path="res://scripts/systems/map_generation/chunk_manager.gd" id="2_crx0i"]
+[ext_resource type="PackedScene" uid="uid://dohnbnw4ew3hp" path="res://prefabs/entities/player/player.tscn" id="2_w37v8"]
+[ext_resource type="TileSet" uid="uid://da0qlqx0x5l2p" path="res://resources/data/tilesets/tileset_grassland.tres" id="3_kpt7b"]
+[ext_resource type="Script" uid="uid://ctnn8d726sofc" path="res://scripts/systems/map_generation/chunk_pool.gd" id="4_mgksu"]
+
+[node name="TestNoiseTerrain" type="Node2D" unique_id=167618167]
+script = ExtResource("1_cct7i")
+
+[node name="ChunkManager" type="Node" parent="." unique_id=1756311044]
+script = ExtResource("2_crx0i")
+tileset = ExtResource("3_kpt7b")
+
+[node name="ChunkContainer" type="Node2D" parent="ChunkManager" unique_id=351814043]
+
+[node name="ChunkPool" type="Node" parent="ChunkManager" unique_id=527422949]
+script = ExtResource("4_mgksu")
+
+[node name="Player" parent="." unique_id=386607487 instance=ExtResource("2_w37v8")]
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=1418532892]
+layer = 10
+
+[node name="Label" type="Label" parent="UI" unique_id=645760682]
+offset_right = 40.0
+offset_bottom = 23.0

@@ -7,10 +7,11 @@
 [ext_resource type="Script" uid="uid://jpudtfnn7tpn" path="res://scripts/systems/lobby/sub_scene_manager.gd" id="3_em6rn"]
 [ext_resource type="PackedScene" uid="uid://hp418p18wprk" path="res://scenes/lobby/garden/garden.tscn" id="4_335k1"]
 [ext_resource type="Texture2D" uid="uid://rx0j5uicxjbg" path="res://assets/sprites/map/barrier/fence_barrier.png" id="4_sw6dl"]
-[ext_resource type="Script" uid="uid://d07l7g4e5g1y3" path="res://prefabs/environment/lobby/lobby_portal_manager.gd" id="4_ugdgy"]
+[ext_resource type="Script" uid="uid://d07l7g4e5g1y3" path="res://scripts/systems/lobby/lobby_portal_manager.gd" id="4_ugdgy"]
 [ext_resource type="PackedScene" uid="uid://bpe17tl6op5ud" path="res://scenes/lobby/adventure_gate/adventure_gate.tscn" id="5_4p7p2"]
 [ext_resource type="PackedScene" uid="uid://dohnbnw4ew3hp" path="res://prefabs/entities/player/player.tscn" id="5_sw6dl"]
 [ext_resource type="Script" uid="uid://dxpod4b436ctq" path="res://scripts/systems/camera/isometric_camera.gd" id="6_r17ct"]
+[ext_resource type="PackedScene" uid="uid://cteculjupcwol" path="res://scenes/lobby/shop/shop.tscn" id="8_o85nr"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_r17ct"]
 texture = ExtResource("4_sw6dl")
@@ -163,6 +164,9 @@ position = Vector2(374, -154)
 [node name="AdventureGate" parent="ChildScenes" unique_id=1543590304 instance=ExtResource("5_4p7p2")]
 position = Vector2(434, 93)
 
+[node name="Shop" parent="ChildScenes" unique_id=698016401 instance=ExtResource("8_o85nr")]
+position = Vector2(70, -215)
+
 [node name="TileMap" type="Node2D" parent="." unique_id=128744602]
 
 [node name="Floor" type="TileMapLayer" parent="TileMap" unique_id=1824821780]
@@ -185,20 +189,11 @@ position = Vector2(3.0000002, -1.5149996)
 scale = Vector2(0.3, 0.3)
 polygon = PackedVector2Array(-7, -0.5149994, -39, 15.485001, 9, 39.485, 41, 23.485)
 
-[node name="Label" type="Label" parent="Environment/PortalToBoss" unique_id=1281618442]
-offset_left = -28.0
-offset_top = -77.0
-offset_right = 36.0
-offset_bottom = -54.0
-text = "进入挑战"
-metadata/_edit_use_anchors_ = true
-
 [node name="Entities" type="Node2D" parent="." unique_id=450853617]
 y_sort_enabled = true
 
 [node name="PlayerSpawn" type="Marker2D" parent="Entities" unique_id=1927895675]
 unique_name_in_owner = true
-position = Vector2(0, -8)
 
 [node name="Player" parent="Entities" unique_id=386607487 instance=ExtResource("5_sw6dl")]
 unique_name_in_owner = true

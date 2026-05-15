@@ -1,0 +1,205 @@
+[gd_scene format=3 uid="uid://b6lpvp4x1hf7u"]
+
+[ext_resource type="Script" uid="uid://4ge5um1mlim5" path="res://scenes/ui/skill_selection/skill_selection_dialog.gd" id="1_a4ado"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.1, 0.1, 0.1, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="LabelSettings" id="LabelSettings_xtli"]
+font_size = 14
+
+[sub_resource type="LabelSettings" id="LabelSettings_ytli"]
+font_size = 11
+
+[sub_resource type="LabelSettings" id="LabelSettings_ztli"]
+font_size = 10
+
+[node name="SkillSelectionDialog" type="CanvasLayer" unique_id=128839671]
+script = ExtResource("1_a4ado")
+
+[node name="BgDim" type="ColorRect" parent="." unique_id=1046717887]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.3)
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=965561221]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainPanel" type="Panel" parent="CenterContainer" unique_id=1269133575]
+custom_minimum_size = Vector2(850, 530)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="CloseButton" type="Button" parent="CenterContainer/MainPanel" unique_id=1006720372]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -28.0
+offset_top = 6.0
+offset_right = -6.0
+offset_bottom = 28.0
+text = "✕"
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/MainPanel" unique_id=1195492766]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="HSplitContainer" type="HSplitContainer" parent="CenterContainer/MainPanel/MarginContainer" unique_id=593512010]
+layout_mode = 2
+
+[node name="LeftPanel" type="PanelContainer" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer" unique_id=1571423230]
+layout_mode = 2
+size_flags_horizontal = 2
+
+[node name="LeftVBox" type="VBoxContainer" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/LeftPanel" unique_id=191091942]
+layout_mode = 2
+
+[node name="FilterTabs" type="TabBar" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/LeftPanel/LeftVBox" unique_id=2045924626]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CardScroll" type="ScrollContainer" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/LeftPanel/LeftVBox" unique_id=1792963285]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CardGrid" type="GridContainer" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/LeftPanel/LeftVBox/CardScroll" unique_id=797918428]
+unique_name_in_owner = true
+layout_mode = 2
+columns = 4
+
+[node name="RightPanel" type="PanelContainer" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer" unique_id=1629885622]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DetailScroll" type="ScrollContainer" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/RightPanel" unique_id=250110274]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="DetailVBox" type="VBoxContainer" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/RightPanel/DetailScroll" unique_id=373673083]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DetailIcon" type="TextureRect" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/RightPanel/DetailScroll/DetailVBox" unique_id=679333130]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DetailName" type="Label" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/RightPanel/DetailScroll/DetailVBox" unique_id=938337157]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+label_settings = SubResource("LabelSettings_xtli")
+
+[node name="DetailType" type="Label" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/RightPanel/DetailScroll/DetailVBox" unique_id=1751288947]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+label_settings = SubResource("LabelSettings_ytli")
+
+[node name="HSeparator" type="HSeparator" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/RightPanel/DetailScroll/DetailVBox" unique_id=1033983909]
+layout_mode = 2
+
+[node name="DetailDesc" type="Label" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/RightPanel/DetailScroll/DetailVBox" unique_id=1400561731]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+label_settings = SubResource("LabelSettings_ztli")
+autowrap_mode = 2
+
+[node name="DetailStats" type="GridContainer" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/RightPanel/DetailScroll/DetailVBox" unique_id=532382899]
+layout_mode = 2
+columns = 2
+
+[node name="StatLabel1" type="Label" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/RightPanel/DetailScroll/DetailVBox/DetailStats" unique_id=1364869330]
+layout_mode = 2
+text = "冷却时间"
+
+[node name="StatCooldown" type="Label" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/RightPanel/DetailScroll/DetailVBox/DetailStats" unique_id=1614492845]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="StatLabel2" type="Label" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/RightPanel/DetailScroll/DetailVBox/DetailStats" unique_id=1632906654]
+layout_mode = 2
+text = "能量消耗"
+
+[node name="StatEnergy" type="Label" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/RightPanel/DetailScroll/DetailVBox/DetailStats" unique_id=1163150374]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="StatLabel3" type="Label" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/RightPanel/DetailScroll/DetailVBox/DetailStats" unique_id=1404161163]
+layout_mode = 2
+text = "基础伤害"
+
+[node name="StatDamage" type="Label" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/RightPanel/DetailScroll/DetailVBox/DetailStats" unique_id=1745555176]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="StatLabel4" type="Label" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/RightPanel/DetailScroll/DetailVBox/DetailStats" unique_id=1848771481]
+layout_mode = 2
+text = "伤害倍率"
+
+[node name="StatMultiplier" type="Label" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/RightPanel/DetailScroll/DetailVBox/DetailStats" unique_id=599070159]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="PreviewLabel" type="Label" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/RightPanel/DetailScroll/DetailVBox" unique_id=1168167447]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "技能预览"
+
+[node name="PreviewArea" type="Control" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/RightPanel/DetailScroll/DetailVBox" unique_id=1430336159]
+clip_contents = true
+custom_minimum_size = Vector2(200, 128)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="PreviewContainer" type="Control" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/RightPanel/DetailScroll/DetailVBox/PreviewArea" unique_id=2033439179]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="EquipButton" type="Button" parent="CenterContainer/MainPanel/MarginContainer/HSplitContainer/RightPanel/DetailScroll/DetailVBox" unique_id=596982972]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+text = "装备技能"
+
+[connection signal="pressed" from="CenterContainer/MainPanel/CloseButton" to="." method="_on_close_button_pressed"]

@@ -10,6 +10,17 @@ extends Node
 # 使用 @warning_ignore 抑制"信号未使用"的警告（因为信号仅在此声明，在其他模块中使用）
 @warning_ignore_start("unused_signal")
 
+## 触发时机：请求推入临时游戏状态（UIManager 打开模态 UI 时发出，GameManager 监听并执行 push_state）
+## 参数：state (int) - GameState 枚举值
+signal game_state_push_requested(state: int)
+
+## 触发时机：请求弹出临时游戏状态（UIManager 关闭模态 UI 时发出，GameManager 监听并执行 pop_state）
+signal game_state_pop_requested()
+
+## 触发时机：请求全局重置返回主菜单（如暂停菜单中点击"返回主菜单"或"退出游戏"时发出）
+## GameManager 监听后清空状态栈并切到 MAIN_MENU，UIManager 监听后清空所有 UI 实例和模态栈
+signal return_to_main_menu_requested()
+
 ## 触发时机：玩家实体初始化完成时
 signal player_ready()
 
@@ -57,5 +68,14 @@ signal skill_cooldown_updated(slot_index: int, remaining: float, total: float)
 ## 触发时机：技能冷却结束（供 UI 隐藏冷却遮罩）
 ## 参数：slot_index (int) - 技能槽索引
 signal skill_cooldown_finished(slot_index: int)
+
+signal pause_menu_requested()       # 代替 UIManager.open_pause_menu()
+signal settings_menu_requested()    # 代替 UIManager.open_settings_menu()
+signal game_over_requested()        # 代替 UIManager.open_game_over()
+signal skill_selection_requested()  # 代替 UIManager.open_skill_selection()
+
+## 触发时机：当前 UI 栈的输入屏蔽规则发生变化
+## 参数：blocked_prefixes (Array[String]) - 需要屏蔽的输入动作前缀列表
+signal input_blocking_updated(blocked_prefixes: Array[String])
 
 @warning_ignore_restore("unused_signal")

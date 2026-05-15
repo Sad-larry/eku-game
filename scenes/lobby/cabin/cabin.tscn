@@ -4,52 +4,188 @@
 [ext_resource type="Texture2D" uid="uid://crbxit8gdkhmp" path="res://assets/sprites/map/decorations/bed.png" id="2_otmpl"]
 [ext_resource type="Texture2D" uid="uid://bd2aiorjaymw6" path="res://assets/sprites/map/decorations/bookshelf.png" id="3_kmero"]
 [ext_resource type="Script" uid="uid://be3cypj0ayn5j" path="res://scripts/components/occluder_component.gd" id="4_sjshi"]
+[ext_resource type="Texture2D" uid="uid://bgocaoc8kf6sl" path="res://assets/sprites/map/decorations/chair.png" id="5_7mqxx"]
 [ext_resource type="PackedScene" uid="uid://clo5p6whwxfes" path="res://prefabs/environment/portal_zone/portal_zone.tscn" id="5_fpfda"]
+[ext_resource type="Texture2D" uid="uid://bt15s8utp3tt4" path="res://assets/sprites/map/decorations/flowerpot.png" id="6_vilw3"]
+[ext_resource type="Texture2D" uid="uid://2g2s8ww07mon" path="res://assets/sprites/map/decorations/fireplace.png" id="7_4862l"]
+[ext_resource type="Texture2D" uid="uid://enq0s23syfxx" path="res://assets/sprites/map/decorations/clothes_tree.png" id="8_ixx11"]
+[ext_resource type="PackedScene" uid="uid://c08w5bd71wvrx" path="res://prefabs/environment/interactable/interactable_area.tscn" id="9_intr"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ltqdi"]
-size = Vector2(48, 45)
+[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_7mqxx"]
+points = PackedVector2Array(-23, 22, -23, -19, -5, -28, 24, -13, 23, 30, 8, 38)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7mqxx"]
+radius = 5.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4862l"]
+radius = 6.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4862l"]
+atlas = ExtResource("7_4862l")
+region = Rect2(0, 0, 88, 108)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ixx11"]
+atlas = ExtResource("7_4862l")
+region = Rect2(88, 0, 88, 108)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nr6d6"]
+atlas = ExtResource("7_4862l")
+region = Rect2(176, 0, 88, 108)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bn173"]
+atlas = ExtResource("7_4862l")
+region = Rect2(264, 0, 88, 108)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j6c25"]
+atlas = ExtResource("7_4862l")
+region = Rect2(352, 0, 88, 108)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c34su"]
+atlas = ExtResource("7_4862l")
+region = Rect2(440, 0, 88, 108)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e78r4"]
+atlas = ExtResource("7_4862l")
+region = Rect2(528, 0, 88, 108)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s8ddg"]
+atlas = ExtResource("7_4862l")
+region = Rect2(616, 0, 88, 108)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_i744m"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4862l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ixx11")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nr6d6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bn173")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j6c25")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c34su")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e78r4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s8ddg")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [node name="Cabin" type="Node2D" unique_id=2119464740]
 
 [node name="TileMap" type="Node2D" parent="." unique_id=560724120]
+position = Vector2(0, -0.505)
 
 [node name="Floor" type="TileMapLayer" parent="TileMap" unique_id=1904382083]
-tile_map_data = PackedByteArray("AAD//wAAAAAAAAEAAAD+////AQAAAA8AAAD+/wAAAQAAAAMAAAD+/wEAAgAAAAEAAAD//wEAAQAAAAUAAAAAAAEAAQAAAAoAAAAAAAAAAQAAAAYAAAAAAP//AQAAAA8AAAD/////AQAAAAcAAAD9/wAAAgAAAAEAAAD8/wAAAAAAAAMAAAD7/wAAAgAAAAEAAAD6/wAAAAAAAAYAAAABAAAAAAAAAAQAAAACAAAAAQAAAAUAAAADAAAAAQAAAAkAAAAEAAAAAAAAAAYAAAD///7/AgAAAAEAAAD///3/AAAAAAEAAAD///z/AQAAAAEAAAD///v/AAAAAAcAAAD//wIAAgAAAAEAAAD//wMAAAAAAAEAAAD//wQAAQAAAAEAAAD//wUAAAAAAAcAAAD6/wEAAAAAAA4AAAD6/wIAAAAAAA4AAAD6/wMAAAAAAA4AAAD6/wQAAAAAAAYAAAD6/wUAAAAAAAgAAAD7/wUAAAAAAAcAAAD8/wUAAAAAAA0AAAD9/wUAAAAAAAcAAAD+/wUAAAAAAA0AAAAAAAUAAAAAAA0AAAABAAUAAAAAAAcAAAACAAUAAAAAAA0AAAADAAUAAAAAAAcAAAAEAAUAAAAAAAoAAAD6////AAAAAA4AAAD6//7/AAAAAAYAAAD6//3/AAAAAA4AAAD6//z/AAAAAAYAAAD6//v/AAAAAAsAAAD7//v/AAAAAAcAAAD8//v/AAAAAAcAAAD9//v/AAAAAAcAAAD+//v/AAAAAA8AAAAAAPv/AAAAAAcAAAABAPv/AAAAAA8AAAACAPv/AAAAAAcAAAAEAAEAAAAAAAYAAAAEAAIAAAAAAAYAAAAEAAMAAAAAAAYAAAAEAAQAAAAAAAYAAAADAAQAAQAAAAEAAAAEAP//AAAAAAwAAAAEAP7/AAAAAAYAAAAEAP3/AAAAAAwAAAAEAPz/AAAAAAYAAAAEAPv/AAAAAAkAAAADAPv/AAAAAAcAAAD7/wQAAQAAAAEAAAD7/wIAAAAAAAAAAAD7//7/AQAAAAUAAAD7//z/AQAAAAEAAAD9//z/AQAAAAEAAAABAPz/AAAAAAMAAAADAPz/AQAAAAIAAAD9/wQAAgABAAEAAAABAAQAAQAAAAEAAAADAAIAAQAAAAMAAAADAP7/AQAAAAEAAAD9/wIAAAAAAAIAAAD8/wIAAAAAAAcAAAD8////AAAAAAkAAAD9//7/AgAAAAEAAAD9//3/AAAAAAIAAAD+//7/AAAAAAEAAAABAP7/AgAAAAMAAAAAAPz/AgAAAAEAAAD+//z/AAAAAAMAAAD7////AAAAAAcAAAACAAIAAAAAAAQAAAACAAMAAAAAAAwAAAABAAMAAAAAAAUAAAAAAAMAAgAAAAEAAAD8/wMAAgAAAAEAAAACAP//AgAAAAEAAAD+/wMAAQAAAAoAAAD8/wEAAQAAAAUAAAD7/wEAAAAAAAkAAAABAAEAAAAAAAMAAAAAAP3/AQAAAAEAAAAAAP7/AAAAAAEAAAABAP//AQAAAAIAAAACAP3/AQAAAAMAAAD8//3/AAAAAAcAAAD9/wMAAQAAAAUAAAD+/wIAAQAAAAQAAAD9/wEAAQAAAAIAAAD9////AQAAAAUAAAD8//7/AQAAAAIAAAD+//3/AQAAAAEAAAABAAIAAQAAAAEAAAADAAEAAQAAAAYAAAACAAEAAgAAAAEAAAADAAMAAgAAAAEAAAD8//z/AgAAAAEAAAABAP3/AgACAAQAAAD8/wQAAAAAAAQAAAD7/wMAAAAAAAoAAAD+/wQAAAAAAAQAAAAAAAQAAAAAAAQAAAACAAQAAAAAAAYAAAAAAAIAAAAAAAEAAAADAP//AAAAAAUAAAACAP7/AAAAAAEAAAADAP3/AAAAAAUAAAACAPz/AQAAAAsAAAD7//3/AAAAAAcAAAD6/wYAAwAAAAAAAAD7/wYAAwAAAAAAAAD8/wYAAwAAAAAAAAD9/wYAAwAAAAAAAAD+/wYAAwAAAAAAAAD//wYAAwAAAAAAAAAAAAYAAwAAAAAAAAABAAYAAwAAAAAAAAACAAYAAwAAAAAAAAADAAYAAwAAAAAAAAAEAAYAAwAAAAAAAAAFAAYAAwAAAAAAAAAFAAUAAwAAAAAAAAAFAAQAAwAAAAAAAAAFAAMAAwAAAAAAAAAFAAIAAwAAAAAAAAAFAAEAAwAAAAAAAAAFAPv/AwAAAAAAAAAFAPz/AwAAAAAAAAAFAP3/AwAAAAAAAAAFAP7/AwAAAAAAAAAFAP//AwAAAAAAAAAFAAAAAwAAAAAAAAD5//r/AwAAAAAAAAD6//r/AwAAAAAAAAD7//r/AwAAAAAAAAD8//r/AwAAAAAAAAD9//r/AwAAAAAAAAD+//r/AwAAAAAAAAD///r/AwAAAAAAAAAAAPr/AwAAAAAAAAABAPr/AwAAAAAAAAADAPr/AwAAAAAAAAAEAPr/AwAAAAAAAAAFAPr/AwAAAAAAAAD5//v/AwAAAAAAAAD5//z/AwAAAAAAAAD5//3/AwAAAAAAAAD5//7/AwAAAAAAAAD5////AwAAAAAAAAD5/wAAAwAAAAAAAAD5/wEAAwAAAAAAAAD5/wIAAwAAAAAAAAD5/wMAAwAAAAAAAAD5/wQAAwAAAAAAAAD5/wUAAwAAAAAAAAD5/wYAAwAAAAAAAAACAPr/AwAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAD//wAAAAAAAAEAAAD+////AQAAAA8AAAD+/wAAAQAAAAMAAAD+/wEAAgAAAAEAAAD//wEAAQAAAAUAAAAAAAEAAQAAAAoAAAAAAAAAAQAAAAYAAAAAAP//AQAAAA8AAAD/////AQAAAAcAAAD9/wAAAgAAAAEAAAD8/wAAAAAAAAMAAAD7/wAAAgAAAAEAAAD6/wAAAAAAAAYAAAABAAAAAAAAAAQAAAACAAAAAQAAAAUAAAADAAAAAQAAAAkAAAAEAAAAAAAAAAYAAAD///7/AgAAAAEAAAD///3/AAAAAAEAAAD///z/AQAAAAEAAAD///v/AAAAAAcAAAD//wIAAgAAAAEAAAD//wMAAAAAAAEAAAD//wQAAQAAAAEAAAD//wUAAAAAAAcAAAD6/wEAAAAAAA4AAAD6/wIAAAAAAA4AAAD6/wMAAAAAAA4AAAD6/wQAAAAAAAYAAAD6/wUAAAAAAAgAAAD7/wUAAAAAAAcAAAD8/wUAAAAAAA0AAAD9/wUAAAAAAAcAAAD+/wUAAAAAAA0AAAAAAAUAAAAAAA0AAAABAAUAAAAAAAcAAAACAAUAAAAAAA0AAAADAAUAAAAAAAcAAAAEAAUAAAAAAAoAAAD6////AAAAAA4AAAD6//7/AAAAAAYAAAD6//3/AAAAAA4AAAD6//z/AAAAAAYAAAD6//v/AAAAAAsAAAD7//v/AAAAAAcAAAD8//v/AAAAAAcAAAD9//v/AAAAAAcAAAD+//v/AAAAAA8AAAAAAPv/AAAAAAcAAAABAPv/AAAAAA8AAAACAPv/AAAAAAcAAAAEAAEAAAAAAAYAAAAEAAIAAAAAAAYAAAAEAAMAAAAAAAYAAAAEAAQAAAAAAAYAAAADAAQAAQAAAAEAAAAEAP//AAAAAAwAAAAEAP7/AAAAAAYAAAAEAP3/AAAAAAwAAAAEAPz/AAAAAAYAAAAEAPv/AAAAAAkAAAADAPv/AAAAAAcAAAD7/wQAAQAAAAEAAAD7/wIAAAAAAAAAAAD7//7/AQAAAAUAAAD7//z/AQAAAAEAAAD9//z/AQAAAAEAAAABAPz/AAAAAAMAAAADAPz/AQAAAAIAAAD9/wQAAgABAAEAAAABAAQAAQAAAAEAAAADAAIAAQAAAAMAAAADAP7/AQAAAAEAAAD9/wIAAAAAAAIAAAD8/wIAAAAAAAcAAAD8////AAAAAAkAAAD9//7/AgAAAAEAAAD9//3/AAAAAAIAAAD+//7/AAAAAAEAAAABAP7/AgAAAAMAAAAAAPz/AgAAAAEAAAD+//z/AAAAAAMAAAD7////AAAAAAcAAAACAAIAAAAAAAQAAAACAAMAAAAAAAwAAAABAAMAAAAAAAUAAAAAAAMAAgAAAAEAAAD8/wMAAgAAAAEAAAACAP//AgAAAAEAAAD+/wMAAQAAAAoAAAD8/wEAAQAAAAUAAAD7/wEAAAAAAAkAAAABAAEAAAAAAAMAAAAAAP3/AQAAAAEAAAAAAP7/AAAAAAEAAAABAP//AQAAAAIAAAACAP3/AQAAAAMAAAD8//3/AAAAAAcAAAD9/wMAAQAAAAUAAAD+/wIAAQAAAAQAAAD9/wEAAQAAAAIAAAD9////AQAAAAUAAAD8//7/AQAAAAIAAAD+//3/AQAAAAEAAAABAAIAAQAAAAEAAAADAAEAAQAAAAYAAAACAAEAAgAAAAEAAAADAAMAAgAAAAEAAAD8//z/AgAAAAEAAAABAP3/AgACAAQAAAD8/wQAAAAAAAQAAAD7/wMAAAAAAAoAAAD+/wQAAAAAAAQAAAAAAAQAAAAAAAQAAAACAAQAAAAAAAYAAAAAAAIAAAAAAAEAAAADAP//AAAAAAUAAAACAP7/AAAAAAEAAAADAP3/AAAAAAUAAAACAPz/AQAAAAsAAAD7//3/AAAAAAcAAAABAPr/AwAAAAAAAAACAPr/AwAAAAAAAAADAPr/AwAAAAAAAAAEAPr/AwAAAAAAAAAFAPr/AwAAAAAAAAAFAPv/AwAAAAAAAAAFAPz/AwAAAAAAAAAFAP3/AwAAAAAAAAAFAP7/AwAAAAAAAAA=")
 tile_set = ExtResource("1_he10n")
+metadata/_edit_lock_ = true
 
 [node name="Environment" type="Node2D" parent="." unique_id=809385557]
 
 [node name="Bed" type="StaticBody2D" parent="Environment" unique_id=160940272]
-position = Vector2(-104, -5.5)
+position = Vector2(-128, 0)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Bed" unique_id=1699283662]
-position = Vector2(-24, 5)
 polygon = PackedVector2Array(-16, 0, 32, 24, 64, 8, 16, -16)
 
 [node name="Sprite2D" type="Sprite2D" parent="Environment/Bed" unique_id=2100822112]
+position = Vector2(24, -6)
 texture = ExtResource("2_otmpl")
 
 [node name="Bookshelf" type="StaticBody2D" parent="Environment" unique_id=1357902447]
-position = Vector2(-2, 38.5)
+position = Vector2(17, -56)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Bookshelf" unique_id=1546071011]
-position = Vector2(-29, 9.5)
 polygon = PackedVector2Array(-1, 8, 31, 24, 47, 16, 15, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="Environment/Bookshelf" unique_id=764042902]
+position = Vector2(29, -10)
 texture = ExtResource("3_kmero")
 
 [node name="OccluderComponent" type="Area2D" parent="Environment/Bookshelf/Sprite2D" unique_id=125529875]
 script = ExtResource("4_sjshi")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Bookshelf/Sprite2D/OccluderComponent" unique_id=1087831832]
-position = Vector2(-6, -10)
-shape = SubResource("RectangleShape2D_ltqdi")
+position = Vector2(-6, -4.5)
+shape = SubResource("ConvexPolygonShape2D_7mqxx")
+
+[node name="InteractableArea" parent="Environment/Bookshelf" unique_id=786960935 instance=ExtResource("9_intr")]
+position = Vector2(20, 3)
+prompt_text = "按 F 选择技能"
+radius = 30.0
+target_ui_name = "skill_selection"
+
+[node name="Chair" type="StaticBody2D" parent="Environment" unique_id=324910923]
+position = Vector2(-16, -40)
+
+[node name="CollisionPolygon2D" type="CollisionShape2D" parent="Environment/Chair" unique_id=229115386]
+shape = SubResource("CircleShape2D_7mqxx")
+
+[node name="Sprite2D" type="Sprite2D" parent="Environment/Chair" unique_id=586264939]
+position = Vector2(0, -8)
+texture = ExtResource("5_7mqxx")
+
+[node name="Flowerpot" type="StaticBody2D" parent="Environment" unique_id=349486716]
+position = Vector2(-48, -56)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Flowerpot" unique_id=171681068]
+shape = SubResource("CircleShape2D_4862l")
+
+[node name="Sprite2D" type="Sprite2D" parent="Environment/Flowerpot" unique_id=1204402399]
+position = Vector2(0, -16)
+texture = ExtResource("6_vilw3")
+
+[node name="Flowerpot2" type="StaticBody2D" parent="Environment" unique_id=1090309194]
+position = Vector2(-32, -63.5)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Flowerpot2" unique_id=395793232]
+shape = SubResource("CircleShape2D_4862l")
+
+[node name="Sprite2D" type="Sprite2D" parent="Environment/Flowerpot2" unique_id=1106410891]
+position = Vector2(0, -16.504997)
+texture = ExtResource("6_vilw3")
+
+[node name="Fireplace" type="StaticBody2D" parent="Environment" unique_id=838203370 groups=["iso_sort_ignore"]]
+position = Vector2(-111, -30)
+
+[node name="CollisionShape2D" type="CollisionPolygon2D" parent="Environment/Fireplace" unique_id=1319441587]
+polygon = PackedVector2Array(-1, 14, -17, 6, 47, -26, 63, -18)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Environment/Fireplace" unique_id=1311358238]
+position = Vector2(23, -38)
+sprite_frames = SubResource("SpriteFrames_i744m")
+autoplay = "default"
+frame_progress = 0.69027287
+
+[node name="ClothesTree" type="StaticBody2D" parent="Environment" unique_id=174521332]
+position = Vector2(96, -17)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/ClothesTree" unique_id=1435266407]
+shape = SubResource("CircleShape2D_4862l")
+
+[node name="Sprite2D" type="Sprite2D" parent="Environment/ClothesTree" unique_id=1629681265]
+position = Vector2(0, -23)
+texture = ExtResource("8_ixx11")
 
 [node name="Interactables" type="Node2D" parent="." unique_id=1468788713]
+position = Vector2(4, 0)
 
 [node name="GardenPortalZone" parent="Interactables" unique_id=1319413431 groups=["iso_sort_ignore"] instance=ExtResource("5_fpfda")]
-position = Vector2(146, 1)
+position = Vector2(149, -1)
 portal_id = "cabin_garden"
 target_scene_path = "res://scenes/lobby/garden/garden.tscn"
 target_portal_id = "garden_cabin"

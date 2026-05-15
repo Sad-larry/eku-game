@@ -21,8 +21,6 @@ func _init() -> void:
 	_noise = FastNoiseLite.new()
 	_noise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
 	_noise.frequency = 0.003
-	# E 0:00:06:950   BiomeMap._init: Invalid assignment of property or key 'fractal_enabled' with value of type 'bool' on a base object of type 'FastNoiseLite'.
-	#_noise.fractal_enabled = true
 	_noise.fractal_type = FastNoiseLite.FRACTAL_FBM
 	_noise.fractal_octaves = 2
 

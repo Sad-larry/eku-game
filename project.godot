@@ -18,14 +18,14 @@ config/icon="res://icon.svg"
 [autoload]
 
 Global="*uid://vadnvym8cxnq"
-SaveManager="*uid://m0tje0d8urno"
-AudioManager="*uid://ct1eqw2decfhs"
-InputManager="*uid://cv2yv7jg6hpsk"
-SkillLibrary="*uid://yrsrocy8vkjp"
-GameManager="*uid://b2d8xsmoe2oym"
-UIManager="*uid://bmt1y7i4o2tcb"
 EventBus="*uid://cdct4y70gla8s"
+GameManager="*uid://b2d8xsmoe2oym"
+InputManager="*uid://cv2yv7jg6hpsk"
+UIManager="*uid://bmt1y7i4o2tcb"
+AudioManager="*uid://ct1eqw2decfhs"
 RoomManager="*uid://s78qdkpjcod5"
+SkillLibrary="*uid://yrsrocy8vkjp"
+SaveManager="*uid://m0tje0d8urno"
 SceneLoader="*res://autoloads/scene_loader.gd"
 SignalLens="*uid://85rkx60vm7a7"
 
@@ -37,7 +37,7 @@ window/stretch/mode="canvas_items"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/signal_lens/plugin.cfg")
+enabled=PackedStringArray("res://addons/godot_mcp/plugin.cfg", "res://addons/signal_lens/plugin.cfg")
 
 [input]
 

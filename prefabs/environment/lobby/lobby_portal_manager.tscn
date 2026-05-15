@@ -1,9 +1,0 @@
-[gd_scene format=3 uid="uid://kkghg2tcoyhi"]
-
-[ext_resource type="Script" uid="uid://d07l7g4e5g1y3" path="res://prefabs/environment/lobby/lobby_portal_manager.gd" id="1_rp5hk"]
-
-[node name="LobbyPortalManager" type="Node2D" unique_id=1005974109]
-script = ExtResource("1_rp5hk")
-min_transparency = null
-portal_slow_speed = null
-z_layer_base = null

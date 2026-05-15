@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="BiomeConfig" format=3 uid="uid://cjku5pskh1b5j"]
+
+[ext_resource type="Script" uid="uid://cfw4p3yinl00e" path="res://resources/data/biomes/biome_config.gd" id="1_o067o"]
+
+[resource]
+script = ExtResource("1_o067o")
+biome_name = "岩石"

@@ -69,12 +69,15 @@ var _action_names: Array[String] = []
 ## 上一帧的移动向量（用于检测变化后发射信号）
 var _last_movement: Vector2 = Vector2.ZERO
 
+var _blocked_action_prefixes: Array[String] = []
+
 # ========================== 生命周期模块 ==========================
 ## 功能：节点就绪时执行初始化（注册 InputMap、缓存动作名、连接游戏状态信号）
 func _ready() -> void:
 	_setup_input_map()
 	_cache_action_names()
 	_connect_game_state()
+	EventBus.input_blocking_updated.connect(_on_input_blocking_updated)
 	if DEBUG_MODE:
 		print("InputManager: 初始化完成，已注册 ", _action_names.size(), " 个可检测动作")
 
@@ -170,6 +173,14 @@ func _detect_actions(event: InputEvent) -> void:
 	if input_locked:
 		return
 	for action_name: String in _action_names:
+		var is_blocked := false
+		for prefix in _blocked_action_prefixes:
+			if action_name.begins_with(prefix):
+				is_blocked = true
+				break
+		if is_blocked:
+			continue
+			
 		if event.is_action_pressed(action_name):
 			var config: Dictionary = INPUT_ACTIONS[action_name]
 			# 若该动作支持输入缓冲，则存入缓冲队列
@@ -302,3 +313,6 @@ func _on_game_state_changed(new_state: GameManager.GameState, _old_state: GameMa
 			set_input_lock(false)
 		_:
 			set_input_lock(false)
+
+func _on_input_blocking_updated(prefixes: Array[String]) -> void:
+	_blocked_action_prefixes = prefixes

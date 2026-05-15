@@ -8,7 +8,20 @@
       "Bash(sed -i '382s/^\\\\t\\\\t/\\\\t/' \"D:/MyAppData/Godot/eku-game/prefabs/environment/lobby/lobby_portal_manager.gd\")",
       "Bash(sed -i '383s/^\\\\t\\\\t/\\\\t/' \"D:/MyAppData/Godot/eku-game/prefabs/environment/lobby/lobby_portal_manager.gd\")",
       "Bash(sed -i '368s/\\\\t//' \"D:/MyAppData/Godot/eku-game/prefabs/environment/lobby/lobby_portal_manager.gd\")",
-      "Bash(sed -i '378s/\\\\t//' \"D:/MyAppData/Godot/eku-game/prefabs/environment/lobby/lobby_portal_manager.gd\")"
+      "Bash(sed -i '378s/\\\\t//' \"D:/MyAppData/Godot/eku-game/prefabs/environment/lobby/lobby_portal_manager.gd\")",
+      "Bash(dir /s/b \"D:\\\\MyAppData\\\\Godot\\\\eku-game\\\\scripts\\\\*lobby*\" \"D:\\\\MyAppData\\\\Godot\\\\eku-game\\\\scripts\\\\*portal*\" \"D:\\\\MyAppData\\\\Godot\\\\eku-game\\\\scripts\\\\*sub_scene*\" \"D:\\\\MyAppData\\\\Godot\\\\eku-game\\\\scripts\\\\*pip_viewport*\" \"D:\\\\MyAppData\\\\Godot\\\\eku-game\\\\scripts\\\\*iso*\" \"D:\\\\MyAppData\\\\Godot\\\\eku-game\\\\scripts\\\\*YSort*\")",
+      "Bash(dir /s/b \"D:\\\\MyAppData\\\\Godot\\\\eku-game\\\\resources\\\\data\\\\rooms\\\\*\")",
+      "Bash(dir /s/b \"D:\\\\MyAppData\\\\Godot\\\\eku-game\\\\prefabs\\\\environment\\\\*\")",
+      "mcp__godot-mcp__get_project_info",
+      "mcp__godot-mcp__get_node_properties",
+      "mcp__godot-mcp__save_scene",
+      "mcp__godot-mcp__get_editor_logs",
+      "mcp__memory__read_graph",
+      "mcp__memory__search_nodes",
+      "mcp__memory__create_entities",
+      "mcp__memory__create_relations",
+      "mcp__memory__add_observations",
+      "mcp__memory__open_nodes"
     ]
   }
 }

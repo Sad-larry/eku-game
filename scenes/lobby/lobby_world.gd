@@ -97,4 +97,5 @@ func _on_portal_to_dungeon_body_entered(body: Node2D) -> void:
 ## 功能：传送门身体进入检测回调，进入首领关卡
 func _on_portal_to_boss_body_entered(body: Node2D) -> void:
 	if body is Player:
-		SceneLoader.change_scene(Global.GAME_WORLD_SCENE_PATH)
+		SceneLoader.change_scene("res://scenes/game/test_noise_terrain.tscn")
+		#SceneLoader.change_scene(Global.GAME_WORLD_SCENE_PATH)

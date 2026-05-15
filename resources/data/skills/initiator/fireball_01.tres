@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="SkillEffect" format=3 uid="uid://b765b6el6vbye"]
 
-[ext_resource type="PackedScene" uid="uid://co1uw75j5sq0t" path="res://prefabs/fx/skills/fx_fireball.tscn" id="1_0lgfh"]
+[ext_resource type="PackedScene" uid="uid://crxdxjhmlgyeo" path="res://prefabs/fx/skills/fireball/fx_fireball.tscn" id="1_0lgfh"]
 [ext_resource type="Texture2D" uid="uid://b0jwodtuvn465" path="res://assets/sprites/skills/icon_fireball_01.png" id="1_67rfw"]
 [ext_resource type="Script" uid="uid://db3ag7dk47lhq" path="res://resources/data/skills/skill_effect.gd" id="1_x20mv"]
 

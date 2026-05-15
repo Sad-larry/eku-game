@@ -13,12 +13,12 @@ const DEBUG_MODE: bool = true
 
 ## 主菜单场景路径
 const MAIN_MENU_SCENE_PATH: String = "res://scenes/main/main_menu.tscn"
-
 ## 游戏大厅场景路径
 const GAME_LOBBY_SCENE_PATH: String = "res://scenes/lobby/lobby_world.tscn"
-
 ## 游戏场景路径
 const GAME_WORLD_SCENE_PATH: String = "res://scenes/game/game_world.tscn"
+
+const SKILL_CARD_SCENE: String = "res://prefabs/ui/skill_selection_card/skill_selection_card.tscn"
 
 
 # ========================== 运行时实体引用模块 ==========================
@@ -30,6 +30,7 @@ var player: Player:
 		# 防止外部随意覆盖已有引用（调试模式下会输出警告）
 		if DEBUG_MODE and player != null and value != null:
 			print("Global.player: 正在覆盖已有引用，旧玩家可能未被正确清理")
+			return
 		player = value
 	get:
 		return player
@@ -37,23 +38,18 @@ var player: Player:
 # ========================== 游戏配置模块（运行时）==========================
 ## 主音量（范围 0.0 - 1.0），音频管理器会读取此值
 var master_volume: float = 1.0
-
 ## 音乐音量（范围 0.0 - 1.0），音频管理器会读取此值
 var music_volume: float = 0.8
-
 ## 音效音量（范围 0.0 - 1.0），音频管理器会读取此值
 var sfx_volume: float = 1.0
-
 ## 是否全屏模式
 var fullscreen: bool = false
-
 ## 屏幕分辨率（宽度 x 高度）
 var resolution: Vector2i = Vector2i(1280, 720)
 
 # ========================== 当前关卡信息模块 ==========================
 ## 当前所在的房间/关卡 ID（由 RoomManager 切换房间时更新）
 var current_room_id: String = ""
-
 ## 当前关卡的类型（RoomConfig.RoomType 枚举值，由 RoomManager 切换房间时更新）
 var current_room_type: int = -1
 

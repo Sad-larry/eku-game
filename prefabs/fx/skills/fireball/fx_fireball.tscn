@@ -1,0 +1,82 @@
+[gd_scene format=3 uid="uid://crxdxjhmlgyeo"]
+
+[ext_resource type="Script" uid="uid://1ocxvvq0opjb" path="res://prefabs/fx/skills/fireball/fx_fireball.gd" id="2_tsjg6"]
+[ext_resource type="Texture2D" uid="uid://bt5uerrw7bhv5" path="res://assets/sprites/skills/Red-Effect-Skill.png" id="3_tom4l"]
+
+[sub_resource type="Animation" id="Animation_y1lx2"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [36]
+}
+
+[sub_resource type="Animation" id="Animation_3l6bb"]
+resource_name = "preview"
+length = 0.4
+loop_mode = 1
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [36, 37, 38, 39]
+}
+
+[sub_resource type="Animation" id="Animation_75sdd"]
+resource_name = "preview"
+length = 0.4
+loop_mode = 1
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [36, 37, 38, 39]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_gea2c"]
+_data = {
+&"RESET": SubResource("Animation_y1lx2"),
+&"preview": SubResource("Animation_3l6bb"),
+&"slash": SubResource("Animation_75sdd")
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_xpj78"]
+radius = 14.035668
+
+[node name="FxFireball" type="Node2D" unique_id=1069257584]
+script = ExtResource("2_tsjg6")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1373537899]
+texture = ExtResource("3_tom4l")
+hframes = 20
+vframes = 16
+frame = 36
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=2134851385]
+libraries/ = SubResource("AnimationLibrary_gea2c")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1117667922]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1180445166]
+shape = SubResource("CircleShape2D_xpj78")

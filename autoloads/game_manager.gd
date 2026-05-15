@@ -37,7 +37,12 @@ var _state_stack: Array[GameState] = []
 # ========================== 生命周期模块 ==========================
 ## 功能：节点就绪时完成初始化并设置初始状态为主菜单
 func _ready() -> void:
-	GameManager.connect("game_state_changed", _on_game_state_changed)
+	GameManager.game_state_changed.connect(_on_game_state_changed)
+	# 通过 EventBus 监听来自 UIManager 的状态推入/弹出请求
+	EventBus.game_state_push_requested.connect(push_state)
+	EventBus.game_state_pop_requested.connect(pop_state)
+	# 监听全局返回主菜单请求（此时 UIManager 也会独立清空自己的模态栈）
+	EventBus.return_to_main_menu_requested.connect(reset_to_main_menu)
 	# 初始化游戏状态为主菜单
 	set_game_state(GameState.MAIN_MENU)
 	print("GameManager: 游戏状态管理器初始化完成")
@@ -59,6 +64,13 @@ func set_game_state(new_state: GameState) -> void:
 	if new_state == current_game_state:
 		return
 	
+	if get_tree():
+		match new_state:
+			GameState.PAUSED, GameState.SETTINGS, GameState.GAME_OVER:
+				get_tree().paused = true
+			GameState.MAIN_MENU, GameState.IN_GAME, GameState.LOBBY:
+				get_tree().paused = false
+		
 	var old_state: GameState = current_game_state
 	current_game_state = new_state
 	
@@ -101,18 +113,7 @@ func reset_to_main_menu() -> void:
 # ========================== 内部回调模块 ==========================
 ## 功能：游戏状态变更时的内部响应（例如控制 UI 显示/隐藏）
 ## 参数：new_state (GameState) - 新状态；_old_state (GameState) - 旧状态（未使用）
-func _on_game_state_changed(new_state: GameState, _old_state: GameState) -> void:
+func _on_game_state_changed(_new_state: GameState, _old_state: GameState) -> void:
 	# 退出游戏时场景树可能已被销毁，防止 get_tree() 为 null 导致崩溃
 	if not get_tree():
 		return
-	match new_state:
-		GameState.IN_GAME, GameState.LOBBY:
-			UIManager.show_hud()
-			get_tree().paused = false
-		GameState.PAUSED:
-			get_tree().paused = true
-		GameState.MAIN_MENU:
-			UIManager.hide_hud()
-			get_tree().paused = false
-		_:
-			UIManager.hide_hud()

@@ -45,10 +45,6 @@ signal combo_updated(new_combo: int)
 ## TODO: 新建资源类型（如 DamageData）来替代 Dictionary 传递伤害数据
 signal skill_damage_requested(damage_data: Dictionary)
 
-## 触发时机：房间完成通关时
-## 参数：room (RoomBase) - 已完成通关的房间实例
-signal room_completed(room: RoomBase)
-
 ## 触发时机：玩家收集到硬币时
 ## 参数：amount (int) - 本次收集的硬币数量
 signal coin_collected(amount: int)

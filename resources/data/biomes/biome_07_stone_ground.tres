@@ -5,3 +5,4 @@
 [resource]
 script = ExtResource("1_hyvwn")
 biome_name = "石地"
+height_bias = 0.15

@@ -38,6 +38,10 @@ signal chunk_unloaded(chunk_x: int, chunk_y: int)
 ## 检测玩家位置的间隔（秒），避免每帧检查
 @export var check_interval: float = 0.25
 
+#========================== 初始化节点 ==========================
+## 用于容纳所有区块 TileMapLayer 的容器节点
+@onready var _chunk_container: Node2D = $ChunkContainer
+
 # ========================== 内部变量模块 ==========================
 ## 瓦片生成器实例（可替换为不同地形的生成器）
 var generator: TerrainGenerator
@@ -54,14 +58,20 @@ var _tile_size: Vector2i = Vector2i(32, 16)
 ## 累计时间计数器（用于间隔检查）
 var _accumulated_time: float = 0.0
 
-## 用于容纳所有区块 TileMapLayer 的容器节点
-var _chunk_container: Node2D = null
-
 ## 对象池引用（可选，若 ChunkPool 子节点存在则自动使用）
 var _pool: ChunkPool = null
 
 ## 参考 TileMapLayer（仅用于坐标转换，不加入场景树）
 var _reference_layer: TileMapLayer = null
+
+## Ring/事件数据（由 GameWorld 生成后注入）
+var map_data: RadialGridMap
+
+## 等距转换常量（预计算，避免重复除法）
+var _chunk_step_x: float
+var _chunk_step_y: float
+var _inv_chunk_step_x: float
+var _inv_chunk_step_y: float
 
 # ========================== 生命周期模块 ==========================
 func _ready() -> void:
@@ -74,6 +84,9 @@ func _ready() -> void:
 	# 创建参考 TileMapLayer 用于坐标转换（不加入场景树）
 	_reference_layer = TileMapLayer.new()
 	_reference_layer.tile_set = tileset
+
+	# 预计算等距转换常量
+	_update_isometric_constants()
 
 	# 查找或创建 ChunkContainer
 	if _chunk_container == null:
@@ -99,14 +112,16 @@ func _init_chunks() -> void:
 		_init_chunks()
 		return
 
+	# 从 map_data 同步区块尺寸（优先使用配置值）
+	if map_data != null and map_data.config != null:
+		chunk_size = map_data.config.chunk_size
+		_update_isometric_constants()
+
 	# 计算玩家所在区块，并加载初始范围内的区块
-	var player_tile := _world_to_tile(player.global_position)
-	_last_player_chunk = Vector2i(
-		_floor_div(player_tile.x, chunk_size),
-		_floor_div(player_tile.y, chunk_size)
-	)
+	_last_player_chunk = _pixel_to_chunk(player.global_position)
 
 	_load_chunks_around(_last_player_chunk)
+	_notify_room_enter(_last_player_chunk)
 
 func _process(delta: float) -> void:
 	_accumulated_time += delta
@@ -114,7 +129,7 @@ func _process(delta: float) -> void:
 		return
 	_accumulated_time = 0.0
 
-	#_update_chunks()
+	_update_chunks()
 
 # ========================== 核心更新逻辑模块 ==========================
 ## 功能：检查玩家是否跨越了区块边界，若是则增量加载/卸载
@@ -123,17 +138,14 @@ func _update_chunks() -> void:
 	if not is_instance_valid(player):
 		return
 
-	var player_tile := _world_to_tile(player.global_position)
-	var player_chunk := Vector2i(
-		_floor_div(player_tile.x, chunk_size),
-		_floor_div(player_tile.y, chunk_size)
-	)
+	var player_chunk := _pixel_to_chunk(player.global_position)
 
 	if player_chunk == _last_player_chunk:
 		return
 
 	_last_player_chunk = player_chunk
 	_load_chunks_around(player_chunk)
+	_notify_room_enter(player_chunk)
 
 ## 功能：围绕指定区块坐标加载范围内的所有区块，并卸载超出的
 ## 参数：center (Vector2i) - 中心区块坐标
@@ -221,7 +233,8 @@ func _unload_chunk(key: String) -> void:
 ## 参数：layer (TileMapLayer) - 目标图层；chunk_x (int) - 区块 X；chunk_y (int) - 区块 Y
 func _fill_chunk(layer: TileMapLayer, chunk_x: int, chunk_y: int) -> void:
 	if generator != null:
-		generator.fill_chunk(layer, chunk_x, chunk_y, world_seed)
+		var ring := get_ring(chunk_x, chunk_y)
+		generator.fill_chunk(layer, chunk_size, chunk_x, chunk_y, world_seed, ring)
 	else:
 		# 无生成器时的兜底：生成空白草地
 		_fill_default(layer, chunk_x, chunk_y)
@@ -238,10 +251,32 @@ func _fill_default(layer: TileMapLayer, chunk_x: int, chunk_y: int) -> void:
 			layer.set_cell(Vector2i(local_x, local_y), 1, atlas_coords)
 
 # ========================== 工具方法模块 ==========================
-## 功能：将世界坐标（像素）转换为 tile 坐标
-## 使用参考 TileMapLayer 的 local_to_map 确保与 Godot 内部坐标系一致
-func _world_to_tile(world_pos: Vector2) -> Vector2i:
-	return _reference_layer.local_to_map(world_pos)
+## 功能：将世界坐标（像素）直接转换为区块坐标
+## 使用自定义等距公式（与 Godot 的 map_to_local 互为反函数）
+## 参数：pos - 世界像素坐标
+## 返回值：Vector2i - 区块坐标 (cx, cy)
+func _pixel_to_chunk(pos: Vector2) -> Vector2i:
+	var px := pos.x
+	var py := pos.y
+	var cx := floori(px * _inv_chunk_step_x + py * _inv_chunk_step_y)
+	var cy := floori(py * _inv_chunk_step_y - px * _inv_chunk_step_x)
+	return Vector2i(cx, cy)
+
+## 预计算等距转换常量，在 tileset 或 chunk_size 变更时重新调用
+func _update_isometric_constants() -> void:
+	var half_w: float
+	var half_h: float
+	if tileset == null or tileset.tile_size == Vector2i.ZERO:
+		half_w = 16.0
+		half_h = 8.0
+	else:
+		half_w = tileset.tile_size.x * 0.5
+		half_h = tileset.tile_size.y * 0.5
+
+	_chunk_step_x = chunk_size * half_w * 2.0
+	_chunk_step_y = chunk_size * half_h * 2.0
+	_inv_chunk_step_x = 1.0 / _chunk_step_x
+	_inv_chunk_step_y = 1.0 / _chunk_step_y
 
 ## 功能：将 tile 坐标转换为局部位置（像素）
 ## 使用参考 TileMapLayer 的 map_to_local 确保与 Godot 内部坐标系一致
@@ -258,12 +293,6 @@ static func _parse_key(key: String) -> Vector2i:
 	if parts.size() == 2:
 		return Vector2i(parts[0].to_int(), parts[1].to_int())
 	return Vector2i.ZERO
-
-## 功能：整数除法，支持负数向下取整（Godot 的 / 向零取整）
-static func _floor_div(a: int, b: int) -> int:
-	if b == 0:
-		return 0
-	return int(floor(float(a) / float(b)))
 
 ## 功能：根据区块坐标生成确定性种子
 func _make_chunk_seed(cx: int, cy: int) -> int:
@@ -290,3 +319,38 @@ func get_loaded_chunk_count() -> int:
 ## 功能：检查指定坐标的区块是否已加载
 func is_chunk_loaded(cx: int, cy: int) -> bool:
 	return _loaded_chunks.has(_chunk_key(cx, cy))
+
+## 功能：获取指定区块的 ring 值（难度圈层）
+## 从 map_data 查询，若无 map_data 则返回曼哈顿距离
+func get_ring(cx: int, cy: int) -> int:
+	if map_data != null:
+		var cell := map_data.get_cell(cx, cy)
+		if cell != null:
+			return cell.ring
+	return abs(cx) + abs(cy)
+
+## 功能：获取指定区块的事件类型
+## 从 map_data 查询，若无 map_data 则返回空字符串
+func get_event_type(cx: int, cy: int) -> String:
+	if map_data != null:
+		var cell := map_data.get_cell(cx, cy)
+		if cell != null:
+			return cell.event_type
+	return ""
+
+## 获取坐标转换用的参考 TileMapLayer（用于 map_to_local 坐标换算）
+func get_ref_layer() -> TileMapLayer:
+	return _reference_layer
+
+## 通知 RoomManager 玩家进入了新格子
+func _notify_room_enter(coord: Vector2i) -> void:
+	var ring := get_ring(coord.x, coord.y)
+	var event := get_event_type(coord.x, coord.y)
+	RoomManager.enter_room(coord, ring, event)
+
+## 功能：清空所有已加载的区块，重置状态
+func clear_all() -> void:
+	var keys := _loaded_chunks.keys()
+	for key in keys:
+		_unload_chunk(key)
+	_last_player_chunk = Vector2i(999999, 999999)

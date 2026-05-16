@@ -27,30 +27,30 @@ enum TerrainType {
 @export var deep_water_upper: float = -0.6
 
 ## 浅水上界 [deep_water_upper, shallow_water_upper) → SHALLOW_WATER
-@export var shallow_water_upper: float = -0.3
+@export var shallow_water_upper: float = -0.35
 
 ## 沙地上界 [shallow_water_upper, sand_upper) → SAND
-@export var sand_upper: float = -0.15
+@export var sand_upper: float = -0.22
 
 ## 泥地上界 [sand_upper, mud_upper) → MUD
 @export var mud_upper: float = -0.1
 
 ## 草地上界 [mud_upper, grass_upper) → GRASS
-@export var grass_upper: float = 0.2
+@export var grass_upper: float = 0.25
 
 ## 花地上界 [grass_upper, flower_upper) → FLOWER
-@export var flower_upper: float = 0.75
+@export var flower_upper: float = 0.7
 
 ## 石地上界 [flower_upper, stone_upper) → STONE
 @export var stone_upper: float = 0.8
 
 ## 山地上界 [stone_upper, mountain_upper) → MOUNTAIN
-@export var mountain_upper: float = 0.83
+@export var mountain_upper: float = 0.85
 
 ## 岩石上界 [mountain_upper, rock_upper) → ROCK
-@export var rock_upper: float = 0.85
+@export var rock_upper: float = 0.95
 
-## 雪地 [rock_upper, 1.0] → SNOW
+##  雪地  [rock_upper, 1.0] → SNOW
 
 ## 地形名称（按枚举顺序，仅用于显示/调试）
 @export var terrain_names: Array[String] = [

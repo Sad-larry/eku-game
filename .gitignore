@@ -5,3 +5,5 @@
 addons/
 docs/
 node_modules/
+logs/
+run_scripts/

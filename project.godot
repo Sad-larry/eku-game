@@ -135,6 +135,7 @@ debug_toggle_game_state={
 2d_physics/layer_4="EnemyHitbox"
 2d_physics/layer_5="PlayerHurtbox"
 2d_physics/layer_6="EnemyHurtbox"
+2d_physics/layer_7="RoomWall"
 
 [physics]
 

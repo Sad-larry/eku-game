@@ -21,7 +21,10 @@
       "mcp__memory__create_entities",
       "mcp__memory__create_relations",
       "mcp__memory__add_observations",
-      "mcp__memory__open_nodes"
+      "mcp__memory__open_nodes",
+      "Bash(xxd \"D:/MyAppData/Godot/eku-game/.godot/uid_cache.bin\")",
+      "Read(//c//**)",
+      "Read(//d//**)",
     ]
   }
 }

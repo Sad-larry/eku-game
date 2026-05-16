@@ -5,3 +5,4 @@
 [resource]
 script = ExtResource("1_bcmdj")
 biome_name = "花地"
+height_bias = 0.08

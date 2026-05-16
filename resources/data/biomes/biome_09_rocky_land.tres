@@ -1,7 +1,14 @@
 [gd_resource type="Resource" script_class="BiomeConfig" format=3 uid="uid://cjku5pskh1b5j"]
 
+[ext_resource type="Script" uid="uid://ch7pa41h6dlyg" path="res://resources/data/configs/terrain_height_rules.gd" id="1_jm2ri"]
 [ext_resource type="Script" uid="uid://cfw4p3yinl00e" path="res://resources/data/biomes/biome_config.gd" id="1_o067o"]
+
+[sub_resource type="Resource" id="Resource_sycfg"]
+script = ExtResource("1_jm2ri")
+metadata/_custom_type_script = "uid://ch7pa41h6dlyg"
 
 [resource]
 script = ExtResource("1_o067o")
 biome_name = "岩石"
+height_rules = SubResource("Resource_sycfg")
+height_bias = 0.35

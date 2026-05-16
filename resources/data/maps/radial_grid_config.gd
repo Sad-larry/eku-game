@@ -26,3 +26,10 @@ class_name RadialGridConfig
 
 ## 保证在某些圈层固定出现的事件（Boss、商店等）
 @export var guaranteed_events: Array[GuaranteedEventInfo]
+
+## ring→生态映射表。设置后该 ring 的区块使用指定生态的瓦片集和地形规则。
+## 未设置的 ring 使用 default_biome。
+@export var ring_biomes: Array[RingBiomeEntry] = []
+
+## 默认生态（当 ring 未在 ring_biomes 中设置时使用此生态）
+@export var default_biome: BiomeConfig

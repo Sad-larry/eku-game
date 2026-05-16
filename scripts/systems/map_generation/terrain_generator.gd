@@ -13,13 +13,16 @@ extends RefCounted
 class_name TerrainGenerator
 
 # ========================== 外部依赖模块 ==========================
-## 生态地图引用（决定各区块使用哪个生态的瓦片图集）
-var biome_map: BiomeMap = null
+## 默认生态（当 ring 未在 ring_biomes 中设置时使用此生态）
+var default_biome: BiomeConfig = null
+
+## ring→生态映射表（int(ring) → BiomeConfig）
+var ring_biomes: Dictionary = {}
 
 ## 噪声高度图生成器（必须设置）
 var height_generator: NoiseHeightGenerator = null
 
-## 高度→地形类型映射规则（必须设置）
+## 全局高度→地形类型映射规则（当 BiomeConfig 未设置自有的 height_rules 时使用）
 var height_rules: TerrainHeightRules = null
 
 # ========================== 兜底配置模块 ==========================
@@ -31,13 +34,14 @@ const _FALLBACK_TILE_INDEX: int = 4
 
 # ========================== 公共 API 模块 ==========================
 ## 填充指定区块的 TileMapLayer
-func fill_chunk(layer: TileMapLayer, chunk_x: int, chunk_y: int, base_seed: int) -> void:
-	var size := _get_chunk_size(layer)
-	var biome := _get_biome(chunk_x, chunk_y, base_seed)
+func fill_chunk(layer: TileMapLayer, size: int, chunk_x: int, chunk_y: int, base_seed: int, ring: int = -1) -> void:
+	# 根据 ring 获取生态配置
+	var biome := _get_biome(ring)
+	var rules := biome.height_rules if biome != null and biome.height_rules != null else height_rules
 	var source := biome.source_id if biome != null else _FALLBACK_SOURCE_ID
 
 	# 依赖缺失时用兜底填充
-	if height_generator == null or height_rules == null:
+	if height_generator == null or rules == null:
 		_fill_default(layer, size, source)
 		return
 
@@ -48,20 +52,24 @@ func fill_chunk(layer: TileMapLayer, chunk_x: int, chunk_y: int, base_seed: int)
 		chunk_x * size, chunk_y * size
 	)
 
-	# 2. 高度图驱动瓦片选择
+	# 2. 应用生态高度偏移，整体抬升/压低地形态
+	var bias := biome.height_bias if biome != null else 0.0
+
+	# 3. 高度图驱动瓦片选择
 	for lx in size:
 		for ly in size:
-			var h := height_map.get_height(lx, ly)
-			var terrain_type := height_rules.get_terrain_type(h)
+			var h := height_map.get_height(lx, ly) + bias
+			var terrain_type := rules.get_terrain_type(h)
 			# 图集以行顺序排列：列=地形类型索引，行=0
 			layer.set_cell(Vector2i(lx, ly), source, Vector2i(terrain_type, 0))
 
 # ========================== 生态查询模块 ==========================
-## 获取指定区块的生态配置
-func _get_biome(chunk_x: int, chunk_y: int, base_seed: int) -> BiomeConfig:
-	if biome_map != null:
-		return biome_map.get_biome(chunk_x, chunk_y, base_seed)
-	return null
+## 根据 ring 值获取生态配置
+## 优先从 ring_biomes 中查找，未设置则返回 default_biome
+func _get_biome(ring: int) -> BiomeConfig:
+	if ring >= 0 and ring_biomes.has(ring):
+		return ring_biomes[ring]
+	return default_biome
 
 # ========================== 工具方法模块 ==========================
 ## 兜底填充：统一铺默认地形瓦片
@@ -69,12 +77,3 @@ func _fill_default(layer: TileMapLayer, size: int, source: int) -> void:
 	for lx in size:
 		for ly in size:
 			layer.set_cell(Vector2i(lx, ly), source, Vector2i(_FALLBACK_TILE_INDEX, 0))
-
-## 从父级 ChunkManager 获取区块大小
-func _get_chunk_size(layer: TileMapLayer) -> int:
-	var parent := layer.get_parent()
-	while parent != null:
-		if parent is ChunkManager:
-			return (parent as ChunkManager).chunk_size
-		parent = parent.get_parent()
-	return 32

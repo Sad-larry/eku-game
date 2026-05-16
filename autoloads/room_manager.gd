@@ -1,132 +1,84 @@
 # ==============================================================================
 #   room_manager.gd
-#   功能：房间全局管理器（Autoload 单例），负责房间的注册/注销、当前房间切换、
-#        房间激活/休眠管理，并提供房间查询接口。
-#   自动加载配置：在 Project -> Project Settings -> Autoloads 中添加，命名为 RoomManager
+#   功能：格子运行时状态管理器（Autoload 单例）。
+#         追踪玩家当前所在的菱形网格格子，维护每个格子的运行时状态。
+#         不依赖 RoomBase，直接操作网格坐标（与 RadialGridMap 坐标系一致）。
 # ==============================================================================
 extends Node
 
-# ========================== 常量定义模块 ==========================
-## 调试模式开关（开启后输出更多调试信息）
-const DEBUG_MODE: bool = true
+# ========================== 格子状态枚举 ==========================
+enum RoomState {
+	UNVISITED,  # 从未进入
+	ACTIVE,     # 玩家当前在此格子中
+	CLEARED,    # 事件已解决（战斗清场/已购买/已开启）
+}
 
-# ========================== 变量定义模块 ==========================
-## 已注册的房间字典：{room_id (String): room_node (RoomBase)}
-var registered_rooms: Dictionary = {}
+# ========================== 运行时状态 ==========================
+## 格子状态字典：key="x,y" → RoomState
+var _room_states: Dictionary = {}
 
-## 当前激活的房间 ID
-var current_room_id: String = ""
+## 当前格子坐标
+var current_coord: Vector2i = Vector2i.ZERO
 
-# ========================== 公共 API 模块 ==========================
-## 功能：注册房间到全局管理器
-## 参数：room_node (RoomBase) - 继承自 RoomBase 的房间节点
-## 说明：防止重复注册，并绑定节点的 tree_exiting 信号用于自动注销
-func register_room(room_node: RoomBase) -> void:
-	var room_id: String = room_node.room_id
-	
-	# 防止重复注册
-	if registered_rooms.has(room_id):
-		push_warning("[RoomManager] 房间已注册: %s" % room_id)
-		return
-	
-	# 注册房间并绑定清理信号
-	registered_rooms[room_id] = room_node
-	# 注意：tree_exiting 连接使用 callable 绑定参数，避免匿名函数捕获问题
-	room_node.tree_exiting.connect(_on_room_tree_exiting.bind(room_node))
-	
-	if DEBUG_MODE:
-		print("[RoomManager] 注册房间: %s" % room_id)
+## 当前格子的 ring 值
+var current_ring: int = 0
 
-## 功能：注销房间
-## 参数：room_node (RoomBase) - 要注销的房间节点
-func unregister_room(room_node: RoomBase) -> void:
-	if not is_instance_valid(room_node):
-		return
-	if room_node.get("room_id") == null:
-		push_warning("[RoomManager] 房间节点缺少 room_id 属性: %s" % room_node.name)
-		return
-	
-	var room_id: String = room_node.room_id
-	
-	# 移除注册记录
-	if registered_rooms.has(room_id):
-		registered_rooms.erase(room_id)
-		
-		# 如果注销的是当前房间，清空当前房间 ID
-		if current_room_id == room_id:
-			current_room_id = ""
-		
-		if DEBUG_MODE:
-			print("[RoomManager] 注销房间: %s" % room_id)
-	else:
-		push_warning("[RoomManager] 尝试注销未注册的房间: %s" % room_id)
+## 当前格子的事件类型
+var current_event_type: String = ""
 
-## 功能：设置当前激活的房间
-## 参数：room_id (String) - 房间唯一标识
-## 返回值：bool - true 表示设置成功，false 表示失败
-func set_current_room(room_id: String) -> bool:
-	# 校验房间是否已注册
-	if not registered_rooms.has(room_id):
-		push_error("[RoomManager] 无法设置当前房间，未注册的房间ID: %s" % room_id)
+# ========================== 信号 ==========================
+## 玩家进入新格子时触发
+signal room_entered(coord: Vector2i, ring: int, event_type: String)
+
+## 格子被清除时触发
+signal room_cleared(coord: Vector2i)
+
+## 格子状态变化时触发
+signal room_state_changed(coord: Vector2i, new_state: int)
+
+# ========================== 公共 API ==========================
+## 通知 RoomManager 玩家进入了指定格子
+## 返回值：true=成功切换，false=已在同一格子
+func enter_room(coord: Vector2i, ring: int, event_type: String) -> bool:
+	if coord == current_coord:
 		return false
-	
-	# 休眠上一个房间
-	if current_room_id != "" and registered_rooms.has(current_room_id):
-		var prev_room = registered_rooms[current_room_id]
-		if prev_room.has_method("deactivate_room"):
-			prev_room.deactivate_room()
-	
-	# 激活新房间
-	var new_room = registered_rooms[room_id]
-	current_room_id = room_id
-	if new_room.has_method("activate_room"):
-		new_room.activate_room()
-	
-	# 全局状态同步（切换到游戏中）
-	if GameManager.current_game_state != GameManager.GameState.IN_GAME:
-		GameManager.set_game_state(GameManager.GameState.IN_GAME)
-	
-	if DEBUG_MODE:
-		print("[RoomManager] 设置当前房间为: %s" % room_id)
+
+	# 更新当前格子（不清除上一个格子，由战斗系统通过 set_state 显式触发）
+	current_coord = coord
+	current_ring = ring
+	current_event_type = event_type
+
+	# 首次进入则初始化为 ACTIVE
+	var key := _key(coord)
+	if not _room_states.has(key):
+		_room_states[key] = RoomState.ACTIVE
+		room_state_changed.emit(coord, RoomState.ACTIVE)
+
+	room_entered.emit(coord, ring, event_type)
 	return true
 
-## 功能：获取当前房间节点
-## 返回值：RoomBase - 当前房间实例，若未找到则返回 null
-func get_current_room() -> RoomBase:
-	if registered_rooms.has(current_room_id):
-		return registered_rooms[current_room_id]
-	return null
+## 查询格子的运行时状态
+func get_state(coord: Vector2i) -> int:
+	return _room_states.get(_key(coord), RoomState.UNVISITED)
 
-## 功能：通过房间 ID 获取房间节点
-## 参数：room_id (String) - 房间唯一标识
-## 返回值：RoomBase - 房间实例，若未找到则返回 null
-func get_room_by_id(room_id: String) -> RoomBase:
-	return registered_rooms.get(room_id, null)
+## 强制设置格子状态
+func set_state(coord: Vector2i, state: int) -> void:
+	_room_states[_key(coord)] = state
+	room_state_changed.emit(coord, state)
+	if state == RoomState.CLEARED:
+		room_cleared.emit(coord)
 
-## 功能：清空所有房间注册（场景切换时调用）
-## 说明：断开所有房间的信号连接并释放节点
-func clear_all_rooms() -> void:
-	# 先断开所有房间的 tree_exiting 连接，避免在清除过程中触发注销
-	for room_node in registered_rooms.values():
-		if is_instance_valid(room_node) and room_node.is_inside_tree():
-			# 断开 tree_exiting 信号，防止循环修改
-			if room_node.tree_exiting.is_connected(_on_room_tree_exiting.bind(room_node)):
-				room_node.tree_exiting.disconnect(_on_room_tree_exiting.bind(room_node))
-			room_node.queue_free()
-	
-	registered_rooms.clear()
-	current_room_id = ""
-	if DEBUG_MODE:
-		print("[RoomManager] 已清空所有房间")
+## 快捷查询格子是否已清除
+func is_cleared(coord: Vector2i) -> bool:
+	return _room_states.get(_key(coord), RoomState.UNVISITED) == RoomState.CLEARED
 
-## 功能：激活第一个房间（占位方法，后续实现）
-## TODO: 实现根据场景路径或房间 ID 激活首个房间的逻辑
-func activate_first_room() -> void:
-	# Global.ROOM_01_SCENE_PATH 相关逻辑待实现
-	pass
+## 重置所有状态（新冒险开始时调用）
+func reset_all() -> void:
+	_room_states.clear()
+	current_coord = Vector2i.ZERO
+	current_ring = 0
+	current_event_type = ""
 
-# ========================== 内部回调模块 ==========================
-## 功能：房间节点树退出时的内部处理（自动注销房间）
-## 参数：room_node (Node) - 正在退出的房间节点
-func _on_room_tree_exiting(room_node: Node) -> void:
-	unregister_room(room_node)
+# ========================== 工具 ==========================
+static func _key(coord: Vector2i) -> String:
+	return "%d,%d" % [coord.x, coord.y]

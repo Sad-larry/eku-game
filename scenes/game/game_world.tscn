@@ -3,23 +3,33 @@
 [ext_resource type="Script" uid="uid://bxfo4ttnt5g8j" path="res://scenes/game/game_world.gd" id="1_60nf8"]
 [ext_resource type="Resource" uid="uid://c0a1op68lstgq" path="res://resources/data/maps/radial_grid_config.tres" id="2_nms8r"]
 [ext_resource type="TileSet" uid="uid://da0qlqx0x5l2p" path="res://resources/data/tilesets/tileset_grassland.tres" id="3_jmprd"]
-[ext_resource type="Script" uid="uid://dp8do6mvyy37q" path="res://scripts/systems/map_runtime/chunk_loader.gd" id="3_nms8r"]
+[ext_resource type="Script" uid="uid://begwagd0w8e0k" path="res://scripts/systems/map_generation/chunk_manager.gd" id="3_nms8r"]
 [ext_resource type="Script" uid="uid://ctnn8d726sofc" path="res://scripts/systems/map_generation/chunk_pool.gd" id="4_60nf8"]
 [ext_resource type="PackedScene" uid="uid://dohnbnw4ew3hp" path="res://prefabs/entities/player/player.tscn" id="5_0jb8d"]
 [ext_resource type="PackedScene" uid="uid://ceolu6sw8qgju" path="res://prefabs/entities/enemies/common/enemy_skeleton.tscn" id="6_bsk45"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_yeg30"]
+font_size = 28
+shadow_size = 2
+shadow_color = Color(0, 0, 0, 1)
 
 [node name="GameWorld" type="Node2D" unique_id=1535492381]
 script = ExtResource("1_60nf8")
 room_map_config = ExtResource("2_nms8r")
 
-[node name="ChunkLoader" type="Node" parent="." unique_id=178272235]
+[node name="ChunkManager" type="Node" parent="." unique_id=178272235]
 script = ExtResource("3_nms8r")
-tile_set = ExtResource("3_jmprd")
+tileset = ExtResource("3_jmprd")
+chunk_size = 48
+load_radius = 1
+unload_radius = 1
 
-[node name="ChunkContainer" type="Node2D" parent="ChunkLoader" unique_id=1354218738]
+[node name="ChunkContainer" type="Node2D" parent="ChunkManager" unique_id=1354218738]
 
-[node name="ChunkPool" type="Node" parent="ChunkLoader" unique_id=1241745549]
+[node name="ChunkPool" type="Node" parent="ChunkManager" unique_id=1241745549]
 script = ExtResource("4_60nf8")
+
+[node name="BoundaryContainer" type="Node2D" parent="." unique_id=550864347]
 
 [node name="Player" parent="." unique_id=386607487 instance=ExtResource("5_0jb8d")]
 position = Vector2(0, 384)
@@ -31,3 +41,18 @@ position = Vector2(286, 160)
 position = Vector2(-112, 117)
 
 [node name="MapMinimap" type="CanvasLayer" parent="." unique_id=1610804728]
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=1377960154]
+
+[node name="DebugLabel" type="Label" parent="UI" unique_id=2031166108]
+offset_right = 40.0
+offset_bottom = 23.0
+label_settings = SubResource("LabelSettings_yeg30")
+
+[node name="HeightIndicator" type="ColorRect" parent="UI" unique_id=1612230540]
+visible = false
+custom_minimum_size = Vector2(16, 16)
+offset_left = 10.0
+offset_top = 140.0
+offset_right = 26.0
+offset_bottom = 156.0

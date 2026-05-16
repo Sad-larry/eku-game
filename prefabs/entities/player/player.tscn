@@ -40,7 +40,7 @@ radius = 8.0
 height = 36.0
 
 [node name="Player" type="CharacterBody2D" unique_id=386607487]
-collision_mask = 0
+collision_mask = 64
 script = ExtResource("1_mcok7")
 stats_resource = ExtResource("2_j35ld")
 

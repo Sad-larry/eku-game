@@ -5,3 +5,4 @@
 [resource]
 script = ExtResource("1_7p026")
 biome_name = "山地"
+height_bias = 0.25

@@ -13,3 +13,13 @@ class_name BiomeConfig
 
 ## TileSet 图集源 ID
 @export var source_id: int = 1
+
+## 可选：覆盖全局的 TerrainHeightRules。
+## 若不设置则回退到 TerrainGenerator 的全局 height_rules。
+@export var height_rules: TerrainHeightRules
+
+## 噪声高度偏移量。查表前将高度值加上此偏移，整体抬升/压低生态的地形分布。
+## 正数 → 更多高地形（石地/山地/雪地），负数 → 更多低地形（水域/沙地/泥地），
+## 0.0 → 使用基准阈值（草地占主体）。
+## 建议范围 [-0.5, 0.5]，相邻 ring 之间的 bias 差值不超过 0.15 以保过渡自然。
+@export var height_bias: float = 0.0

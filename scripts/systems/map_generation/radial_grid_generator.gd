@@ -146,7 +146,7 @@ func print_grid_pretty(map: RadialGridMap, mxmy: int) -> void:
 	var min_y = -mxmy
 	var max_y = mxmy
 	
-	const CELL_WIDTH = 12
+	const CELL_WIDTH = 10
 	
 	print("\n========== 坐标网格 ==========")
 	

@@ -6,29 +6,23 @@
 extends Node
 class_name StateMachine
 
-# ========================== 常量定义模块 ==========================
-## 调试模式开关（开启后输出状态切换日志）
-@export var DEBUG_MODE : bool = false
-
 # ========================== 变量定义模块 ==========================
-# 添加一个变量，用于标识此状态机所属的实体名称
 ## 状态机所属实体名称（用于调试日志）
 var entity_name: String = ""
-
 ## 所有已注册状态的字典：{state_name (String): FSMState}
 var _states: Dictionary = {}
-
 ## 懒加载状态工厂字典：{state_name (String): Callable}，用于延迟创建状态实例
 var _state_factories: Dictionary = {}
-
 ## 状态转换守卫字典：{"from->to": Callable}，守卫返回 false 时会阻止转换
 var _transition_guards: Dictionary = {}
-
 ## 当前激活的状态实例
 var _current_state: FSMState = null
-
 ## 当前状态名称
 var current_state_name: String = ""
+
+# ========================== 导出变量模块 ==========================
+## 调试模式开关（开启后输出状态切换日志）
+@export var DEBUG_MODE: bool = false
 
 # ========================== 状态注册模块 ==========================
 ## 功能：注册一个状态实例到状态机
@@ -62,15 +56,15 @@ func change_to(state_name: String) -> void:
 	if DEBUG_MODE:
 		var tag: String = entity_name if entity_name else "Unknown"
 		print("[FSM][%s] %s -> %s" % [tag, current_state_name, state_name])
-	
+
 	var from = current_state_name
 	var key = "%s->%s" % [from, state_name]
-	
+
 	# 守卫检查：若存在对应转换守卫且守卫返回 false，则阻止转换
 	if _transition_guards.has(key):
 		if not _transition_guards[key].call():
 			return  # 守卫阻止了转换
-	
+
 	# 检查目标状态是否已注册
 	if not _states.has(state_name):
 		# 尝试懒加载创建
@@ -81,11 +75,11 @@ func change_to(state_name: String) -> void:
 		var new_state = _state_factories[state_name].call() as FSMState
 		new_state.state_machine = self
 		_states[state_name] = new_state
-	
+
 	# 退出当前状态（若有）
 	if _current_state:
 		_current_state.exit()
-	
+
 	# 进入新状态
 	_current_state = _states[state_name]
 	current_state_name = state_name

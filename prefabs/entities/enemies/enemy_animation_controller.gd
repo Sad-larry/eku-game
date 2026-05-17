@@ -1,5 +1,5 @@
 # ==============================================================================
-#   EnemyAnimationController.gd
+#   enemy_animation_controller.gd
 #   功能：敌人动画控制器（当前为占位实现），负责将状态机状态名称映射为具体动画名称
 #        并控制 Sprite2D 播放对应动画。待后续根据实际动画资源完善映射逻辑。
 # ==============================================================================
@@ -41,7 +41,7 @@ func update_flip(velocity_x: float) -> void:
 		sprite.scale.x = absf(sprite.scale.x) * -1.0
 	else:
 		sprite.scale.x = absf(sprite.scale.x)
-		
+
 # ========================== 信号回调模块 ==========================
 ## 功能：动画完成时的回调（解析动画名称并发射 anim_finished 信号）
 ## 参数：anim_name (StringName) - 完成的动画名称

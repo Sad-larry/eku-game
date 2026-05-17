@@ -1,5 +1,5 @@
 # ==============================================================================
-#   EnergyComponent.gd
+#   energy_component.gd
 #   功能：能量组件，管理角色的能量值（如法力值、耐力值等），支持能量消耗、
 #        能量耗尽信号、能量变化信号的触发。
 # ==============================================================================
@@ -9,20 +9,17 @@ class_name EnergyComponent
 # ========================== 信号声明模块 ==========================
 ## 触发时机：角色成功消耗能量发动攻击时调用 attack() 后触发
 signal unit_attack
-
 ## 触发时机：能量值耗尽（current_energy ≤ 0）时触发
 signal unit_exhausted
-
 ## 触发时机：能量值发生变化时触发（包括初始化和消耗后）
 ## 参数：current (int) - 当前能量值，max (int) - 最大能量值
 signal energy_changed(current: int, max: int)
 
 # ========================== 变量定义模块 ==========================
 ## 最大能量值（上限）
-var max_energy := 1
-
+var max_energy: int = 1
 ## 当前能量值
-var current_energy := 1
+var current_energy: int = 1
 
 # ========================== 公共 API 模块 ==========================
 ## 功能：初始化能量组件，根据 UnitStats 资源设置最大能量和当前能量
@@ -38,13 +35,10 @@ func setup(stats: UnitStats) -> void:
 func consume(value: int) -> void:
 	if current_energy <= 0:
 		return
-	
 	current_energy -= value
 	current_energy = max(current_energy, 0)
-	
 	unit_attack.emit()
 	energy_changed.emit(current_energy, max_energy)
-	
 	if current_energy <= 0:
 		current_energy = 0
 		unit_exhausted.emit()
@@ -54,12 +48,9 @@ func consume(value: int) -> void:
 func add(value: int) -> void:
 	if value <= 0:
 		return
-	
 	var old_energy = current_energy
 	current_energy += value
 	current_energy = min(current_energy, max_energy)
-	
 	# 只有能量真正发生变化时才发射信号
 	if current_energy != old_energy:
 		energy_changed.emit(current_energy, max_energy)
-	

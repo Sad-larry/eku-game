@@ -11,10 +11,13 @@ class_name PlayerSkillManager
 var _skill_runners: Dictionary = {}
 ## 技能槽位数据数组（索引 0~3 对应 skill_1~skill_4）
 var _skill_slot_data: Array[SkillEffect] = [
-	preload("uid://b765b6el6vbye")
-	,VORTEX_01
-	,SLASH_FIRE_01,THORNFIRE_01
-] 
+	preload("uid://b765b6el6vbye"),
+	VORTEX_01,
+	SLASH_FIRE_01,
+	THORNFIRE_01
+]
+
+## 技能资源常量定义
 const VORTEX_01 = preload("uid://bpesntbwo7qn3")
 const SLASH_FIRE_01 = preload("uid://ci48eujykiu22")
 const THORNFIRE_01 = preload("uid://0sxmye1m7cu2")
@@ -45,6 +48,26 @@ func get_runner(skill_id: String) -> SkillRunner:
 func get_data_by_action(action: String) -> SkillEffect:
 	var idx :int = SKILL_SLOT_MAP.get(action, -1)
 	return _skill_slot_data[idx] if idx >= 0 and idx < _skill_slot_data.size() else null
+
+## 功能：尝试执行指定槽位的技能。内部完成冷却检查、能量检查、能量消耗。
+## 参数：action (String) - 输入动作名称（如 "skill_1"）
+## 返回值：bool - true 表示技能已成功执行
+func try_execute(action: String) -> bool:
+	var data := get_data_by_action(action)
+	if not data:
+		return false
+
+	var runner := get_runner(data.id)
+	if not runner or not runner.is_ready():
+		return false
+
+	var player := get_parent() as Player
+	if player.energy_component.current_energy < data.energy_cost:
+		return false
+
+	player.energy_component.consume(data.energy_cost)
+	runner.execute(null)
+	return true
 
 ## 功能：装备技能到指定槽位（自动寻找空槽位或覆盖第一个槽位）
 ## 参数：skill_id (String) - 技能唯一标识符

@@ -8,10 +8,10 @@ class_name PlayerMovementComponent
 # ========================== 变量定义模块 ==========================
 ## 移动速度（像素/秒）
 var _speed: float = 100.0
-
 ## 当前运动方向（8 方向标准化后的向量）
 var current_direction: Vector2 = Vector2.ZERO
-
+## 最后有效移动方向（用于动画朝向等，非 ZERO 时由 update_movement() 自动更新）
+var last_direction: Vector2 = Vector2.DOWN
 ## 当前的即时速度向量
 var current_velocity: Vector2 = Vector2.ZERO
 
@@ -27,13 +27,19 @@ func _ready() -> void:
 func setup(stats: UnitStats) -> void:
 	_speed = stats.speed
 
-## 功能：计算移动速度并应用到父节点
-## 参数：input_direction (Vector2) - 原始移动输入向量；delta (float) - 物理帧间隔时间（秒）
-## 说明：将输入方向约束为 8 方向之一，乘以速度后直接设置父节点的 velocity
-func update_movement(input_direction: Vector2, _delta: float) -> void:
-	current_direction = DirectionUtils.normalize_8_direction(input_direction)
-	current_velocity = current_direction * _speed
+## 功能：从 InputManager 拉取输入，计算移动速度并应用到父节点
+## 参数：delta (float) - 物理帧间隔时间（秒）
+##       speed_multiplier (float) - 移速倍率，设为 0 可禁用移动
+## 说明：内部通过 InputManager 获取输入，不再需要外部传入方向。
+##       last_direction 在 speed_multiplier > 0 且有实际方向时自动更新。
+func update_movement(_delta: float, speed_multiplier: float = 1.0) -> void:
+	var input_dir := InputManager.get_movement_vector()
+	current_direction = DirectionUtils.normalize_8_direction(input_dir)
 
+	if speed_multiplier > 0.0 and current_direction != Vector2.ZERO:
+		last_direction = current_direction
+
+	current_velocity = current_direction * _speed * speed_multiplier
 	get_parent().velocity = current_velocity
 
 ## 功能：立即停止移动（重置速度及相关状态）

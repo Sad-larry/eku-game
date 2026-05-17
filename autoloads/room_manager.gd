@@ -1,49 +1,51 @@
 # ==============================================================================
 #   room_manager.gd
-#   功能：格子运行时状态管理器（Autoload 单例）。
-#         追踪玩家当前所在的菱形网格格子，维护每个格子的运行时状态。
-#         不依赖 RoomBase，直接操作网格坐标（与 RadialGridMap 坐标系一致）。
+#   功能：房间运行时状态管理器（Autoload 单例）。
+#        追踪玩家当前所在的房间坐标，维护每个房间的运行时状态。
+#        直接操作网格坐标（与 RadialGridMap 坐标系一致），不依赖 RoomBase。
 # ==============================================================================
 extends Node
 
-# ========================== 格子状态枚举 ==========================
+# ========================== 枚举定义模块 ==========================
+## 房间运行时状态枚举
 enum RoomState {
 	UNVISITED,  # 从未进入
-	ACTIVE,     # 玩家当前在此格子中
+	ACTIVE,     # 玩家当前在此房间中
 	CLEARED,    # 事件已解决（战斗清场/已购买/已开启）
 }
 
-# ========================== 运行时状态 ==========================
-## 格子状态字典：key="x,y" → RoomState
-var _room_states: Dictionary = {}
-
-## 当前格子坐标
-var current_coord: Vector2i = Vector2i.ZERO
-
-## 当前格子的 ring 值
-var current_ring: int = 0
-
-## 当前格子的事件类型
-var current_event_type: String = ""
-
-# ========================== 信号 ==========================
-## 玩家进入新格子时触发
+# ========================== 信号声明模块 ==========================
+## 触发时机：玩家进入新房间时
+## 参数：coord (Vector2i) - 房间坐标；ring (int) - 房间所在环数；event_type (String) - 事件类型
 signal room_entered(coord: Vector2i, ring: int, event_type: String)
 
-## 格子被清除时触发
+## 触发时机：房间被清除时（战斗胜利/事件完成）
+## 参数：coord (Vector2i) - 房间坐标
 signal room_cleared(coord: Vector2i)
 
-## 格子状态变化时触发
+## 触发时机：房间状态发生变化时
+## 参数：coord (Vector2i) - 房间坐标；new_state (int) - 新状态（RoomState 枚举值）
 signal room_state_changed(coord: Vector2i, new_state: int)
 
-# ========================== 公共 API ==========================
-## 通知 RoomManager 玩家进入了指定格子
-## 返回值：true=成功切换，false=已在同一格子
+# ========================== 变量定义模块 ==========================
+## 房间状态字典：key="x,y" → RoomState
+var _room_states: Dictionary = {}
+## 当前房间坐标
+var current_coord: Vector2i = Vector2i.ZERO
+## 当前房间的 ring 值
+var current_ring: int = 0
+## 当前房间的事件类型
+var current_event_type: String = ""
+
+# ========================== 公共 API 模块 ==========================
+## 功能：通知 RoomManager 玩家进入了指定房间
+## 参数：coord (Vector2i) - 目标房间坐标；ring (int) - 房间所在环数；event_type (String) - 事件类型
+## 返回值：bool - true 表示成功切换，false 表示已在同一房间
 func enter_room(coord: Vector2i, ring: int, event_type: String) -> bool:
 	if coord == current_coord:
 		return false
 
-	# 更新当前格子（不清除上一个格子，由战斗系统通过 set_state 显式触发）
+	# 更新当前房间（不清除上一个房间，由战斗系统通过 set_state 显式触发）
 	current_coord = coord
 	current_ring = ring
 	current_event_type = event_type
@@ -57,28 +59,36 @@ func enter_room(coord: Vector2i, ring: int, event_type: String) -> bool:
 	room_entered.emit(coord, ring, event_type)
 	return true
 
-## 查询格子的运行时状态
+## 功能：查询指定房间的运行时状态
+## 参数：coord (Vector2i) - 房间坐标
+## 返回值：int - 房间状态（RoomState 枚举值），未访问返回 UNVISITED
 func get_state(coord: Vector2i) -> int:
 	return _room_states.get(_key(coord), RoomState.UNVISITED)
 
-## 强制设置格子状态
+## 功能：强制设置指定房间的状态
+## 参数：coord (Vector2i) - 房间坐标；state (int) - 目标状态（RoomState 枚举值）
 func set_state(coord: Vector2i, state: int) -> void:
 	_room_states[_key(coord)] = state
 	room_state_changed.emit(coord, state)
 	if state == RoomState.CLEARED:
 		room_cleared.emit(coord)
 
-## 快捷查询格子是否已清除
+## 功能：快捷查询房间是否已清除
+## 参数：coord (Vector2i) - 房间坐标
+## 返回值：bool - true 表示房间已清除
 func is_cleared(coord: Vector2i) -> bool:
 	return _room_states.get(_key(coord), RoomState.UNVISITED) == RoomState.CLEARED
 
-## 重置所有状态（新冒险开始时调用）
+## 功能：重置所有状态（新冒险开始时调用）
 func reset_all() -> void:
 	_room_states.clear()
 	current_coord = Vector2i.ZERO
 	current_ring = 0
 	current_event_type = ""
 
-# ========================== 工具 ==========================
+# ========================== 工具方法模块 ==========================
+## 功能：将房间坐标转换为字典键
+## 参数：coord (Vector2i) - 房间坐标
+## 返回值：String - 格式为 "x,y" 的键字符串
 static func _key(coord: Vector2i) -> String:
 	return "%d,%d" % [coord.x, coord.y]

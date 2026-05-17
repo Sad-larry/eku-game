@@ -1,5 +1,5 @@
 # ==============================================================================
-#   AttackComponent.gd
+#   attack_component.gd
 #   功能：攻击组件，管理攻击判定帧、连携窗口以及缓冲输入，提供攻击开始/结束、
 #        连携窗口控制、判定帧查询等核心逻辑。
 # ==============================================================================
@@ -45,12 +45,12 @@ func start_attack(attack_id: String, damage_multiplier: float = 1.0) -> void:
 	_is_attacking = true
 	_current_attack_id = attack_id
 	_current_damage_multiplier = damage_multiplier
-	
+
 	# 启动判定帧定时器
 	if hit_timer.is_stopped():
 		hit_timer.start(hit_window_duration)
 		_hit_window_active = true
-	
+
 	# 发射攻击信号（可在判定帧开始时或立即，根据设计）
 	attack_performed.emit(attack_id, damage_multiplier)
 	print("[AttackComponent] 攻击开始: ", attack_id)

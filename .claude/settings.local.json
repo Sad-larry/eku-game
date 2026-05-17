@@ -25,6 +25,10 @@
       "Bash(xxd \"D:/MyAppData/Godot/eku-game/.godot/uid_cache.bin\")",
       "Read(//c//**)",
       "Read(//d//**)",
+      "Skill(engineering-technical-writer)",
+      "Bash(sed -i '46d' \"D:\\\\MyAppData\\\\Godot\\\\eku-game\\\\prefabs\\\\entities\\\\player\\\\player.gd\")",
+      "Bash(sed -i '103,108d' \"D:\\\\MyAppData\\\\Godot\\\\eku-game\\\\prefabs\\\\entities\\\\player\\\\player.gd\")",
+      "mcp__memory__delete_observations"
     ]
   }
 }

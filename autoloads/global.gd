@@ -17,9 +17,8 @@ const MAIN_MENU_SCENE_PATH: String = "res://scenes/main/main_menu.tscn"
 const GAME_LOBBY_SCENE_PATH: String = "res://scenes/lobby/lobby_world.tscn"
 ## 游戏场景路径
 const GAME_WORLD_SCENE_PATH: String = "res://scenes/game/game_world.tscn"
-
+## 技能卡片场景路径
 const SKILL_CARD_SCENE: String = "res://prefabs/ui/skill_selection_card/skill_selection_card.tscn"
-
 
 # ========================== 运行时实体引用模块 ==========================
 ## 全局玩家对象引用
@@ -80,16 +79,16 @@ func weighted_random(items: Array, weights: Array[float]):
 	if items.size() != weights.size():
 		push_error("Global.weighted_random: items 和 weights 长度不一致")
 		return null
-	
+
 	# 计算总权重
 	var total: float = 0.0
 	for w in weights:
 		total += w
-	
+
 	# 若所有权重为 0（或总和为 0），则退化为均匀随机
 	if total <= 0.0:
 		return items[randi() % items.size()]
-	
+
 	# 按权重随机抽取
 	var roll: float = randf() * total
 	var cumulative: float = 0.0
@@ -97,6 +96,6 @@ func weighted_random(items: Array, weights: Array[float]):
 		cumulative += weights[i]
 		if roll < cumulative:
 			return items[i]
-	
+
 	# 兜底返回（理论上不会执行到这里）
 	return items[-1]

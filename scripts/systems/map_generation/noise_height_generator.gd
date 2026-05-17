@@ -8,7 +8,7 @@
 extends RefCounted
 class_name NoiseHeightGenerator
 
-# ========================== 噪声参数模块 ==========================
+# ========================== 变量定义模块 ==========================
 ## 噪声类型（FastNoiseLite.TYPE_*）
 var noise_type: int = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
 
@@ -60,6 +60,8 @@ func generate(width: int, height: int, map_seed: int,
 
 # ========================== 噪声工具模块 ==========================
 ## 根据当前参数创建配置好的 FastNoiseLite 实例
+## 参数：map_seed (int) - 随机种子
+## 返回值：FastNoiseLite - 配置好的噪声实例
 func _create_noise(map_seed: int) -> FastNoiseLite:
 	var noise := FastNoiseLite.new()
 	noise.noise_type = noise_type as FastNoiseLite.NoiseType

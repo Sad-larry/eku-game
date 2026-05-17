@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="SkillEffect" format=3 uid="uid://be8iv604itku6"]
+
+[ext_resource type="Texture2D" uid="uid://dsp8g5d4ebsoo" path="res://assets/sprites/skills/icon_void _burst.png" id="1_6u1ob"]
+[ext_resource type="Script" uid="uid://db3ag7dk47lhq" path="res://resources/data/skills/skill_effect.gd" id="1_8j8jn"]
+[ext_resource type="PackedScene" uid="uid://bssfi30akkrst" path="res://prefabs/fx/skills/void_burst/fx_void_burst.tscn" id="2_fxscene"]
+
+[resource]
+script = ExtResource("1_8j8jn")
+id = "void_burst"
+name = "虚空迸发"
+icon = ExtResource("1_6u1ob")
+description = "凝聚虚空之力凝成暗黑能量法球，缓缓悬浮于身前，蓄势片刻后轰然炸裂。汹涌虚空暗流席卷四方，撕裂周遭空间，以极强的爆发威力轰碎目标，是一击定局的终结招式。"
+cooldown = 2.0
+energy_cost = 1
+damage = 10.0
+skill_multiplier = 2.0
+type = 2
+skill_duration = 0.8
+fx_scene = ExtResource("2_fxscene")
+effect_attach_type = 1
+anim_base_name = "void_burst"
+metadata/_custom_type_script = "uid://db3ag7dk47lhq"

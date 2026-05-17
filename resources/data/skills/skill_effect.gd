@@ -1,5 +1,5 @@
 # ==============================================================================
-#   SkillEffect.gd
+#   skill_effect.gd
 #   功能：技能效果资源类，定义技能的所有属性（冷却、能耗、伤害、倍率、特效挂载、
 #        动画名称等），用于技能系统的数据驱动配置。
 # ==============================================================================
@@ -9,18 +9,26 @@ class_name SkillEffect
 # ========================== 枚举定义模块 ==========================
 ## 技能类别枚举
 enum SkillType {
-	UNKNOWN,        ## 未知/彩蛋技能
-	INITIATOR,      ## 起手技（连击起始）
-	FINISHER,       ## 连携技（连击终结）
-	CONTROL,        ## 场控技（控制效果）
-	SURVIVAL        ## 生存技（防御/回复）
+	## 未知/彩蛋技能
+	UNKNOWN,
+	## 起手技（连击起始）
+	INITIATOR,
+	## 连携技（连击终结）
+	FINISHER,
+	## 场控技（控制效果）
+	CONTROL,
+	## 生存技（防御/回复）
+	SURVIVAL
 }
 
 ## 特效挂载位置枚举
 enum EffectAttachType {
-	CASTER,         ## 特效挂在施法者身上（如自身增益 Buff）
-	TARGET,         ## 特效挂在目标身上（如攻击命中敌人特效）
-	POSITION        ## 特效挂在指定世界坐标（如毒圈、AOE 地面技能）
+	## 特效挂在施法者身上（如自身增益 Buff）
+	CASTER, 
+	## 特效挂在目标身上（如攻击命中敌人特效）
+	TARGET,
+	## 特效挂在指定世界坐标（如毒圈、AOE 地面技能）
+	POSITION
 }
 
 # ========================== 导出变量模块 ==========================
@@ -66,3 +74,9 @@ enum EffectAttachType {
 ## 技能动画基础名称（用于构建完整动画名：skill_{anim_base_name}_{direction}）
 ## 例如：anim_base_name = "slash" -> 动画名可能为 "skill_slash_down"、"skill_slash_up" 等
 @export var anim_base_name: String = ""
+
+## 释放技能时玩家能否移动
+@export var can_move_while_casting: bool = false
+
+## 释放技能时玩家的移速倍率（仅 can_move_while_casting 为 true 时生效）
+@export var move_speed_multiplier: float = 1.0

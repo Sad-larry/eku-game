@@ -1,5 +1,5 @@
 # ==============================================================================
-#   AudioManager.gd
+#   audio_manager.gd
 #   功能：音频管理器，管理音效、背景音乐、音量设置，支持音量持久化、音效池、
 #        音乐淡入淡出、跨场景自动加载（通过 Autoload 系统）。
 #   自动加载配置：在 Project -> Project Settings -> Autoload 中添加，命名为 AudioManager
@@ -8,16 +8,16 @@ extends Node
 
 # ========================== 常量定义模块 ==========================
 ## 音频总线索引（需根据项目实际总线顺序调整）
-const BUS_MASTER: int = 0   ## 主音量总线索引
-const BUS_MUSIC: int  = 1   ## 音乐总线索引
-const BUS_SFX: int    = 2   ## 音效总线索引
-const BUS_UI: int     = 3   ## UI 音效总线索引
+const BUS_MASTER: int = 0  ## 主音量总线索引
+const BUS_MUSIC: int = 1   ## 音乐总线索引
+const BUS_SFX: int = 2     ## 音效总线索引
+const BUS_UI: int = 3      ## UI 音效总线索引
 
 ## 默认音量（范围 0.0 - 1.0）
 const DEFAULT_MASTER_VOLUME: float = 1.0  ## 默认主音量
-const DEFAULT_MUSIC_VOLUME:  float = 0.8  ## 默认音乐音量
-const DEFAULT_SFX_VOLUME:    float = 0.9  ## 默认音效音量
-const DEFAULT_UI_VOLUME:     float = 0.8  ## 默认 UI 音效音量
+const DEFAULT_MUSIC_VOLUME: float = 0.8   ## 默认音乐音量
+const DEFAULT_SFX_VOLUME: float = 0.9     ## 默认音效音量
+const DEFAULT_UI_VOLUME: float = 0.8      ## 默认 UI 音效音量
 
 ## 20/ln(10)
 const DB_CONVERSION_FACTOR: float = 20.0 / log(10.0)
@@ -84,9 +84,9 @@ func _load_volume_settings() -> void:
 
 	if err == OK:
 		master_volume = config.get_value("audio", "master_volume", DEFAULT_MASTER_VOLUME)
-		music_volume  = config.get_value("audio", "music_volume",  DEFAULT_MUSIC_VOLUME)
-		sfx_volume    = config.get_value("audio", "sfx_volume",    DEFAULT_SFX_VOLUME)
-		ui_volume     = config.get_value("audio", "ui_volume",     DEFAULT_UI_VOLUME)
+		music_volume = config.get_value("audio", "music_volume", DEFAULT_MUSIC_VOLUME)
+		sfx_volume = config.get_value("audio", "sfx_volume", DEFAULT_SFX_VOLUME)
+		ui_volume = config.get_value("audio", "ui_volume", DEFAULT_UI_VOLUME)
 	else:
 		# 配置文件不存在，使用默认值并保存
 		_save_volume_settings()
@@ -96,9 +96,9 @@ func _load_volume_settings() -> void:
 func _save_volume_settings() -> void:
 	var config = ConfigFile.new()
 	config.set_value("audio", "master_volume", master_volume)
-	config.set_value("audio", "music_volume",  music_volume)
-	config.set_value("audio", "sfx_volume",    sfx_volume)
-	config.set_value("audio", "ui_volume",     ui_volume)
+	config.set_value("audio", "music_volume", music_volume)
+	config.set_value("audio", "sfx_volume", sfx_volume)
+	config.set_value("audio", "ui_volume", ui_volume)
 	config.save("user://audio_settings.cfg")
 
 ## 功能：应用当前音量设置到音频总线
@@ -162,9 +162,9 @@ func set_ui_volume(volume: float) -> void:
 func get_volume_settings() -> Dictionary:
 	return {
 		"master": master_volume,
-		"music":  music_volume,
-		"sfx":    sfx_volume,
-		"ui":     ui_volume
+		"music": music_volume,
+		"sfx": sfx_volume,
+		"ui": ui_volume
 	}
 
 # ========================== 公共接口：音乐控制模块 ==========================
@@ -322,9 +322,9 @@ func _count_active_sfx_players() -> int:
 ## 功能：将所有音量重置为项目默认值
 func reset_to_defaults() -> void:
 	master_volume = DEFAULT_MASTER_VOLUME
-	music_volume  = DEFAULT_MUSIC_VOLUME
-	sfx_volume    = DEFAULT_SFX_VOLUME
-	ui_volume     = DEFAULT_UI_VOLUME
+	music_volume = DEFAULT_MUSIC_VOLUME
+	sfx_volume = DEFAULT_SFX_VOLUME
+	ui_volume = DEFAULT_UI_VOLUME
 
 	_apply_volume_settings()
 	_save_volume_settings()

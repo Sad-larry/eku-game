@@ -6,11 +6,6 @@
 # ==============================================================================
 extends Node
 
-# ========================== 信号声明模块 ==========================
-## 触发时机：游戏全局状态发生变更时
-## 参数：new_state (GameState) - 新状态，old_state (GameState) - 旧状态
-signal game_state_changed(new_state: GameState, old_state: GameState)
-
 # ========================== 枚举定义模块 ==========================
 ## 游戏全局状态枚举
 enum GameState {
@@ -23,6 +18,11 @@ enum GameState {
 	UNINITIALIZED    ## 未初始化状态（初始占位）
 }
 
+# ========================== 信号声明模块 ==========================
+## 触发时机：游戏全局状态发生变更时
+## 参数：new_state (GameState) - 新状态，old_state (GameState) - 旧状态
+signal game_state_changed(new_state: GameState, old_state: GameState)
+
 # ========================== 常量定义模块 ==========================
 ## 调试模式开关（开启后支持 F11 快捷键切换游戏状态用于测试）
 const DEBUG_MODE: bool = true
@@ -30,7 +30,6 @@ const DEBUG_MODE: bool = true
 # ========================== 变量定义模块 ==========================
 ## 当前游戏全局状态（初始为 UNINITIALIZED）
 var current_game_state: GameState = GameState.UNINITIALIZED
-
 ## 状态历史栈（用于 push_state / pop_state 操作，支持临时界面覆盖）
 var _state_stack: Array[GameState] = []
 
@@ -63,17 +62,17 @@ func _process(_delta: float) -> void:
 func set_game_state(new_state: GameState) -> void:
 	if new_state == current_game_state:
 		return
-	
+
 	if get_tree():
 		match new_state:
 			GameState.PAUSED, GameState.SETTINGS, GameState.GAME_OVER:
 				get_tree().paused = true
 			GameState.MAIN_MENU, GameState.IN_GAME, GameState.LOBBY:
 				get_tree().paused = false
-		
+
 	var old_state: GameState = current_game_state
 	current_game_state = new_state
-	
+
 	game_state_changed.emit(new_state, old_state)
 	print("[GameManager] 游戏状态变更 -> ", GameState.keys()[old_state], " -> ", GameState.keys()[new_state])
 

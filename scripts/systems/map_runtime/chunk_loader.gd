@@ -6,13 +6,16 @@
 extends Node
 class_name ChunkLoader
 
+# ========================== 信号声明模块 ==========================
 signal chunk_loaded(cx: int, cy: int, ring: int)
 signal chunk_unloaded(cx: int, cy: int)
 
+# ========================== 导出变量模块 ==========================
 @export var tile_set: TileSet
 @export var chunk_size: int = 48
 @export var load_radius: int = 1
 
+# ========================== 变量定义模块 ==========================
 var map_data: RadialGridMap
 var _loaded: Dictionary = {}
 var _last_chunk: Vector2i = Vector2i(999999, 999999)
@@ -29,9 +32,11 @@ var _chunk_step_y: float
 var _inv_chunk_step_x: float
 var _inv_chunk_step_y: float
 
+# ========================== 节点引用模块 ==========================
 @onready var _container: Node2D = $ChunkContainer
 @onready var _pool: ChunkPool = $ChunkPool
 
+# ========================== 生命周期模块 ==========================
 func _ready() -> void:
 	clear_all()
 	_init_containers()
@@ -39,6 +44,7 @@ func _ready() -> void:
 	_update_tile_cache()
 	_update_isometric_constants()
 
+# ========================== 内部方法模块 ==========================
 func _init_ref_layer() -> void:
 	_ref_layer = TileMapLayer.new()
 	_ref_layer.tile_set = tile_set

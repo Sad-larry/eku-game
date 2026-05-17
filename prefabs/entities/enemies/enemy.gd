@@ -1,5 +1,5 @@
 # ==============================================================================
-#   Enemy.gd
+#   enemy.gd
 #   功能：敌方单位核心控制器，管理生命值、状态机、动画、受击与死亡逻辑，
 #        整合 HealthComponent、HurtboxComponent、状态机等子系统。
 #        敌方单位的基类
@@ -38,7 +38,6 @@ class_name Enemy
 var player_detected: bool = false
 ## 敌人的生成位置（用于限制游走范围）
 var spawn_position: Vector2 = Vector2.ZERO
-
 ## 移动速度倍率（由 ChaseBehavior 等外部行为修改），默认 1.0
 var speed_multiplier: float = 1.0
 ## 攻击范围倍率（由 ChaseBehavior 等外部行为修改），默认 1.0
@@ -46,14 +45,14 @@ var attack_range_multiplier: float = 1.0
 
 # ========================== 生命周期模块 ==========================
 ## 功能：节点就绪时初始化各组件、连接信号并启动状态机
-func _ready():
+func _ready() -> void:
 	# 记录生成位置
 	spawn_position = global_position
-	
+
 	# 同步碰撞范围
 	_sync_vision_area_range()
 	_sync_hitbox_size()
-	
+
 	# 读取配置并初始化生命值和血条
 	health_component.setup(stats_resource)
 	heal_bar.setup(health_component)
@@ -62,16 +61,16 @@ func _ready():
 	# 默认禁用攻击判定框，每次攻击时临时启用
 	hitbox_component.disable()
 	hurtbox_component.damaged.connect(_on_hurtbox_component_damaged)
-	
+
 	# 根据数据设置武器显示
 	if stats_resource.has_weapon:
 		weapon_sprite.show()
 		weapon_sprite.texture = stats_resource.weapon_texture
-	
+
 	# 初始化行为组件
 	for behavior in behaviors:
 		behavior.setup(self)
-	
+
 	# 初始化状态机
 	enemy_state_machine.init_states(self)
 
@@ -80,12 +79,11 @@ func _process(_delta: float) -> void:
 	# 在 _process 中更新行为组件（与状态机分开运行）
 	for behavior in behaviors:
 		behavior.update(_delta)
-		
 
 ## 添加 _physics_process 来驱动翻转：
 func _physics_process(_delta: float) -> void:
 	anim_controller.update_flip(velocity.x)
-	
+
 # ========================== 内部方法模块 ==========================
 ## 功能：将 VisionArea 的 CollisionShape2D 半径设置为 stats 中的 detection_range
 func _sync_vision_area_range() -> void:
@@ -103,7 +101,7 @@ func _sync_hitbox_size() -> void:
 	if collision_shape == null:
 		return
 	var current_shape = collision_shape.shape
-	
+
 	if current_shape is RectangleShape2D:
 		var new_rect: RectangleShape2D = current_shape.duplicate()
 		# 宽度 = 攻击距离，高度保持不变
@@ -113,14 +111,14 @@ func _sync_hitbox_size() -> void:
 		var new_circle: CircleShape2D = current_shape.duplicate()
 		new_circle.radius = get_attack_range()
 		collision_shape.shape = new_circle
+
 # ========================== 公共 API 模块 ==========================
 ## 功能：执行攻击逻辑（实际实现可委托给 AttackComponent 或在此处直接实现）
-func attack():
+func attack() -> void:
 	# 设置攻击判定框参数（伤害值、是否暴击、攻击来源）
 	hitbox_component.setup(stats_resource.damage, false, self)
 	# 启用攻击判定框（触发 area_entered）
 	hitbox_component.enable()
-
 
 ## 功能：获取当前追击目标玩家
 ## 返回值：Player - 玩家实例，若未找到则返回 null
@@ -136,7 +134,7 @@ func get_target() -> Player:
 ## 功能：获取检测范围（从 stats_resource 读取）
 func get_detection_range() -> float:
 	return stats_resource.detection_range
-	
+
 ## 功能：返回当前有效速度（基础速度 × 倍率），供移动组件读取
 func get_speed() -> float:
 	return stats_resource.speed * speed_multiplier
@@ -144,7 +142,6 @@ func get_speed() -> float:
 ## 功能：获取攻击范围（从 stats_resource 读取）
 func get_attack_range() -> float:
 	return stats_resource.attack_range
-
 
 # ========================== 信号回调模块 ==========================
 ## 功能：受击框受到伤害时的回调
@@ -159,7 +156,7 @@ func _on_hurtbox_component_damaged(hitbox: HitboxComponent) -> void:
 
 ## 功能：单位死亡时的回调
 ## 说明：触发状态机切换到 "dead" 死亡状态（播放死亡动画、禁用碰撞等）
-func _on_died():
+func _on_died() -> void:
 	enemy_state_machine.change_to("dead")
 
 ## 功能：玩家进入视野区域时标记 detected

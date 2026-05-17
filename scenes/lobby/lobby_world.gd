@@ -10,7 +10,6 @@
 extends Node2D
 class_name LobbyWorld
 
-
 # ========================== 节点引用模块 ==========================
 ## 玩家出生点标记（需在场景中设置 %PlayerSpawn 唯一命名）
 @onready var player_spawn: Marker2D = %PlayerSpawn
@@ -24,15 +23,14 @@ class_name LobbyWorld
 ## 传送管理器（用于连接信号等后续扩展）
 @onready var portal_manager: LobbyPortalManager = $LobbyPortalManager as LobbyPortalManager
 
-
 # ========================== 变量定义模块 ==========================
 ## 传送门对话框是否已打开（防止 body_entered 重复触发）
 ## 注意：旧版系统使用 ConfirmationDialog，新版改用 PortalZone 组件
 ## 此变量仅用于旧版 portal 信号处理（进入 dungeon/boss 等跨世界传送）
 var _is_portal_dialog_open: bool = false
 
-
 # ========================== 生命周期模块 ==========================
+## 功能：节点就绪时初始化大厅场景
 func _ready() -> void:
 	# 1) 将玩家放置到出生点
 	if player and player_spawn:
@@ -47,13 +45,13 @@ func _ready() -> void:
 
 	print("LobbyWorld: 大厅初始化完成（含子场景传送系统）")
 
-
-# ========================== 旧版传送门处理（跨世界进入 dungeon/boss）==========================
+# ========================== 旧版传送门处理模块 ==========================
 ## 注意：以下两个方法处理从大厅主场景进入游戏世界副本的旧版传送门，
 ##       与新版子场景间 PiP 传送系统无关，保留以兼容场景中已放置的 PortalToDungeon/PortalToBoss 节点。
 ##       将来如需统一，可将这些入口也改为 PortalZone 组件。
 
-## 恢复玩家移动并清理对话框
+## 功能：恢复玩家移动并清理对话框
+## 参数：player_obj (Player) - 玩家对象；dialog (ConfirmationDialog) - 对话框实例
 func _restore_player_movement(player_obj: Player, dialog: ConfirmationDialog) -> void:
 	_is_portal_dialog_open = false
 
@@ -63,8 +61,8 @@ func _restore_player_movement(player_obj: Player, dialog: ConfirmationDialog) ->
 	if is_instance_valid(dialog):
 		dialog.queue_free()
 
-
 ## 功能：传送门身体进入检测回调，进入冒险关卡
+## 参数：body (Node2D) - 进入触发器的节点
 func _on_portal_to_dungeon_body_entered(body: Node2D) -> void:
 	if not (body is Player) or _is_portal_dialog_open:
 		return
@@ -93,8 +91,8 @@ func _on_portal_to_dungeon_body_entered(body: Node2D) -> void:
 		_restore_player_movement(body, dialog)
 	)
 
-
 ## 功能：传送门身体进入检测回调，进入首领关卡
+## 参数：body (Node2D) - 进入触发器的节点
 func _on_portal_to_boss_body_entered(body: Node2D) -> void:
 	if body is Player:
 		SceneLoader.change_scene(Global.GAME_WORLD_SCENE_PATH)

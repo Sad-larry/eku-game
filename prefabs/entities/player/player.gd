@@ -21,12 +21,10 @@ class_name Player
 @onready var input_handler: PlayerInputHandler = $InputHandler
 
 # ========================== 变量定义模块 ==========================
-## 最后一次移动方向（用于动画朝向、攻击朝向等）
-var last_direction: Vector2 = Vector2.DOWN
-## 面朝方向
-var _facing_direction: Vector2 = Vector2.DOWN
-## 输入是否被禁用（用于对话框等场景）
-var input_disabled: bool = false
+## 最后有效移动方向（只读，委托至 MovementComponent）
+var last_direction: Vector2:
+	get:
+		return movement_component.last_direction
 
 # ========================== 生命周期模块 ==========================
 ## 功能：节点就绪时初始化玩家属性、信号连接、子系统编排
@@ -45,7 +43,6 @@ func _ready() -> void:
 	input_handler.input_action.connect(_on_input_action)
 	input_handler.movement_dir_changed.connect(_on_movement_changed)
 
-	EventBus.skill_slot_clicked.connect(_on_skill_slot_clicked)
 	EventBus.player_died.connect(_on_player_died)
 
 	EventBus.player_ready.emit()
@@ -59,32 +56,31 @@ func _exit_tree() -> void:
 ## 功能：每物理帧更新玩家移动与动画方向
 ## 参数：delta (float) - 物理帧间隔时间（秒）
 func _physics_process(delta: float) -> void:
-	if player_state_machine.is_movement_allowed():
-		var input_dir := InputManager.get_movement_vector()
-		movement_component.update_movement(input_dir, delta)
-		var move_dir := movement_component.get_movement_direction()
-		if move_dir != Vector2.ZERO:
-			last_direction = move_dir
+	var speed_mult := _get_current_speed_multiplier() if player_state_machine.is_movement_allowed() else 0.0
+	movement_component.update_movement(delta, speed_mult)
 
-	anim_controller.set_movement_direction(last_direction)
-	anim_controller.update_arm_sorting(last_direction)
+	anim_controller.set_movement_direction(movement_component.last_direction)
+	anim_controller.update_arm_sorting(movement_component.last_direction)
 	move_and_slide()
 
+
 # ========================== 输入处理模块 ==========================
-## 功能：输入动作触发时的回调，转发给状态机由当前状态决定是否响应
+## 功能：输入动作触发时的回调。
+##       技能动作委托 skill_manager.try_execute() 处理前置条件，
+##       通过后通知状态机播放动画。非技能动作直接转发。
 ## 参数：action (String) - 输入动作名称（如 "attack"、"skill_1"）
 func _on_input_action(action: String) -> void:
-	if input_disabled:
+	if action.begins_with("skill_"):
+		if skill_manager.try_execute(action):
+			player_state_machine.send_event(action)
 		return
+
 	player_state_machine.send_event(action)
 
 ## 功能：移动方向变化时的回调，通知状态机切换移动/待机状态
 ## 参数：dir (Vector2) - 当前移动方向（单位向量）
 func _on_movement_changed(dir: Vector2) -> void:
-	if input_disabled:
-		return
 	if dir != Vector2.ZERO:
-		_facing_direction = dir.normalized()
 		player_state_machine.send_event("move")
 	else:
 		player_state_machine.send_event("idle")
@@ -95,22 +91,14 @@ func _on_movement_changed(dir: Vector2) -> void:
 func disable_movement() -> void:
 	movement_component.stop_immediately()
 	set_physics_process(false)
-	input_disabled = true
+	EventBus.input_blocking_updated.emit(["skill_", "attack", "move_", "interact"])
 
 ## 功能：恢复玩家移动与输入
 func enable_movement() -> void:
 	set_physics_process(true)
-	input_disabled = false
+	EventBus.input_blocking_updated.emit([])
 
 # ========================== 信号回调模块 ==========================
-## 功能：技能槽被鼠标点击时的回调，将槽位索引转换为动作名后发给状态机
-## 参数：slot_index (int) - 技能槽索引（0~3）
-func _on_skill_slot_clicked(slot_index: int) -> void:
-	if input_disabled:
-		return
-	var action := "skill_%d" % [slot_index + 1]
-	player_state_machine.send_event(action)
-
 ## 功能：受击框受到伤害时的回调，执行扣血并通知状态机进入受击状态
 ## 参数：hitbox (HitboxComponent) - 攻击来源的判定框组件
 ## 说明：若玩家已死亡则不再处理伤害
@@ -138,3 +126,12 @@ func _on_unit_died() -> void:
 ## 功能：死亡动画播放完毕后的回调，打开游戏结束面板
 func _on_player_died() -> void:
 	UIManager.open_game_over()
+
+# ========================== 辅助方法模块 ==========================
+## 功能：获取当前状态的移速倍率。
+## 说明：技能释放期间若允许移动，技能数据可能附带移速倍率。
+func _get_current_speed_multiplier() -> float:
+	var state := player_state_machine.get_current_state()
+	if state and state.has_method("get_move_speed_multiplier"):
+		return state.get_move_speed_multiplier()
+	return 1.0

@@ -9,14 +9,12 @@ extends Node
 # ========================== 常量定义模块 ==========================
 ## 调试模式开关（开启后输出更多调试信息）
 const DEBUG_MODE: bool = true
-
 ## 技能资源根目录路径
 const SKILLS_DIR_PATH: String = "res://resources/data/skills/"
 
 # ========================== 变量定义模块 ==========================
 ## 所有技能的字典：{skill_id (String): SkillEffect}
 var all_skills: Dictionary = {}
-
 ## 按分类组织的技能字典：{type (SkillEffect.SkillType): Array[SkillEffect]}
 var skills_by_type: Dictionary = {}
 
@@ -50,7 +48,7 @@ func _load_all_skills() -> void:
 	if not dir:
 		push_warning("[SkillLibrary] 技能目录不存在或无法访问: ", SKILLS_DIR_PATH)
 		return
-	
+
 	_recursive_load_skills(dir, SKILLS_DIR_PATH)
 
 ## 功能：递归遍历目录并加载技能资源

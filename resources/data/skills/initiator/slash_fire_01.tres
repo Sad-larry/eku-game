@@ -17,4 +17,5 @@ type = 1
 skill_duration = 1.0
 fx_scene = ExtResource("1_nitp2")
 anim_base_name = "slash_fire"
+can_move_while_casting = true
 metadata/_custom_type_script = "uid://db3ag7dk47lhq"

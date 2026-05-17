@@ -1,8 +1,8 @@
 # ==============================================================================
-#   events_bus.gd
+#   event_bus.gd
 #   功能：全局信号总线（Autoload 单例），提供跨场景、跨组件的松耦合通信机制。
 #        所有信号均在此声明，任何模块均可连接或发射这些信号。
-#   自动加载配置：在 Project -> Project Settings -> Autoload 中添加，命名为 EventsBus
+#   自动加载配置：在 Project -> Project Settings -> Autoload 中添加，命名为 EventBus
 # ==============================================================================
 extends Node
 
@@ -45,6 +45,10 @@ signal combo_updated(new_combo: int)
 ## TODO: 新建资源类型（如 DamageData）来替代 Dictionary 传递伤害数据
 signal skill_damage_requested(damage_data: Dictionary)
 
+## 触发时机：技能命中目标并计算出伤害时
+## 参数：info (DamageInfo) - 类型安全的伤害数据对象
+signal damage_dealt(info: DamageInfo)
+
 ## 触发时机：玩家收集到硬币时
 ## 参数：amount (int) - 本次收集的硬币数量
 signal coin_collected(amount: int)
@@ -65,10 +69,17 @@ signal skill_cooldown_updated(slot_index: int, remaining: float, total: float)
 ## 参数：slot_index (int) - 技能槽索引
 signal skill_cooldown_finished(slot_index: int)
 
-signal pause_menu_requested()       # 代替 UIManager.open_pause_menu()
-signal settings_menu_requested()    # 代替 UIManager.open_settings_menu()
-signal game_over_requested()        # 代替 UIManager.open_game_over()
-signal skill_selection_requested()  # 代替 UIManager.open_skill_selection()
+## 触发时机：请求打开暂停菜单时
+signal pause_menu_requested()
+
+## 触发时机：请求打开设置菜单时
+signal settings_menu_requested()
+
+## 触发时机：请求打开游戏结束界面时
+signal game_over_requested()
+
+## 触发时机：请求打开技能选择界面时
+signal skill_selection_requested()
 
 ## 触发时机：当前 UI 栈的输入屏蔽规则发生变化
 ## 参数：blocked_prefixes (Array[String]) - 需要屏蔽的输入动作前缀列表

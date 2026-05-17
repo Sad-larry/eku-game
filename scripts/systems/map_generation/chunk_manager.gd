@@ -38,11 +38,7 @@ signal chunk_unloaded(chunk_x: int, chunk_y: int)
 ## 检测玩家位置的间隔（秒），避免每帧检查
 @export var check_interval: float = 0.25
 
-#========================== 初始化节点 ==========================
-## 用于容纳所有区块 TileMapLayer 的容器节点
-@onready var _chunk_container: Node2D = $ChunkContainer
-
-# ========================== 内部变量模块 ==========================
+# ========================== 变量定义模块 ==========================
 ## 瓦片生成器实例（可替换为不同地形的生成器）
 var generator: TerrainGenerator
 
@@ -73,14 +69,19 @@ var _chunk_step_y: float
 var _inv_chunk_step_x: float
 var _inv_chunk_step_y: float
 
+# ========================== 节点引用模块 ==========================
+## 用于容纳所有区块 TileMapLayer 的容器节点
+@onready var _chunk_container: Node2D = $ChunkContainer
+
 # ========================== 生命周期模块 ==========================
+## 功能：节点就绪时初始化区块管理器
 func _ready() -> void:
 	if tileset == null:
 		push_error("ChunkManager: tileset 未设置")
 		return
 
 	_tile_size = tileset.tile_size
-	
+
 	# 创建参考 TileMapLayer 用于坐标转换（不加入场景树）
 	_reference_layer = TileMapLayer.new()
 	_reference_layer.tile_set = tileset
@@ -93,7 +94,7 @@ func _ready() -> void:
 		_chunk_container = Node2D.new()
 		_chunk_container.name = "ChunkContainer"
 		add_child(_chunk_container)
-	
+
 	# 确保等距渲染顺序：上方区块在下方区块之后渲染
 	_chunk_container.y_sort_enabled = true
 
@@ -123,6 +124,8 @@ func _init_chunks() -> void:
 	_load_chunks_around(_last_player_chunk)
 	_notify_room_enter(_last_player_chunk)
 
+## 功能：每帧检查玩家位置并更新区块
+## 参数：delta (float) - 帧间隔时间
 func _process(delta: float) -> void:
 	_accumulated_time += delta
 	if _accumulated_time < check_interval:
@@ -155,27 +158,27 @@ func _load_chunks_around(center: Vector2i) -> void:
 	for cx in range(center.x - load_radius, center.x + load_radius + 1):
 		for cy in range(center.y - load_radius, center.y + load_radius + 1):
 			target_chunks.append(Vector2i(cx, cy))
-	
+
 	# 2. 筛选出尚未加载的区块
 	var to_load: Array[Vector2i] = []
 	for coord in target_chunks:
 		if not _loaded_chunks.has(_chunk_key(coord.x, coord.y)):
 			to_load.append(coord)
-	
+
 	# 3. 按等距深度 (cx + cy) 升序排列
 	#    深度值小的（更远）先加载/插入场景树，确保渲染在更后面
 	to_load.sort_custom(_compare_xy)
-	
+
 	# 4. 卸载超出范围的区块
 	var to_unload: Array[String] = []
 	for key in _loaded_chunks:
 		var coords := _parse_key(key)
 		if abs(coords.x - center.x) > unload_radius or abs(coords.y - center.y) > unload_radius:
 			to_unload.append(key)
-	
+
 	for key in to_unload:
 		_unload_chunk(key)
-	
+
 	# 5. 按排序后的顺序加载新区块
 	for coord in to_load:
 		_load_chunk(coord.x, coord.y)
@@ -195,8 +198,7 @@ func _load_chunk(cx: int, cy: int) -> void:
 
 	layer.tile_set = tileset
 	layer.name = "Chunk_%d_%d" % [cx, cy]
-	
-	
+
 	# 设置 z_index 确保区块在实体下方
 	layer.z_index = chunk_z_index
 
@@ -300,6 +302,7 @@ func _make_chunk_seed(cx: int, cy: int) -> int:
 
 static func _compare_xy(a: Vector2i, b: Vector2i) -> bool:
 	return (a.x + a.y) < (b.x + b.y)
+
 # ========================== 公共 API 模块 ==========================
 ## 功能：强制重新加载所有区块（如切换生成器后调用）
 func reload_all() -> void:

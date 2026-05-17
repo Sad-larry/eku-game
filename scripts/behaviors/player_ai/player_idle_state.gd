@@ -5,9 +5,13 @@
 extends PlayerState
 class_name PlayerIdleState
 
+# ========================== 生命周期模块 ==========================
+## 功能：进入待机状态时播放待机动画
 func enter() -> void:
 	get_anim().play_anim("idle", player.last_direction)
 
+## 功能：响应状态事件，根据事件类型切换到对应状态
+## 参数：event_name (String) - 事件名称（如 "move"、"attack"、"hurt" 等）
 func on_event(event_name: String) -> void:
 	match event_name:
 		"move":

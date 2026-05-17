@@ -45,30 +45,26 @@ const KEY_NAME_MAP: Dictionary = {
 }
 
 ## 输入动作配置字典（从 INPUTACTIONS 资源导入）
-const INPUT_ACTIONS := INPUTACTIONS.INPUT_ACTIONS_DICTIONARY
+const INPUT_ACTIONS := InputActions.INPUT_ACTIONS_DICTIONARY
 
 # ========================== TODO 待完善项 ==========================
 ## TODO: 当暂停时，所有按键都禁用了，但是有没有一种可能，就是暂停进入设置或其他界面时
 ##       还是需要使用到按键进行快捷操作，例如，使用方向键或 Tab 键进行组件选择，使用回车键进行确认
 ##       当前实现中暂停状态下 input_locked = true 会屏蔽所有非暂停键，
-##       后续可根据需求为 UI 操作单独保留特定动作的输入权限。
+##       后续可根据需求为 UI 操作单独保留特定动作的输入权限
 
 # ========================== 变量定义模块 ==========================
 ## 是否锁定输入（暂停/菜单/游戏结束时禁用大部分输入）
 var input_locked: bool = true
-
 ## 输入缓冲队列，存储 Dictionary{action: String, time_ms: int}
 var _buffer: Array[Dictionary] = []
-
 ## 暂停键防抖标记（避免重复触发）
 var _pause_key_just_handled: bool = false
-
 ## 缓存的非轴动作名列表（避免每帧遍历全部字典）
 var _action_names: Array[String] = []
-
 ## 上一帧的移动向量（用于检测变化后发射信号）
 var _last_movement: Vector2 = Vector2.ZERO
-
+## 被阻塞的输入动作前缀列表
 var _blocked_action_prefixes: Array[String] = []
 
 # ========================== 生命周期模块 ==========================
@@ -122,7 +118,7 @@ func _register_key(action_name: String, key_name: String) -> void:
 		event_btn.double_click = false
 		InputMap.action_add_event(action_name, event_btn)
 		return
-	
+
 	# 处理键盘按键
 	var key: Key = KEY_NAME_MAP.get(key_name, KEY_NONE)
 	if key == KEY_NONE:
@@ -148,7 +144,7 @@ func _connect_game_state() -> void:
 		if DEBUG_MODE:
 			print("[InputManager] 警告: GameManager 未找到，输入锁定将不会自动响应游戏状态")
 		return
-	
+
 	if GameManager.has_signal("game_state_changed"):
 		GameManager.game_state_changed.connect(_on_game_state_changed)
 		_on_game_state_changed(GameManager.current_game_state, GameManager.current_game_state)
@@ -159,11 +155,11 @@ func _handle_pause_input() -> void:
 	if not Input.is_action_just_pressed("pause"):
 		_pause_key_just_handled = false
 		return
-	
+
 	if _pause_key_just_handled:
 		return
 	_pause_key_just_handled = true
-	
+
 	pause_requested.emit()
 	if DEBUG_MODE:
 		print("[InputManager] pause_requested 信号发出")
@@ -173,14 +169,9 @@ func _detect_actions(event: InputEvent) -> void:
 	if input_locked:
 		return
 	for action_name: String in _action_names:
-		var is_blocked := false
-		for prefix in _blocked_action_prefixes:
-			if action_name.begins_with(prefix):
-				is_blocked = true
-				break
-		if is_blocked:
+		if _is_action_blocked(action_name):
 			continue
-			
+
 		if event.is_action_pressed(action_name):
 			var config: Dictionary = INPUT_ACTIONS[action_name]
 			# 若该动作支持输入缓冲，则存入缓冲队列
@@ -192,7 +183,7 @@ func _detect_actions(event: InputEvent) -> void:
 
 ## 功能：检测移动向量变化并发射信号
 func _emit_movement_vector() -> void:
-	if input_locked:
+	if input_locked or _has_movement_block():
 		if _last_movement != Vector2.ZERO:
 			_last_movement = Vector2.ZERO
 			movement_vector_changed.emit(Vector2.ZERO)
@@ -201,6 +192,31 @@ func _emit_movement_vector() -> void:
 	if vec != _last_movement:
 		_last_movement = vec
 		movement_vector_changed.emit(vec)
+
+## 功能：检查指定的输入动作是否被前缀阻塞规则屏蔽
+## 参数：action (String) - 动作名称
+## 返回值：bool - true 表示该动作被屏蔽
+func is_action_blocked(action: String) -> bool:
+	return input_locked or _is_action_blocked(action)
+
+## 功能：检查动作是否匹配阻塞前缀（内部使用）
+## 参数：action (String) - 动作名称
+## 返回值：bool - true 表示被阻塞
+func _is_action_blocked(action: String) -> bool:
+	for prefix in _blocked_action_prefixes:
+		if action.begins_with(prefix):
+			return true
+	return false
+
+## 功能：检查移动输入是否被阻塞
+## 返回值：bool - true 表示移动输入应被屏蔽
+func _has_movement_block() -> bool:
+	if _blocked_action_prefixes.is_empty():
+		return false
+	for prefix in _blocked_action_prefixes:
+		if "move" in prefix:
+			return true
+	return false
 
 # ========================== 输入缓冲核心接口模块 ==========================
 ## 功能：将输入动作加入缓冲队列
@@ -212,14 +228,14 @@ func buffer_input(action: String) -> bool:
 	var config = INPUT_ACTIONS.get(action)
 	if not config or not config["bufferable"]:
 		return false
-	
+
 	var now_ms = Time.get_ticks_msec()
 	# 防止短时间内重复缓冲同一动作（50 毫秒去重）
 	if _buffer.size() > 0:
 		var last = _buffer[-1]
 		if last["action"] == action and (now_ms - last["time_ms"]) < 50:
 			return false
-	
+
 	_buffer.append({ "action": action, "time_ms": now_ms })
 	if DEBUG_MODE:
 		print("[InputManager] 缓冲 + ", action, " 队列长度: ", _buffer.size())
@@ -229,10 +245,10 @@ func buffer_input(action: String) -> bool:
 ## 返回值：String - 缓冲的动作名称，若无有效缓冲则返回空字符串
 func get_buffered_input() -> String:
 	_clean_expired_buffer()
-	
+
 	if _buffer.is_empty() or input_locked:
 		return ""
-	
+
 	var entry = _buffer.pop_front()
 	return entry.action
 
@@ -266,23 +282,23 @@ func get_movement_vector() -> Vector2:
 	)
 	return vec.limit_length(1.0)
 
-## 功能：检查动作是否刚被按下（受输入锁定影响）
+## 功能：检查动作是否刚被按下（受输入锁定和前缀阻塞影响）
 ## 参数：action (String) - 动作名称
 ## 返回值：bool - true 表示刚被按下
 func is_action_just_pressed(action: String) -> bool:
-	return not input_locked and Input.is_action_just_pressed(action)
+	return not input_locked and not _is_action_blocked(action) and Input.is_action_just_pressed(action)
 
-## 功能：检查动作是否处于按住状态（受输入锁定影响）
+## 功能：检查动作是否处于按住状态（受输入锁定和前缀阻塞影响）
 ## 参数：action (String) - 动作名称
 ## 返回值：bool - true 表示正在按住
 func is_action_pressed(action: String) -> bool:
-	return not input_locked and Input.is_action_pressed(action)
+	return not input_locked and not _is_action_blocked(action) and Input.is_action_pressed(action)
 
-## 功能：检查动作是否刚被释放（受输入锁定影响）
+## 功能：检查动作是否刚被释放（受输入锁定和前缀阻塞影响）
 ## 参数：action (String) - 动作名称
 ## 返回值：bool - true 表示刚被释放
 func is_action_just_released(action: String) -> bool:
-	return not input_locked and Input.is_action_just_released(action)
+	return not input_locked and not _is_action_blocked(action) and Input.is_action_just_released(action)
 
 # ========================== 输入锁定控制模块 ==========================
 ## 功能：设置输入锁定状态

@@ -20,7 +20,7 @@ signal anim_finished(state_name: String)
 
 # ========================== 常量定义模块 ==========================
 ## 不需要方向后缀的状态列表（如死亡、受击只有一个通用动画）
-const DIRECTIONLESS_STATES: Array[String] = ["dead", "hurt", "recovery"]
+const DIRECTIONLESS_STATES: Array[String] = ["dead", "hurt"]
 
 ## 身体部位 z_index 层级（按渲染从底到顶排列）
 ## Legs=0, Body=2, ArmRight(右)=1, Head=4, ArmLeft=3

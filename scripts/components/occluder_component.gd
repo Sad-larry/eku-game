@@ -1,6 +1,11 @@
-class_name OccluderComponent
+# ==============================================================================
+#   occluder_component.gd
+#   功能：遮挡组件，用于处理树木等物体对玩家的遮挡效果，包括透明度渐变和透视效果。
+# ==============================================================================
 extends Area2D
+class_name OccluderComponent
 
+# ========================== 导出变量模块 ==========================
 ## 树被遮挡时的透明度（0.0=完全透明，1.0=完全不透明）
 @export var occluded_alpha: float = 0.3
 
@@ -13,7 +18,7 @@ extends Area2D
 ## 碰撞框尺寸（未手动添加 CollisionShape2D 时生效）
 @export var shape_size: Vector2 = Vector2(32, 32)
 
-
+# ========================== 变量定义模块 ==========================
 var _parent_canvas: CanvasItem
 var _player_sprite: Sprite2D = null
 

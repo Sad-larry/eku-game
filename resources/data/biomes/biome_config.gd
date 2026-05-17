@@ -8,6 +8,7 @@
 extends Resource
 class_name BiomeConfig
 
+# ========================== 导出变量模块 ==========================
 ## 生态名称（仅用于显示/调试）
 @export var biome_name: String = ""
 

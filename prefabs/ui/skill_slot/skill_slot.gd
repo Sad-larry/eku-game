@@ -1,5 +1,5 @@
 # ==============================================================================
-#   SkillSlot.gd
+#   skill_slot.gd
 #   功能：技能快捷栏槽位控件，显示技能图标、冷却遮罩和冷却时间文本。
 #        支持鼠标点击触发技能、键盘触发的按下闪烁反馈、运行时冷却进度显示。
 #   冷却显示：通过调节遮罩 ColorRect 的高度来呈现冷却进度（自上而下填充）。
@@ -19,6 +19,7 @@ signal slot_clicked(slot_index: int)
 @onready var _overlay: ColorRect = %CooldownOverlay
 @onready var _cd_label: Label = %CooldownLabel
 
+# ========================== 变量定义模块 ==========================
 var _parent_height: float = 0.0
 
 # ========================== 生命周期模块 ==========================

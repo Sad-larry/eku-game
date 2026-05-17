@@ -1,7 +1,8 @@
 # ==============================================================================
-#   FxFireball.gd
+#   fx_fireball.gd
 #   功能：火球术飞行特效，从施法者朝目标方向飞行，若无目标则3秒后自动销毁。
-#        适配新版 FxBoot 基类，支持对象池和预览模式。
+#        命中目标时通过 runner.on_hit() 告知 SkillRunner 计算并发出伤害。
+#        火球出手瞬间告知 runner.on_execution_complete() 启动冷却。
 # ==============================================================================
 extends FxBoot
 
@@ -24,19 +25,19 @@ var _start_time: float = 0.0   # 记录起始时间（秒）
 func _init() -> void:
 	lifetime_mode = LifetimeMode.FLYING
 
-## 功能：基类 _ready 已处理预览/启动，此处可添加额外初始化
+## 功能：基类 _ready 已处理预览/启动，此处告知 SkillRunner 冷却开始
 func _ready() -> void:
-	super._ready()  # 调用基类 _ready（内部自动处理预览或 start）
-	# 注意：基类 start() 会调用 setup_position 和 play_animation，
-	# 所以这里不需要重复调用。
+	super._ready()
+	if not is_preview and runner:
+		runner.on_execution_complete()
 
 # ========================== 重写移动逻辑 ==========================
-## 功能：每帧移动火球，若无目标则启动自动销毁计时
+## 功能：每帧移动火球，检测是否命中目标或超时销毁
 ## 参数：delta (float) - 帧间隔时间（秒）
 func _update_movement(delta: float) -> void:
-	# 预览模式下不会调用此方法（基类 _process 中已过滤）
 	global_position += _fly_direction * fly_speed * delta
-	# 超时销毁（基于时间）
+
+	# 超时销毁
 	var elapsed = Time.get_ticks_msec() / 1000.0 - _start_time
 	if elapsed >= max_flight_time:
 		destroy()
@@ -45,21 +46,21 @@ func _update_movement(delta: float) -> void:
 	# 有目标时命中检测
 	if _has_target and target and is_instance_valid(target):
 		var dist = global_position.distance_to(target.global_position)
-		if dist < 10.0:   # 命中阈值
+		if dist < 10.0:
 			_on_hit()
 			return
+
 func _on_hit() -> void:
-	# 触发伤害（示例）
-	# EventBus.skill_hit.emit(skill_data, target)
+	if runner:
+		runner.on_hit(target)
 	destroy()
+
 # ========================== 重写定位方法 ==========================
 ## 功能：定位火球起始位置并确定飞行方向；若无目标则3秒后自动销毁
 func setup_position() -> void:
-	# 起始位置为施法者位置
 	global_position = caster.global_position
-	_start_time = Time.get_ticks_msec() / 1000.0   # 记录起始时间（秒）
+	_start_time = Time.get_ticks_msec() / 1000.0
 
-	# 确定飞行方向
 	if target and is_instance_valid(target):
 		_fly_direction = (target.global_position - caster.global_position).normalized()
 		_has_target = true
@@ -67,7 +68,6 @@ func setup_position() -> void:
 		_fly_direction = _get_caster_facing_direction()
 		_has_target = false
 
-	# 旋转精灵方向
 	if sprite_2d:
 		sprite_2d.rotation = _fly_direction.angle()
 
@@ -82,25 +82,8 @@ func _get_caster_facing_direction() -> Vector2:
 	return Vector2.DOWN
 
 ## 功能：预览模式的自定义设置（静止火球、方向归零）
-## 说明：基类已自动居中、播放预览动画，此处只需额外调整
 func _setup_preview_custom() -> void:
-	# 预览模式下禁止移动
 	_fly_direction = Vector2.ZERO
-	# 精灵旋转归零（避免倾斜）
 	if sprite_2d:
 		sprite_2d.rotation = 0.0
-	# 可选：预览时缩放略微缩小
 	scale = Vector2(2, 2)
-
-# ========================== 命中检测（示例，可按需实现） ==========================
-## 功能：在飞行过程中检测是否命中目标（例如每帧判断距离）
-## 说明：可在 _update_movement 中调用，命中时调用 destroy() 并触发伤害
-func _check_hit() -> void:
-	if not _has_target:
-		return
-	if target and is_instance_valid(target):
-		var dist = global_position.distance_to(target.global_position)
-		if dist < 10.0:  # 命中阈值
-			# 触发伤害逻辑（可通过信号或直接调用技能系统）
-			# 例如：EventBus.skill_hit.emit(skill_data, target)
-			destroy()

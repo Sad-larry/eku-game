@@ -2,7 +2,7 @@
 #   save_manager.gd
 #   功能：存档管理器（Autoload 单例），管理游戏存档数据的读取、保存、更新，
 #        支持总游戏时间、游戏次数等基础数据的持久化存储。
-#   自动加载配置：在 Project -> Project Settings -> Autoloads 中添加，命名为 SaveManager
+#   自动加载配置：Project -> Project Settings -> Autoloads 中添加，命名为 SaveManager
 # ==============================================================================
 extends Node
 
@@ -17,9 +17,9 @@ var save_data: Dictionary = {
 	"games_played": 0,         # 累计游戏次数
 	"last_session": {}         # 上次会话数据（预留，用于断线重连或临时状态保存）
 }
-
 ## 浮点累加器
 var _pending_play_time: float = 0.0
+
 # ========================== 生命周期模块 ==========================
 ## 功能：节点就绪时加载存档数据
 func _ready() -> void:

@@ -1,5 +1,5 @@
 # ==============================================================================
-#   IsometricCamera.gd
+#   isometric_camera.gd
 #   功能：等距视角摄像机控制器，提供等距坐标系与屏幕坐标之间的相互转换，
 #        并自动跟随 Global.player 玩家对象移动。
 # ==============================================================================
@@ -30,14 +30,13 @@ const ISO_INVERSE: Transform2D = Transform2D(
 ## 跟随速度，值越大越快
 const FOLLOW_SPEED: float = 32.0
 
-# ========================== 导出变量（可在编辑器调整） ==========================
+# ========================== 导出变量模块 ==========================
 ## 最小缩放倍数（值越大画面越远，最小不能 <=0）
 @export var min_zoom: float = 0.1
 ## 最大缩放倍数（值越小画面越近）
 @export var max_zoom: float = 15.0
 ## 缩放灵敏度（滚轮每滚动一格，缩放变化倍数因子）
 @export var zoom_speed: float = 0.1
-
 
 # ========================== 生命周期模块 ==========================
 ## 功能：节点就绪时初始化摄像机参数并添加到指定组
@@ -50,13 +49,15 @@ func _ready() -> void:
 	add_to_group("isometric_camera")
 
 ## 功能：每帧更新摄像机位置，跟随玩家
-## 参数：_delta (float) - 帧间隔时间（未直接使用）
+## 参数：delta (float) - 帧间隔时间
 func _process(delta: float) -> void:
 	# 玩家存在时，让摄像机位置实时跟随玩家
 	if is_instance_valid(Global.player):
 		global_position = lerp(global_position, Global.player.global_position, 1.0 - exp(-FOLLOW_SPEED * delta))
-	
-# ========================== 输入处理模块（新增） ==========================
+
+# ========================== 输入处理模块 ==========================
+## 功能：处理输入事件，响应鼠标滚轮缩放
+## 参数：event (InputEvent) - 输入事件对象
 func _input(event: InputEvent) -> void:
 	if InputManager.input_locked:
 		return

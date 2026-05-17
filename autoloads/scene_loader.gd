@@ -21,26 +21,20 @@ signal loading_failed(error_message: String)
 # ========================== 常量定义模块 ==========================
 ## 调试模式开关（开启后输出更多调试信息）
 const DEBUG_MODE: bool = true
-
 ## 过渡覆盖层场景（负责淡入淡出动画和进度显示）
 const TRANSITION_OVERLAY_SCENE = preload("uid://cyr13g8iathws")
 
 # ========================== 变量定义模块 ==========================
 ## 当前是否正在加载中（防止重复加载）
 var is_loading: bool = false
-
 ## 过渡覆盖层实例节点
 var _overlay: Node
-
 ## 目标场景路径（待加载的资源路径）
 var _target_path: String = ""
-
 ## 淡入/淡出动画时长（秒）
 var _fade_duration: float = 0.3
-
 ## 加载失败标志（用于中断后续流程）
 var _load_failed: bool = false
-
 ## 等距相机引用（用于场景间迁移，避免每个场景重复放置相机）
 var _camera: IsometricCamera = null
 
@@ -65,12 +59,12 @@ func change_scene(scene_path: String, fade_duration: float = 0.3) -> void:
 
 	# 淡入黑色遮罩
 	await _overlay.fade_in(_fade_duration)
-	
+
 	# 若淡入过程中加载被取消，则清理覆盖层
 	if not is_loading:
 		_cleanup_overlay()
 		return
-		
+
 	# 启动异步加载
 	_start_async_load()
 
@@ -128,7 +122,7 @@ func _on_load_complete() -> void:
 	var current_scene = get_tree().current_scene
 	if current_scene and current_scene.has_method("on_before_scene_unload"):
 		current_scene.on_before_scene_unload()
-		
+
 	# 2) 摘除相机：从当前场景迁移到 SceneLoader（autoload 跨场景存活）
 	_detach_camera()
 
@@ -146,7 +140,7 @@ func _on_load_complete() -> void:
 
 	# 5) 等待新场景完成 _ready（至少一帧，确保节点树稳定）
 	await get_tree().process_frame
-	
+
 	# 6) 将暂存的相机挂载到新场景根节点下
 	_attach_camera_to_new_scene()
 

@@ -1,0 +1,83 @@
+[gd_scene format=3 uid="uid://bssfi30akkrst"]
+
+[ext_resource type="Script" uid="uid://chhldsx5kwoic" path="res://prefabs/fx/skills/void_burst/fx_void_burst.gd" id="1_5crtq"]
+[ext_resource type="Texture2D" uid="uid://bt5uerrw7bhv5" path="res://assets/sprites/skills/Red-Effect-Skill.png" id="2_yk5fc"]
+
+[sub_resource type="Animation" id="Animation_50r2b"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [46]
+}
+
+[sub_resource type="Animation" id="Animation_t8oop"]
+resource_name = "preview"
+length = 1.5
+loop_mode = 1
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [48, 47, 46, 47, 48, 49]
+}
+
+[sub_resource type="Animation" id="Animation_xrmt4"]
+resource_name = "preview"
+length = 0.8
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [48, 47, 46, 47, 48, 49]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_km7vd"]
+_data = {
+&"RESET": SubResource("Animation_50r2b"),
+&"preview": SubResource("Animation_t8oop"),
+&"slash": SubResource("Animation_xrmt4")
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_void_burst"]
+radius = 60.0
+
+[node name="FxVoidBurst" type="Node2D" unique_id=823688455]
+script = ExtResource("1_5crtq")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1550330350]
+texture = ExtResource("2_yk5fc")
+hframes = 20
+vframes = 16
+frame = 46
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=531155289]
+libraries/ = SubResource("AnimationLibrary_km7vd")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=575369920]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=2020432124]
+shape = SubResource("CircleShape2D_void_burst")

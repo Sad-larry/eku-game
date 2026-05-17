@@ -5,6 +5,7 @@
 extends RefCounted
 class_name DirectionUtils
 
+# ========================== 常量定义模块 ==========================
 ## 8方向原始向量列表（未归一化，比较时内部归一化）
 const DIRECTION_VECTORS: Array[Vector2] = [
 	Vector2(0, 1),     # 下
@@ -29,6 +30,7 @@ const DIRECTION_NAMES: Array[String] = [
 	"down_right",
 ]
 
+# ========================== 工具函数模块 ==========================
 ## 功能：将方向向量转换为对应的方向名称（通过点积最近邻匹配）
 ## 参数：dir (Vector2) - 目标方向向量（无需预先归一化）
 ## 返回值：String - 方向名称（如 "up"、"down_right"），若为零向量则返回默认值 "down"

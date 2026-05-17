@@ -1,7 +1,8 @@
 # ==============================================================================
-#   FxSlashFire.gd
-#   功能：地火斩技能特效，在施法者前方地面生成一团火焰，播放 0.6 秒动画后自动销毁。
+#   fx_slash_fire.gd
+#   功能：地火斩技能特效，在施法者前方地面生成一团火焰，播放动画后自动销毁。
 #        无移动逻辑，仅为一次性视觉效果。
+#        生成后立即调用 runner.on_execution_complete() 启动冷却。
 # ==============================================================================
 extends FxBoot
 class_name FxSlashFire
@@ -12,6 +13,12 @@ class_name FxSlashFire
 ## 功能：初始化生命周期模式为 ONESHOT
 func _init() -> void:
 	lifetime_mode = LifetimeMode.ONESHOT
+
+## 功能：基类 _ready 会自动执行 start()，生成后告知 SkillRunner 启动冷却
+func _ready() -> void:
+	super._ready()
+	if not is_preview and runner:
+		runner.on_execution_complete()
 
 ## 功能：设置火焰位置为施法者前方偏移处
 func setup_position() -> void:

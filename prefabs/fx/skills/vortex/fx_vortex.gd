@@ -1,7 +1,9 @@
 # ==============================================================================
-#   FxVortex.gd
-#   功能：龙卷风技能特效，向前直线移动，碰到物体或超出范围后停止，动画循环播放，
-#        停留 1 秒后自动销毁。
+#   fx_vortex.gd
+#   功能：龙卷风技能特效，向前直线移动，碰到物体或到达最远范围后停止移动，
+#        动画循环播放，停留 1 秒后自动销毁。
+#        生成后立即调用 runner.on_execution_complete() 启动冷却，
+#        命中目标时调用 runner.on_hit(body) 让 SkillRunner 计算并发出伤害。
 # ==============================================================================
 extends FxBoot
 class_name FxVortex
@@ -31,9 +33,11 @@ var _start_time: float = 0.0
 func _init() -> void:
 	lifetime_mode = LifetimeMode.FLYING
 
-## 功能：连接信号（需要在场景中确保 Area2D 的 body_entered 信号连接到本函数）
+## 功能：连接信号，生成后告知 SkillRunner 启动冷却
 func _ready() -> void:
 	super._ready()
+	if not is_preview and runner:
+		runner.on_execution_complete()
 	if area and not area.body_entered.is_connected(_on_area_entered):
 		area.body_entered.connect(_on_area_entered)
 
@@ -44,10 +48,9 @@ func setup_position() -> void:
 	global_position = caster.global_position if caster else Vector2.ZERO
 	_start_pos = global_position
 	_start_time = Time.get_ticks_msec() / 1000.0
-	
+
 	# 记录释放时的方向（只取一次）
 	_fly_direction = _get_caster_facing_direction()
-
 
 ## 功能：每帧移动并检测碰撞/距离
 func _update_movement(delta: float) -> void:
@@ -60,27 +63,29 @@ func _update_movement(delta: float) -> void:
 
 	# 检查是否应停止
 	var should_stop = false
-	
+
 	# 1. 距离限制
 	if max_range > 0 and global_position.distance_to(_start_pos) >= max_range:
 		should_stop = true
-	
+
 	# 2. 时间限制
 	if not should_stop and max_flight_time > 0:
 		var elapsed = Time.get_ticks_msec() / 1000.0 - _start_time
 		if elapsed >= max_flight_time:
 			should_stop = true
-	
+
 	if should_stop:
 		_stop()
 
-## 功能：碰撞检测（通过 Area2D 信号触发）
+## 功能：碰撞检测（通过 Area2D 信号触发），命中时告知 SkillRunner 计算伤害
 func _on_area_entered(body: Node2D) -> void:
 	if _stopped:
 		return
 	# 忽略施法者自身
 	if body == caster:
 		return
+	if runner:
+		runner.on_hit(body)
 	_stop()
 
 ## 功能：停止移动，启动停留计时器

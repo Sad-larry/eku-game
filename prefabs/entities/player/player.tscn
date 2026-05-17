@@ -22,7 +22,6 @@
 [ext_resource type="Script" uid="uid://ct0u3grlde78u" path="res://prefabs/entities/player/player_movement_component.gd" id="13_t7ebs"]
 [ext_resource type="Script" uid="uid://rfsoa4hdufkt" path="res://scripts/behaviors/player_ai/player_hurt_state.gd" id="14_mw72i"]
 [ext_resource type="Script" uid="uid://ca5fgpmabu25" path="res://scripts/behaviors/player_ai/player_dead_state.gd" id="15_6wjxf"]
-[ext_resource type="Script" uid="uid://bcxelg6fjo3b8" path="res://scripts/behaviors/player_ai/player_recovery_state.gd" id="16_6rlg7"]
 [ext_resource type="Script" uid="uid://cyxe108nw1eqy" path="res://scripts/behaviors/player_ai/player_skill_state.gd" id="17_3qrm8"]
 [ext_resource type="Script" uid="uid://bfhu5l0q56oji" path="res://prefabs/entities/player/player_input_handler.gd" id="24_7xbuu"]
 [ext_resource type="Script" uid="uid://dy0sbfec7lr1q" path="res://prefabs/entities/player/player_skill_manager.gd" id="25_6388w"]
@@ -120,10 +119,6 @@ state_name = "hurt"
 [node name="PlayerDeadState" type="Node" parent="StateMachine" unique_id=1427059805]
 script = ExtResource("15_6wjxf")
 state_name = "dead"
-
-[node name="PlayerRecoveryState" type="Node" parent="StateMachine" unique_id=1076674711]
-script = ExtResource("16_6rlg7")
-state_name = "recovery"
 
 [node name="PlayerSkillState" type="Node" parent="StateMachine" unique_id=1552776686]
 script = ExtResource("17_3qrm8")

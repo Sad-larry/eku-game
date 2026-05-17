@@ -1,5 +1,5 @@
 # ==============================================================================
-#   FxBoot.gd
+#   fx_boot.gd
 #   功能：特效引导基类（极简框架）。提供生命周期模式枚举、预览模式支持、
 #        动画播放器自动查找、以及统一暂停行为。具体移动/跟随/销毁逻辑
 #        全部由子类实现，基类不预设任何自动行为。
@@ -34,6 +34,9 @@ var target_pos: Vector2 = Vector2.ZERO
 ## 技能数据
 var skill_data: SkillEffect
 
+## SkillRunner 引用（由 SkillRunner.execute() 自动注入，子类通过此引用调用 on_hit 等方法）
+var runner: SkillRunner
+
 ## 预览模式标志（由外部设置）
 var is_preview: bool = false:
 	set(value):
@@ -64,6 +67,10 @@ func _ready() -> void:
 		return
 	# 启动特效（子类可重写 start 或在其后添加逻辑）
 	start()
+
+func _exit_tree() -> void:
+	if is_instance_valid(runner):
+		runner.on_fx_destroyed()
 
 ## 每帧更新（基类根据模式调用对应虚函数，子类按需重写）
 func _process(delta: float) -> void:

@@ -62,10 +62,11 @@ func try_execute(action: String) -> bool:
 		return false
 
 	var player := get_parent() as Player
-	if player.energy_component.current_energy < data.energy_cost:
+	var effective_cost := SkillUpgradeManager.get_effective_energy_cost(data.id, data.energy_cost)
+	if player.energy_component.current_energy < effective_cost:
 		return false
 
-	player.energy_component.consume(data.energy_cost)
+	player.energy_component.consume(effective_cost)
 	runner.execute(null)
 	return true
 

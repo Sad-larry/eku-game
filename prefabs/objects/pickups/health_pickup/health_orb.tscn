@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://r7x07tixvlgo"]
 
-[ext_resource type="Script" uid="uid://dkqswtt6vene3" path="res://prefabs/objects/pickups/pickup_base.gd" id="1_1yudt"]
+[ext_resource type="Script" uid="uid://dkqswtt6vene3" path="res://prefabs/objects/pickups/pickup_base.gd" id="1_2qfo3"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_pcqmd"]
 
 [node name="HealthOrb" type="Area2D" unique_id=2084783663]
-script = ExtResource("1_1yudt")
+script = ExtResource("1_2qfo3")
 pickup_type = 1
 value = 3.0
 

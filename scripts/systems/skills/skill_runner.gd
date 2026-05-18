@@ -69,7 +69,8 @@ func _process(delta: float) -> void:
 		return
 	if _state == RunnerState.COOLDOWN and _cooldown_remaining > 0.0:
 		_cooldown_remaining -= delta
-		cooldown_updated.emit(_cooldown_remaining, skill_data.cooldown)
+		var effective_cooldown := SkillUpgradeManager.get_effective_cooldown(skill_data.id, skill_data.cooldown)
+		cooldown_updated.emit(_cooldown_remaining, effective_cooldown)
 		if _cooldown_remaining <= 0.0:
 			_cooldown_remaining = 0.0
 			_state = RunnerState.READY
@@ -135,9 +136,11 @@ func on_execution_complete() -> void:
 ## 参数：target (Node2D) - 被命中的目标节点
 ## 返回值：DamageInfo - 包含计算后的伤害数据
 func on_hit(target: Node2D) -> DamageInfo:
+	var effective_damage := SkillUpgradeManager.get_effective_damage(skill_data.id, skill_data.damage)
+	var effective_multiplier := SkillUpgradeManager.get_effective_multiplier(skill_data.id, skill_data.skill_multiplier)
 	var result = _calculator.calculate(
-		skill_data.damage,
-		skill_data.skill_multiplier,
+		effective_damage,
+		effective_multiplier,
 		caster.stats_resource.crit_rate,
 		caster.stats_resource.crit_damage
 	)
@@ -171,9 +174,10 @@ func on_fx_destroyed() -> void:
 # ========================== 内部方法模块 ==========================
 func _start_cooldown() -> void:
 	_state = RunnerState.COOLDOWN
-	if skill_data.cooldown > 0.0:
-		_cooldown_remaining = skill_data.cooldown
-		cooldown_updated.emit(_cooldown_remaining, skill_data.cooldown)
+	var effective_cooldown := SkillUpgradeManager.get_effective_cooldown(skill_data.id, skill_data.cooldown)
+	if effective_cooldown > 0.0:
+		_cooldown_remaining = effective_cooldown
+		cooldown_updated.emit(_cooldown_remaining, effective_cooldown)
 	else:
 		# 无冷却的技能立即回到 READY
 		_state = RunnerState.READY

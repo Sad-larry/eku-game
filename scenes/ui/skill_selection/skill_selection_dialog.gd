@@ -123,12 +123,26 @@ func _rebuild_card_grid() -> void:
 		_card_grid.add_child(card)
 		card.setup(data, _equipped_ids)
 		card.selected.connect(_on_card_selected)
+		# 未解锁技能：灰色显示 + 禁用点击
+		if not SkillUnlockManager.is_skill_unlocked(data.id):
+			card.self_modulate = Color(0.4, 0.4, 0.4)
+			card.disabled = true
+			card.tooltip_text = "未解锁 - 请前往商店解锁"
 		_card_instances.append(card)
 
 	if _card_instances.is_empty():
 		_clear_detail()
 	else:
-		_on_card_selected(_card_instances[0].skill_data.id)
+		# 优先选中第一个已解锁卡牌
+		var first_unlocked: SkillSelectionCard = null
+		for card in _card_instances:
+			if SkillUnlockManager.is_skill_unlocked(card.skill_data.id):
+				first_unlocked = card
+				break
+		if first_unlocked:
+			_on_card_selected(first_unlocked.skill_data.id)
+		else:
+			_on_card_selected(_card_instances[0].skill_data.id)
 
 # ========================== 详情显示模块 ==========================
 func _clear_detail() -> void:
@@ -181,9 +195,14 @@ func _show_skill_detail(data: SkillEffect) -> void:
 
 	_show_skill_preview(data)
 
-	var is_equipped = _selected_skill_id in _equipped_ids
-	_equip_btn.text = "已装备" if is_equipped else "装备技能"
-	_equip_btn.disabled = is_equipped
+	var is_unlocked := SkillUnlockManager.is_skill_unlocked(_selected_skill_id)
+	if not is_unlocked:
+		_equip_btn.text = "未解锁"
+		_equip_btn.disabled = true
+	else:
+		var is_equipped = _selected_skill_id in _equipped_ids
+		_equip_btn.text = "已装备" if is_equipped else "装备技能"
+		_equip_btn.disabled = is_equipped
 
 func _show_skill_preview(data: SkillEffect) -> void:
 	for child in _preview_container.get_children():

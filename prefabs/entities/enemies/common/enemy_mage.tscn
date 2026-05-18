@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3 uid="uid://enemy_mage_placeholder"]
+
+[ext_resource type="Script" path="res://prefabs/entities/enemies/common/enemy_mage.gd" id="1"]
+
+[node name="enemy_mage" type="CharacterBody2D" groups=["enemy"]]
+script = ExtResource("1")
+
+[node name="StatsComponents" type="Node" parent="."]
+
+[node name="HealthComponent" type="Node" parent="StatsComponents"]
+[node name="HitboxComponent" type="Area2D" parent="StatsComponents"]
+[node name="HurtboxComponent" type="Area2D" parent="StatsComponents"]
+
+[node name="EnemyStateMachine" type="Node" parent="."]
+
+[node name="EnemyAnimationController" type="Node" parent="."]
+
+[node name="EnemyMovementComponent" type="Node" parent="."]
+
+[node name="VisionArea" type="Area2D" parent="."]
+
+[node name="HealBar" type="Node" parent="."]
+
+[node name="WeaponSprite" type="Sprite2D" parent="."]
+
+[node name="KeepDistanceBehavior" type="Node" parent="."]
+
+[node name="AoeAttackBehavior" type="Node" parent="."]

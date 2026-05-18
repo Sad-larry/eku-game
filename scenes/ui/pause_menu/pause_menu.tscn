@@ -57,6 +57,11 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "继续游戏"
 
+[node name="LobbyBtn" type="Button" parent="CanvasLayer/MenuPanel/MenuContainer" unique_id=2014695296]
+unique_name_in_owner = true
+layout_mode = 2
+text = "返回大厅"
+
 [node name="SettingsBtn" type="Button" parent="CanvasLayer/MenuPanel/MenuContainer" unique_id=120017831]
 unique_name_in_owner = true
 layout_mode = 2
@@ -73,6 +78,7 @@ layout_mode = 2
 text = "退出游戏"
 
 [connection signal="pressed" from="CanvasLayer/MenuPanel/MenuContainer/ContinueBtn" to="." method="_on_continue_btn_pressed"]
+[connection signal="pressed" from="CanvasLayer/MenuPanel/MenuContainer/LobbyBtn" to="." method="_on_lobby_btn_pressed"]
 [connection signal="pressed" from="CanvasLayer/MenuPanel/MenuContainer/SettingsBtn" to="." method="_on_settings_btn_pressed"]
 [connection signal="pressed" from="CanvasLayer/MenuPanel/MenuContainer/BackToMenuBtn" to="." method="_on_back_to_menu_btn_pressed"]
 [connection signal="pressed" from="CanvasLayer/MenuPanel/MenuContainer/QuitBtn" to="." method="_on_quit_btn_pressed"]

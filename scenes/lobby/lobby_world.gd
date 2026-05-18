@@ -80,6 +80,7 @@ func _on_portal_to_dungeon_body_entered(body: Node2D) -> void:
 	dialog.popup_centered()
 
 	dialog.confirmed.connect(func():
+		RunManager.start_new_run()
 		SceneLoader.change_scene(Global.GAME_WORLD_SCENE_PATH)
 	)
 
@@ -95,4 +96,5 @@ func _on_portal_to_dungeon_body_entered(body: Node2D) -> void:
 ## 参数：body (Node2D) - 进入触发器的节点
 func _on_portal_to_boss_body_entered(body: Node2D) -> void:
 	if body is Player:
+		RunManager.start_new_run()
 		SceneLoader.change_scene(Global.GAME_WORLD_SCENE_PATH)

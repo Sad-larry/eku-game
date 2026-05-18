@@ -5,7 +5,7 @@
 #   自动加载配置：在 Project -> Project Settings -> Autoload 中添加，命名为 AudioManager
 # ==============================================================================
 extends Node
-
+"""
 # ========================== 常量定义模块 ==========================
 ## 音频总线索引（需根据项目实际总线顺序调整）
 const BUS_MASTER: int = 0  ## 主音量总线索引
@@ -50,19 +50,17 @@ var sfx_volume: float = DEFAULT_SFX_VOLUME
 var ui_volume: float = DEFAULT_UI_VOLUME
 
 # ========================== 生命周期模块 ==========================
-## 功能：节点初始化，创建音效池、加载音量设置、连接游戏状态信号
+## 功能：节点初始化，创建音效池、连接存档信号、清理旧版配置文件
 func _ready() -> void:
-	# TODO: 项目最后才处理音频管理，因此，现在把初始化方法全部注释掉
 	# 创建 SFX 播放器池
-	#_create_sfx_player_pool()
-	## 加载音量设置
-	#_load_volume_settings()
-	## 应用初始音量
-	#_apply_volume_settings()
-	# 监听游戏状态变化（用于暂停/恢复音乐）
-	# TODO: 取消注释并确保 GameManager 存在且包含 game_state_changed 信号
-	#if GameManager and GameManager.has_signal("game_state_changed"):
-		#GameManager.game_state_changed.connect(_on_game_state_changed)
+	_create_sfx_player_pool()
+	# 监听存档加载完成信号，从 SaveManager 恢复音量设置
+	SaveManager.data_loaded.connect(_on_save_data_loaded)
+	# 应用默认音量（存档数据异步加载后会覆盖）
+	_apply_volume_settings()
+	# 清理旧版独立配置文件
+	if FileAccess.file_exists("user://audio_settings.cfg"):
+		DirAccess.remove_absolute("user://audio_settings.cfg")
 	print("AudioManager: 音频管理器初始化完成")
 
 ## 功能：创建 SFX 播放器池
@@ -76,30 +74,25 @@ func _create_sfx_player_pool() -> void:
 		sfx_players.append(player)
 
 # ========================== 音量管理模块 ==========================
-## 功能：从配置文件加载音量设置
-## 说明：从 user://audio_settings.cfg 读取，若文件不存在则保存默认值
-func _load_volume_settings() -> void:
-	var config = ConfigFile.new()
-	var err = config.load("user://audio_settings.cfg")
+## 功能：从 SaveManager 加载音量设置（回调）
+## 说明：响应 data_loaded 信号，从 settings 段读取音量值并应用
+func _on_save_data_loaded() -> void:
+	var settings = SaveManager.get_section("settings", SaveManager.DEFAULT_SECTIONS["settings"])
+	master_volume = settings.get("master_volume", DEFAULT_MASTER_VOLUME)
+	music_volume = settings.get("music_volume", DEFAULT_MUSIC_VOLUME)
+	sfx_volume = settings.get("sfx_volume", DEFAULT_SFX_VOLUME)
+	ui_volume = settings.get("ui_volume", DEFAULT_UI_VOLUME)
+	_apply_volume_settings()
 
-	if err == OK:
-		master_volume = config.get_value("audio", "master_volume", DEFAULT_MASTER_VOLUME)
-		music_volume = config.get_value("audio", "music_volume", DEFAULT_MUSIC_VOLUME)
-		sfx_volume = config.get_value("audio", "sfx_volume", DEFAULT_SFX_VOLUME)
-		ui_volume = config.get_value("audio", "ui_volume", DEFAULT_UI_VOLUME)
-	else:
-		# 配置文件不存在，使用默认值并保存
-		_save_volume_settings()
-
-## 功能：保存音量设置到配置文件
-## 说明：写入 user://audio_settings.cfg，用于跨会话持久化
-func _save_volume_settings() -> void:
-	var config = ConfigFile.new()
-	config.set_value("audio", "master_volume", master_volume)
-	config.set_value("audio", "music_volume", music_volume)
-	config.set_value("audio", "sfx_volume", sfx_volume)
-	config.set_value("audio", "ui_volume", ui_volume)
-	config.save("user://audio_settings.cfg")
+## 功能：将当前音量设置同步到 SaveManager
+func _sync_to_save() -> void:
+	SaveManager.set_section("settings", {
+		"master_volume": master_volume,
+		"music_volume": music_volume,
+		"sfx_volume": sfx_volume,
+		"ui_volume": ui_volume
+	})
+	SaveManager.save_immediately()
 
 ## 功能：应用当前音量设置到音频总线
 ## 说明：将线性音量值转换为分贝并设置到对应的 AudioServer 总线
@@ -134,28 +127,28 @@ func linear_to_db(linear: float) -> float:
 func set_master_volume(volume: float) -> void:
 	master_volume = clamp(volume, 0.0, 1.0)
 	_apply_volume_settings()
-	_save_volume_settings()
+	_sync_to_save()
 
 ## 功能：设置音乐音量
 ## 参数：volume (float) - 目标音量，范围 0.0 - 1.0
 func set_music_volume(volume: float) -> void:
 	music_volume = clamp(volume, 0.0, 1.0)
 	_apply_volume_settings()
-	_save_volume_settings()
+	_sync_to_save()
 
 ## 功能：设置音效音量
 ## 参数：volume (float) - 目标音量，范围 0.0 - 1.0
 func set_sfx_volume(volume: float) -> void:
 	sfx_volume = clamp(volume, 0.0, 1.0)
 	_apply_volume_settings()
-	_save_volume_settings()
+	_sync_to_save()
 
 ## 功能：设置 UI 音效音量
 ## 参数：volume (float) - 目标音量，范围 0.0 - 1.0
 func set_ui_volume(volume: float) -> void:
 	ui_volume = clamp(volume, 0.0, 1.0)
 	_apply_volume_settings()
-	_save_volume_settings()
+	_sync_to_save()
 
 ## 功能：获取当前所有音量设置
 ## 返回值：Dictionary - 包含 master、music、sfx、ui 四个音量的字典
@@ -327,5 +320,6 @@ func reset_to_defaults() -> void:
 	ui_volume = DEFAULT_UI_VOLUME
 
 	_apply_volume_settings()
-	_save_volume_settings()
+	_sync_to_save()
 	print("AudioManager: 音频设置已重置为默认值")
+"""

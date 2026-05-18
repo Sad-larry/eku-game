@@ -1,0 +1,222 @@
+[gd_scene format=3 uid="uid://batxqpkfc24yu"]
+
+[ext_resource type="Script" uid="uid://crxtfp7hok61w" path="res://scenes/ui/lobby_shop/lobby_shop.gd" id="1_script"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.1, 0.1, 0.1, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="LobbyShop" type="CanvasLayer" unique_id=1183329544]
+layer = 999
+script = ExtResource("1_script")
+
+[node name="BgDim" type="ColorRect" parent="." unique_id=676984547]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.3)
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1630459814]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainPanel" type="Panel" parent="CenterContainer" unique_id=66469414]
+custom_minimum_size = Vector2(900, 560)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/MainPanel" unique_id=1855530293]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MainPanel/MarginContainer" unique_id=1969685032]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TopBar" type="HBoxContainer" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer" unique_id=967944844]
+layout_mode = 2
+
+[node name="CoinLabel" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/TopBar" unique_id=2058165784]
+unique_name_in_owner = true
+layout_mode = 2
+text = "尘元: 0"
+
+[node name="ContentArea" type="HBoxContainer" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer" unique_id=978837208]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="LeftPanel" type="VBoxContainer" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea" unique_id=517059886]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="FilterTabs" type="TabBar" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/LeftPanel" unique_id=1609568917]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ItemScroll" type="ScrollContainer" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/LeftPanel" unique_id=913699165]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ItemList" type="VBoxContainer" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/LeftPanel/ItemScroll" unique_id=1554093394]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RightPanel" type="VBoxContainer" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea" unique_id=252934768]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="DetailIcon" type="TextureRect" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel" unique_id=151597638]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+expand_mode = 1
+
+[node name="DetailName" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel" unique_id=231858552]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 20
+
+[node name="DetailType" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel" unique_id=1788187093]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+
+[node name="HSeparator" type="HSeparator" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel" unique_id=1939878154]
+layout_mode = 2
+
+[node name="DetailDesc" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel" unique_id=1927794078]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="StatsGrid" type="GridContainer" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel" unique_id=1288606381]
+layout_mode = 2
+columns = 2
+
+[node name="LabelCooldown" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel/StatsGrid" unique_id=1162865959]
+layout_mode = 2
+text = "冷却:"
+
+[node name="StatCooldown" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel/StatsGrid" unique_id=1727503869]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="LabelEnergy" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel/StatsGrid" unique_id=2098834646]
+layout_mode = 2
+text = "能耗:"
+
+[node name="StatEnergy" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel/StatsGrid" unique_id=312643960]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="LabelDamage" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel/StatsGrid" unique_id=352214559]
+layout_mode = 2
+text = "伤害:"
+
+[node name="StatDamage" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel/StatsGrid" unique_id=1394094872]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="LabelMultiplier" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel/StatsGrid" unique_id=575423843]
+layout_mode = 2
+text = "倍率:"
+
+[node name="StatMultiplier" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel/StatsGrid" unique_id=303760625]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="HSeparator2" type="HSeparator" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel" unique_id=641318394]
+layout_mode = 2
+
+[node name="ConditionLabel" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel" unique_id=185508941]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+
+[node name="CostLabel" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel" unique_id=1359010569]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+
+[node name="UnlockButton" type="Button" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel" unique_id=2081446116]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 20
+text = "解锁"
+
+[node name="HSeparator3" type="HSeparator" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="UpgradeSection" type="VBoxContainer" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="LevelLabel" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel/UpgradeSection"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+
+[node name="UpgradeEffectLabel" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel/UpgradeSection"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+
+[node name="UpgradeCostLabel" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel/UpgradeSection"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+
+[node name="UpgradeButton" type="Button" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/ContentArea/RightPanel/UpgradeSection"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 36)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 18
+text = "升级"
+
+[node name="CloseButton" type="Button" parent="CenterContainer/MainPanel" unique_id=12581223]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -28.0
+offset_top = 6.0
+offset_right = -6.0
+offset_bottom = 37.0
+text = "✕"
+
+[connection signal="pressed" from="CenterContainer/MainPanel/CloseButton" to="." method="_on_close_button_pressed"]

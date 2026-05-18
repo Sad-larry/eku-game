@@ -32,7 +32,7 @@ func generate(config: RadialGridConfig) -> RadialGridMap:
 	_fill_remaining_cells(map, config, rng)
 
 	# 调试输出网格信息
-	print_grid_pretty(map, config.max_ring)
+	#print_grid_pretty(map, config.max_ring)
 
 	map.total_cells = map.cells.size()
 	return map

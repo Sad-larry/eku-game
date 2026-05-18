@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://prefabs/ui/relic_icon/relic_icon.gd" id="1_script"]
+
+[node name="RelicIcon" type="PanelContainer"]
+custom_minimum_size = Vector2(32, 32)
+script = ExtResource("1_script")
+
+[node name="IconRect" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(28, 28)
+layout_mode = 2
+stretch_mode = 5
+expand_mode = 1

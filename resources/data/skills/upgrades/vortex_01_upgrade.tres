@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="SkillUpgradeData" format=3]
+
+[ext_resource type="Script" path="res://resources/data/skills/skill_upgrade_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://resources/data/skills/skill_upgrade_effect.gd" id="2_effect"]
+
+[sub_resource type="Resource" id="effect_lv2"]
+script = ExtResource("2_effect")
+damage_multiplier_bonus = 0.1
+cooldown_reduction = 0.05
+energy_cost_reduction = 0
+
+[sub_resource type="Resource" id="effect_lv3"]
+script = ExtResource("2_effect")
+damage_multiplier_bonus = 0.2
+cooldown_reduction = 0.1
+energy_cost_reduction = 0
+
+[sub_resource type="Resource" id="effect_lv4"]
+script = ExtResource("2_effect")
+damage_multiplier_bonus = 0.35
+cooldown_reduction = 0.15
+energy_cost_reduction = 1
+
+[sub_resource type="Resource" id="effect_lv5"]
+script = ExtResource("2_effect")
+damage_multiplier_bonus = 0.5
+cooldown_reduction = 0.2
+energy_cost_reduction = 1
+
+[resource]
+script = ExtResource("1_data")
+skill_id = "vortex_01"
+max_level = 5
+upgrade_costs = Array[int]([10, 20, 40, 80])
+level_effects = Array[Resource]([SubResource("effect_lv2"), SubResource("effect_lv3"), SubResource("effect_lv4"), SubResource("effect_lv5")])

@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://hidden_wall_placeholder"]
+
+[ext_resource type="Script" path="res://prefabs/environment/hidden_wall/hidden_wall.gd" id="1"]
+
+[node name="hidden_wall" type="StaticBody2D"]
+script = ExtResource("1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+
+[node name="HurtboxComponent" parent="." node_type="Area2D"]

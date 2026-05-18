@@ -45,7 +45,7 @@ func _shoot() -> void:
 		return
 	
 	# 计算发射位置（朝向敌人面朝方向）
-	var dir: float = signf(enemy.sprite.scale.x)  # -1 朝左，1 朝右
+	var dir: float = signf(enemy.anim_controller.sprite.scale.x)  # -1 朝左，1 朝右
 	var spawn_pos: Vector2 = enemy.global_position + Vector2(muzzle_offset.x * dir, muzzle_offset.y)
 	
 	projectile.global_position = spawn_pos

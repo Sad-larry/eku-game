@@ -28,7 +28,18 @@
       "Skill(engineering-technical-writer)",
       "Bash(sed -i '46d' \"D:\\\\MyAppData\\\\Godot\\\\eku-game\\\\prefabs\\\\entities\\\\player\\\\player.gd\")",
       "Bash(sed -i '103,108d' \"D:\\\\MyAppData\\\\Godot\\\\eku-game\\\\prefabs\\\\entities\\\\player\\\\player.gd\")",
-      "mcp__memory__delete_observations"
+      "mcp__memory__delete_observations",
+      "Bash(xargs grep -l \"projectile\\\\|bullet\")",
+      "mcp__godot-mcp__create_node",
+      "mcp__godot-mcp__open_scene",
+      "mcp__godot-mcp__update_node_property",
+      "mcp__godot-mcp__execute_script",
+      "mcp__godot-mcp__create_scene",
+      "mcp__godot-mcp__get_scene_tree",
+      "mcp__godot-mcp__rename_node",
+      "mcp__godot-mcp__attach_script",
+      "mcp__godot-mcp__create_script",
+      "mcp__godot-mcp__get_editor_state"
     ]
   }
 }

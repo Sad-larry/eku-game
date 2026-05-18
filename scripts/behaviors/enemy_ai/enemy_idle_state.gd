@@ -8,6 +8,8 @@ class_name EnemyIdleState
 # ========================== 常量定义模块 ==========================
 ## 到达游走目标点的判定阈值（像素）
 const ARRIVAL_THRESHOLD: float = 8.0
+## 警戒持续时间（秒）
+const ALERT_DURATION: float = 0.3
 
 # ========================== 内部变量模块 ==========================
 ## 游走计时器（秒），递减到0时切换行为
@@ -16,20 +18,41 @@ var _behavior_timer: float = 0.0
 var _is_wandering: bool = false
 ## 当前游走目标位置
 var _wander_target: Vector2 = Vector2.ZERO
+## 是否正在警戒（检测到玩家后短暂停顿）
+var _is_alerting: bool = false
+## 警戒倒计时
+var _alert_timer: float = 0.0
 
 # ========================== 状态生命周期模块 ==========================
 func enter() -> void:
 	get_anim().play_state("idle")
+	_is_alerting = false
+	_alert_timer = 0.0
 	_pick_new_behavior()
 
-## 功能：每帧更新，检测玩家进入 + 管理游走行为切换
+## 功能：每帧更新，检测玩家进入 + 管理警戒和游走行为切换
 func update(delta: float) -> void:
+	# 警戒中：倒计时结束后切换到追击
+	if _is_alerting:
+		_alert_timer -= delta
+		if _alert_timer <= 0.0:
+			_is_alerting = false
+			state_machine.change_to("move")
+			return
+		# 警戒期间面朝玩家
+		var target := _enemy.get_target()
+		if target:
+			get_anim().update_flip(target.global_position.x - _enemy.global_position.x)
+		return
+
 	# 检测玩家是否被 VisionArea 发现
 	if _enemy.player_detected:
 		get_movement().stop_immediately()
-		state_machine.change_to("move")
+		_is_alerting = true
+		_alert_timer = ALERT_DURATION
+		get_anim().play_state("idle")
 		return
-	
+
 	# 游走/发呆计时
 	_behavior_timer -= delta
 	if _behavior_timer <= 0.0:

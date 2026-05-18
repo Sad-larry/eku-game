@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="EnemyStats" format=3]
+
+[ext_resource type="Script" uid="uid://mf8w45q61b3o" path="res://resources/data/entities/enemies/enemy_stats.gd" id="1_stats"]
+[ext_resource type="Texture2D" uid="uid://crh7t8tca7ujl" path="res://assets/sprites/enemy/boss/boss.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_stats")
+experience_value = 50
+detection_range = 300.0
+attack_range = 50.0
+attack_cooldown = 2.0
+crit_rate = 0.1
+crit_damage = 2.0
+hurt_duration = 0.2
+wander_range = 60.0
+wander_pause_range = Vector2(1.5, 3.0)
+wander_move_range = Vector2(1.0, 2.5)
+has_weapon = false
+tags = Array[String](["melee", "boss"])
+name = "守关者"
+icon = ExtResource("2_icon")
+max_health = 100
+speed = 120
+damage = 8
+metadata/_custom_type_script = "uid://mf8w45q61b3o"

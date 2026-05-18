@@ -1,0 +1,48 @@
+[gd_resource type="Resource" script_class="LayerProgressionConfig" format=3]
+
+[ext_resource type="Script" uid="uid://ddabcncja52th" path="res://resources/data/progression/layer_progression_config.gd" id="1_prog"]
+[ext_resource type="Script" uid="uid://b7envtgyljvqi" path="res://resources/data/progression/layer_config.gd" id="2_layer"]
+[ext_resource type="Resource" path="res://resources/data/combat/boss_config_default.tres" id="3_boss"]
+
+[sub_resource type="Resource" id="Resource_layer1"]
+script = ExtResource("2_layer")
+layer_index = 1
+max_ring = 4
+enemy_health_multiplier = 1.0
+enemy_damage_multiplier = 1.0
+coin_multiplier = 1.0
+elite_chance_bonus = 0.0
+boss_config = ExtResource("3_boss")
+ring_event_overrides = Array[Resource]([])
+metadata/_custom_type_script = "uid://b7envtgyljvqi"
+
+[sub_resource type="Resource" id="Resource_layer2"]
+script = ExtResource("2_layer")
+layer_index = 2
+max_ring = 5
+enemy_health_multiplier = 1.3
+enemy_damage_multiplier = 1.2
+coin_multiplier = 1.5
+elite_chance_bonus = 0.05
+boss_config = ExtResource("3_boss")
+ring_event_overrides = Array[Resource]([])
+metadata/_custom_type_script = "uid://b7envtgyljvqi"
+
+[sub_resource type="Resource" id="Resource_layer3"]
+script = ExtResource("2_layer")
+layer_index = 3
+max_ring = 6
+enemy_health_multiplier = 1.6
+enemy_damage_multiplier = 1.4
+coin_multiplier = 2.0
+elite_chance_bonus = 0.1
+boss_config = ExtResource("3_boss")
+ring_event_overrides = Array[Resource]([])
+metadata/_custom_type_script = "uid://b7envtgyljvqi"
+
+[resource]
+script = ExtResource("1_prog")
+layers = Array[Resource]([SubResource("Resource_layer1"), SubResource("Resource_layer2"), SubResource("Resource_layer3")])
+difficulty_curve = null
+default_max_ring = 4
+metadata/_custom_type_script = "uid://ddabcncja52th"

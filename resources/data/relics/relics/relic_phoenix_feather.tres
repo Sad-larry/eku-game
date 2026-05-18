@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RelicData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/data/relics/relic_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = "phoenix_feather"
+display_name = "凤凰羽毛"
+description = "每层首次死亡时自动复活，恢复 50% 生命值"
+rarity = 3
+is_stackable = false

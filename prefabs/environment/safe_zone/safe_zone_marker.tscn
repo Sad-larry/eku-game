@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://d1ood73jp4mlr"]
+
+[ext_resource type="Script" uid="uid://pakanocui2ie" path="res://prefabs/environment/safe_zone/safe_zone_marker.gd" id="1_wu100"]
+[ext_resource type="Script" uid="uid://bwwkd6tcdq43a" path="res://prefabs/environment/safe_zone/spawn_circle_visual.gd" id="2_ueltl"]
+
+[node name="SafeZoneMarker" type="Node2D" unique_id=558070936]
+script = ExtResource("1_wu100")
+
+[node name="SpawnCircle" type="Node2D" parent="." unique_id=1148917505]
+script = ExtResource("2_ueltl")
+
+[node name="PortalArea" type="Area2D" parent="." unique_id=43512397]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PortalArea" unique_id=1744375366]

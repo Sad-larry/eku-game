@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://cs2p2j0q5vcl4"]
+
+[node name="treasure_chest" type="StaticBody2D" unique_id=406305799]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=327065658]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=196980952]
+
+[node name="InteractableArea" type="Node2D" parent="." unique_id=268794820]

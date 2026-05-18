@@ -24,6 +24,10 @@ const GAME_OVER_SCENE = preload("uid://c2dh8ol77s0lp")
 const HUD_SCENE = preload("uid://d2miww5iawxo")
 ## 技能选择面板场景
 const SKILL_SELECTION_SCENE = preload("res://scenes/ui/skill_selection/skill_selection_dialog.tscn")
+## 大厅商店场景
+const LOBBY_SHOP_SCENE = preload("res://scenes/ui/lobby_shop/lobby_shop.tscn")
+## 玩家成长面板场景
+const PLAYER_PROGRESSION_SCENE = preload("res://scenes/ui/player_progression/player_progression_panel.tscn")
 
 # ========================== 变量定义模块 ==========================
 ## 暂停菜单实例
@@ -34,6 +38,12 @@ var _settings_menu_instance: Node = null
 var _game_over_instance: Node = null
 ## 技能选择面板实例
 var _skill_selection_instance: Node = null
+## 大厅商店实例
+var _lobby_shop_instance: Node = null
+## 玩家成长面板实例
+var _player_progression_instance: Node = null
+## 遗物选择面板实例
+var _relic_selection_instance: Node = null
 ## HUD 实例
 var _hud_instance: HUD = null
 ## 场景资源路径 -> 游戏状态映射表（用于自动状态管理）
@@ -57,6 +67,7 @@ func _ready() -> void:
 	EventBus.settings_menu_requested.connect(_on_settings_menu_requested)
 	EventBus.game_over_requested.connect(_on_game_over_requested)
 	EventBus.skill_selection_requested.connect(_on_skill_selection_requested)
+	EventBus.relic_selection_requested.connect(_on_relic_selection_requested)
 	EventBus.return_to_main_menu_requested.connect(_on_return_to_main_menu)
 
 	InputManager.pause_requested.connect(_on_pause_requested)
@@ -147,6 +158,12 @@ func _on_ui_closed(ui: Node) -> void:
 		_settings_menu_instance = null
 	if ui == _game_over_instance:
 		_game_over_instance = null
+	if ui == _lobby_shop_instance:
+		_lobby_shop_instance = null
+	if ui == _player_progression_instance:
+		_player_progression_instance = null
+	if ui == _relic_selection_instance:
+		_relic_selection_instance = null
 
 	var was_top = (idx == _modal_stack.size() - 1)
 	var record = _modal_stack[idx]
@@ -241,6 +258,57 @@ func close_skill_selection() -> void:
 func is_skill_selection_open() -> bool:
 	return _skill_selection_instance != null and is_instance_valid(_skill_selection_instance)
 
+# ========================== 大厅商店专用 API ==========================
+## 功能：打开大厅商店
+## 返回值：Node - 大厅商店实例
+func open_lobby_shop() -> Node:
+	if _lobby_shop_instance and is_instance_valid(_lobby_shop_instance):
+		return _lobby_shop_instance
+	_lobby_shop_instance = push_ui(LOBBY_SHOP_SCENE)
+	return _lobby_shop_instance
+
+## 功能：关闭大厅商店
+func close_lobby_shop() -> void:
+	if _lobby_shop_instance and is_instance_valid(_lobby_shop_instance):
+		remove_ui(_lobby_shop_instance)
+	_lobby_shop_instance = null
+
+# ========================== 玩家成长面板专用 API ==========================
+## 功能：打开玩家成长面板
+## 返回值：Node - 玩家成长面板实例
+func open_player_progression() -> Node:
+	if _player_progression_instance and is_instance_valid(_player_progression_instance):
+		return _player_progression_instance
+	_player_progression_instance = push_ui(PLAYER_PROGRESSION_SCENE)
+	return _player_progression_instance
+
+## 功能：关闭玩家成长面板
+func close_player_progression() -> void:
+	if _player_progression_instance and is_instance_valid(_player_progression_instance):
+		remove_ui(_player_progression_instance)
+	_player_progression_instance = null
+
+# ========================== S7 冒险 UI ==========================
+## 功能：打开冒险中商人商店 UI
+func _open_merchant_shop() -> Node:
+	var scene := load("res://scenes/ui/merchant_shop/merchant_shop.tscn") as PackedScene
+	if scene == null:
+		push_warning("UIManager: 无法加载 merchant_shop 场景")
+		return null
+	var instance := push_ui(scene)
+	EventBus.game_state_push_requested.emit(GameManager.GameState.IN_GAME)
+	return instance
+
+## 功能：打开对话框 UI
+func _open_dialog_box() -> Node:
+	var scene := load("res://scenes/ui/dialog_box/dialog_box.tscn") as PackedScene
+	if scene == null:
+		push_warning("UIManager: 无法加载 dialog_box 场景")
+		return null
+	var instance := push_ui(scene)
+	EventBus.game_state_push_requested.emit(GameManager.GameState.IN_GAME)
+	return instance
+
 # ========================== 通知队列 API ==========================
 ## 功能：添加一条通知消息到队列（按顺序依次显示）
 ## 参数：text (String) - 消息文本；duration (float) - 显示时长（秒），默认 2.0
@@ -288,6 +356,14 @@ func open_ui(ui_name: String) -> Node:
 			return open_settings_menu()
 		"game_over":
 			return open_game_over()
+		"lobby_shop":
+			return open_lobby_shop()
+		"player_progression":
+			return open_player_progression()
+		"merchant_shop":
+			return _open_merchant_shop()
+		"dialog_box":
+			return _open_dialog_box()
 		_:
 			if DEBUG_MODE:
 				print("[UIManager] 未知 UI 名称: ", ui_name)
@@ -305,6 +381,12 @@ func close_ui(ui_name: String) -> void:
 			close_settings_menu()
 		"game_over":
 			close_game_over()
+		"lobby_shop":
+			close_lobby_shop()
+		"player_progression":
+			close_player_progression()
+		"relic_selection":
+			close_relic_selection()
 		_:
 			if DEBUG_MODE:
 				print("[UIManager] 未知 UI 名称: ", ui_name)
@@ -318,6 +400,9 @@ func _on_return_to_main_menu() -> void:
 	_settings_menu_instance = null
 	_game_over_instance = null
 	_skill_selection_instance = null
+	_lobby_shop_instance = null
+	_player_progression_instance = null
+	_relic_selection_instance = null
 
 	# 收集所有待销毁的 UI 实例
 	var instances_to_free: Array[Node] = []
@@ -374,3 +459,37 @@ func _on_skill_selection_requested() -> void:
 		if record.scene_path == SKILL_SELECTION_SCENE.resource_path:
 			return
 	push_ui(SKILL_SELECTION_SCENE)
+
+# ========================== 遗物选择面板专用 API ==========================
+## 功能：打开遗物选择面板
+func open_relic_selection(options: Array[RelicData]) -> Node:
+	if _relic_selection_instance and is_instance_valid(_relic_selection_instance):
+		return _relic_selection_instance
+	var scene := load("res://scenes/ui/relic_selection/relic_selection.tscn") as PackedScene
+	if scene == null:
+		push_warning("UIManager: 无法加载 relic_selection 场景")
+		return null
+	var instance := push_ui(scene)
+	instance.setup(options)
+	_relic_selection_instance = instance
+	EventBus.game_state_push_requested.emit(GameManager.GameState.IN_GAME)
+	return instance
+
+## 功能：关闭遗物选择面板
+func close_relic_selection() -> void:
+	if _relic_selection_instance and is_instance_valid(_relic_selection_instance):
+		remove_ui(_relic_selection_instance)
+	_relic_selection_instance = null
+
+## 功能：收到遗物选择面板请求（默认从默认池随机 3 个）
+func _on_relic_selection_requested() -> void:
+	if _relic_selection_instance and is_instance_valid(_relic_selection_instance):
+		return
+	var pool: RelicPool = RelicManager.get_default_pool()
+	if pool == null:
+		push_warning("UIManager: 遗物池为空")
+		return
+	var options := pool.roll_relics(3)
+	if options.is_empty():
+		return
+	open_relic_selection(options)

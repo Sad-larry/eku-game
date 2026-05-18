@@ -85,4 +85,78 @@ signal skill_selection_requested()
 ## 参数：blocked_prefixes (Array[String]) - 需要屏蔽的输入动作前缀列表
 signal input_blocking_updated(blocked_prefixes: Array[String])
 
+# ========================== S6 Roguelite 循环信号 ==========================
+## 触发时机：新运行开始时
+## 参数：seed (int) - 世界种子；layer (int) - 起始层数
+signal run_started(seed: int, layer: int)
+
+## 触发时机：运行结束时（死亡或主动放弃）
+## 参数：stats (Dictionary) - 本次运行统计
+signal run_ended(stats: Dictionary)
+
+## 触发时机：Boss 被击败时
+## 参数：coord (Vector2i) - Boss 房间坐标；layer (int) - 当前层数
+signal boss_defeated(coord: Vector2i, layer: int)
+
+## 触发时机：层数推进时
+## 参数：new_layer (int) - 新层数
+signal layer_advanced(new_layer: int)
+
+## 触发时机：敌人被击杀时（用于统计追踪）
+## 参数：enemy_type (String) - 敌人类型；coord (Vector2i) - 所在房间坐标
+signal enemy_killed(enemy_type: String, coord: Vector2i)
+
+## 触发时机：运行检查点保存时
+signal checkpoint_saved()
+
+# ========================== S7 状态效果信号 ==========================
+## 触发时机：状态效果被施加时
+## 参数：target (Node2D) - 被施加效果的实体；effect (StatusEffectInstance) - 效果实例
+signal status_effect_applied(target: Node2D, effect: StatusEffectInstance)
+
+## 触发时机：状态效果被移除时
+## 参数：target (Node2D) - 实体；effect (StatusEffectInstance) - 效果实例
+signal status_effect_removed(target: Node2D, effect: StatusEffectInstance)
+
+## 触发时机：状态效果 Tick 时
+## 参数：target (Node2D) - 实体；effect (StatusEffectInstance) - 效果实例
+signal status_effect_ticked(target: Node2D, effect: StatusEffectInstance)
+
+# ========================== S7 房间内容信号 ==========================
+## 触发时机：隐藏房间被揭露时
+## 参数：coord (Vector2i) - 房间坐标
+signal hidden_room_revealed(coord: Vector2i)
+
+## 触发时机：房间内容生成完成时
+## 参数：coord (Vector2i) - 房间坐标；content_type (String) - 内容类型
+signal room_content_generated(coord: Vector2i, content_type: String)
+
+# ========================== S7 对话系统信号 ==========================
+## 触发时机：对话开始时
+signal dialog_started()
+
+## 触发时机：对话结束时
+signal dialog_ended()
+
+## 触发时机：对话选项被选择时
+## 参数：choice_index (int) - 选项索引
+signal dialog_choice_made(choice_index: int)
+
+# ========================== S7 商店信号 ==========================
+## 触发时机：商品被购买时
+## 参数：item_id (String) - 商品 ID；price (int) - 价格
+signal shop_item_purchased(item_id: String, price: int)
+
+# ========================== S7 遗物信号 ==========================
+## 触发时机：遗物被获取时
+## 参数：relic_id (String) - 遗物 ID
+signal relic_acquired(relic_id: String)
+
+## 触发时机：遗物被移除时
+## 参数：relic_id (String) - 遗物 ID
+signal relic_lost(relic_id: String)
+
+## 触发时机：请求打开遗物选择界面时
+signal relic_selection_requested
+
 @warning_ignore_restore("unused_signal")

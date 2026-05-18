@@ -111,8 +111,24 @@ func reset_to_main_menu() -> void:
 
 # ========================== 内部回调模块 ==========================
 ## 功能：游戏状态变更时的内部响应（例如控制 UI 显示/隐藏）
-## 参数：new_state (GameState) - 新状态；_old_state (GameState) - 旧状态（未使用）
-func _on_game_state_changed(_new_state: GameState, _old_state: GameState) -> void:
+## 参数：new_state (GameState) - 新状态；old_state (GameState) - 旧状态
+func _on_game_state_changed(new_state: GameState, old_state: GameState) -> void:
 	# 退出游戏时场景树可能已被销毁，防止 get_tree() 为 null 导致崩溃
 	if not get_tree():
 		return
+
+	# 离开冒险状态时，仅在运行结束（完成/失败）时转移货币
+	# "保存并退出"（PAUSED 状态）时不转移，因为运行还未结束
+	if old_state == GameState.IN_GAME and new_state != GameState.PAUSED:
+		if RunManager.run_status == RunManager.RunStatus.COMPLETED or RunManager.run_status == RunManager.RunStatus.FAILED:
+			CurrencyManager.transfer_to_permanent()
+			if DEBUG_MODE:
+				print("[GameManager] 运行结束，货币已转为永久积累")
+		elif RunManager.run_status == RunManager.RunStatus.PAUSED:
+			if DEBUG_MODE:
+				print("[GameManager] 运行暂停，货币保留为当前持有")
+		else:
+			# 兜底：非 RunManager 管理的场景（如直接从 GameWorld 返回大厅）
+			CurrencyManager.transfer_to_permanent()
+			if DEBUG_MODE:
+				print("[GameManager] 离开冒险状态（非 RunManager 管理），货币已保存")

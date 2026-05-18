@@ -5,6 +5,9 @@
 [ext_resource type="Texture2D" uid="uid://bd2aiorjaymw6" path="res://assets/sprites/map/decorations/bookshelf.png" id="4_i7hbt"]
 [ext_resource type="PackedScene" uid="uid://clo5p6whwxfes" path="res://prefabs/environment/portal_zone/portal_zone.tscn" id="5_eebke"]
 [ext_resource type="Texture2D" uid="uid://bt15s8utp3tt4" path="res://assets/sprites/map/decorations/flowerpot.png" id="5_jyyhs"]
+[ext_resource type="PackedScene" uid="uid://c08w5bd71wvrx" path="res://prefabs/environment/interactable/interactable_area.tscn" id="6_interactable"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3tr64"]
 
 [node name="Shop" type="Node2D" unique_id=698016401]
 
@@ -18,31 +21,47 @@ metadata/_edit_lock_ = true
 [node name="Environment" type="Node2D" parent="." unique_id=591718736]
 
 [node name="Counter" type="StaticBody2D" parent="Environment" unique_id=1109595967]
-position = Vector2(2, -31)
+position = Vector2(5, -33)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Counter" unique_id=1692047366]
+polygon = PackedVector2Array(0, -3, 20, -19, 49, 1, 31, 18)
 
 [node name="Sprite2D" type="Sprite2D" parent="Environment/Counter" unique_id=1389653529]
 position = Vector2(24, -6)
 texture = ExtResource("3_bugcc")
 
 [node name="Shelf" type="StaticBody2D" parent="Environment" unique_id=1610143300]
-position = Vector2(77, -7)
+position = Vector2(-53, -21)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Shelf" unique_id=1340030745]
+polygon = PackedVector2Array(0, 5, 1, -30, 43, -26, 45, 17)
 
 [node name="Sprite2D" type="Sprite2D" parent="Environment/Shelf" unique_id=817561958]
 position = Vector2(29, -10)
 texture = ExtResource("4_i7hbt")
 
+[node name="ShopInteractable" parent="Environment/Shelf" unique_id=1481413624 instance=ExtResource("6_interactable")]
+position = Vector2(21, -3)
+prompt_text = "按 F 打开商店"
+radius = 35.0
+target_ui_name = "lobby_shop"
+
 [node name="Flowerpot" type="StaticBody2D" parent="Environment" unique_id=787514069]
 position = Vector2(72, 21)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Flowerpot" unique_id=1603255716]
+position = Vector2(0, -6)
+shape = SubResource("CircleShape2D_3tr64")
 
 [node name="Sprite2D" type="Sprite2D" parent="Environment/Flowerpot" unique_id=43966180]
 position = Vector2(0, -16)
 texture = ExtResource("5_jyyhs")
+
+[node name="ShopInteractable" parent="Environment/Flowerpot" unique_id=872337966 instance=ExtResource("6_interactable")]
+position = Vector2(2, -4)
+prompt_text = "按 F 打开商店"
+radius = 35.0
+target_ui_name = "player_progression"
 
 [node name="Interactables" type="Node2D" parent="." unique_id=2035297207]
 

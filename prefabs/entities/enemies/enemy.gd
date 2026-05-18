@@ -7,6 +7,12 @@
 extends CharacterBody2D
 class_name Enemy
 
+# ========================== 常量定义模块 ==========================
+## 货币掉落实体场景
+const COIN_PICKUP_SCENE: PackedScene = preload("res://prefabs/objects/pickups/coin_pickup/coin_pickup.tscn")
+## 默认掉落货币数据（铜币）
+const COIN_DATA: CoinData = preload("res://resources/data/currency/coins/coin_copper.tres")
+
 # ========================== 导出变量模块 ==========================
 ## 敌人属性配置资源（需包含生命值、攻击力等基础属性）
 @export var stats_resource: EnemyStats
@@ -32,6 +38,8 @@ class_name Enemy
 @onready var vision_area: Area2D = %VisionArea
 ## 移动组件
 @onready var movement_component: EnemyMovementComponent = %EnemyMovementComponent
+## 状态效果组件（管理增益、减益、DOT 等效果）
+var status_effect_component: StatusEffectComponent
 
 # ========================== 运行时状态变量 ==========================
 ## 玩家当前是否在视野区域内（由 VisionArea 信号更新）
@@ -42,6 +50,8 @@ var spawn_position: Vector2 = Vector2.ZERO
 var speed_multiplier: float = 1.0
 ## 攻击范围倍率（由 ChaseBehavior 等外部行为修改），默认 1.0
 var attack_range_multiplier: float = 1.0
+## 是否正在被击退（击退期间禁止移动）
+var _is_knocked_back: bool = false
 
 # ========================== 生命周期模块 ==========================
 ## 功能：节点就绪时初始化各组件、连接信号并启动状态机
@@ -66,6 +76,12 @@ func _ready() -> void:
 	if stats_resource.has_weapon:
 		weapon_sprite.show()
 		weapon_sprite.texture = stats_resource.weapon_texture
+
+	# 初始化状态效果组件
+	status_effect_component = StatusEffectComponent.new()
+	status_effect_component.name = "StatusEffectComponent"
+	add_child(status_effect_component)
+	status_effect_component.setup(self)
 
 	# 初始化行为组件
 	for behavior in behaviors:
@@ -113,11 +129,12 @@ func _sync_hitbox_size() -> void:
 		collision_shape.shape = new_circle
 
 # ========================== 公共 API 模块 ==========================
-## 功能：执行攻击逻辑（实际实现可委托给 AttackComponent 或在此处直接实现）
+## 功能：执行攻击逻辑，通过 DamageCalculator 计算最终伤害
 func attack() -> void:
-	# 设置攻击判定框参数（伤害值、是否暴击、攻击来源）
-	hitbox_component.setup(stats_resource.damage, false, self)
-	# 启用攻击判定框（触发 area_entered）
+	var result := DamageCalculator.new().calculate(
+		stats_resource.damage, 1.0, stats_resource.crit_rate, stats_resource.crit_damage
+	)
+	hitbox_component.setup(int(result["damage"]), result["is_crit"], self)
 	hitbox_component.enable()
 
 ## 功能：获取当前追击目标玩家
@@ -135,13 +152,34 @@ func get_target() -> Player:
 func get_detection_range() -> float:
 	return stats_resource.detection_range
 
-## 功能：返回当前有效速度（基础速度 × 倍率），供移动组件读取
+## 功能：返回当前有效速度（基础速度 × 倍率 × 状态效果倍率），供移动组件读取
 func get_speed() -> float:
-	return stats_resource.speed * speed_multiplier
+	var effect_multiplier := 1.0
+	if status_effect_component:
+		effect_multiplier = status_effect_component.get_speed_multiplier()
+	return stats_resource.speed * speed_multiplier * effect_multiplier
 
 ## 功能：获取攻击范围（从 stats_resource 读取）
 func get_attack_range() -> float:
 	return stats_resource.attack_range
+
+## 功能：受击闪红效果（持续 0.1 秒）
+func flash_red() -> void:
+	anim_controller.sprite.modulate = Color(1, 0.3, 0.3, 1)
+	await get_tree().create_timer(0.1).timeout
+	if is_instance_valid(anim_controller.sprite):
+		anim_controller.sprite.modulate = Color.WHITE
+
+## 功能：受击击退效果（从攻击者位置推开）
+## 参数：from_position (Vector2) - 攻击者位置；force (float) - 击退力度
+func apply_knockback(from_position: Vector2, force: float = 200.0) -> void:
+	_is_knocked_back = true
+	var direction: Vector2 = (global_position - from_position).normalized()
+	var target_pos: Vector2 = global_position + direction * force * 0.15
+	var tween: Tween = create_tween()
+	tween.tween_property(self, "global_position", target_pos, 0.15).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	await tween.finished
+	_is_knocked_back = false
 
 # ========================== 信号回调模块 ==========================
 ## 功能：受击框受到伤害时的回调
@@ -152,12 +190,30 @@ func _on_hurtbox_component_damaged(hitbox: HitboxComponent) -> void:
 	if health_component.current_health <= 0:
 		return
 	health_component.take_damage(hitbox.damage)
+	# 记录玩家造成的伤害统计
+	if hitbox.source is Player and RunManager.is_run_active():
+		RunManager.record_damage_dealt(hitbox.damage)
+	# 受击反馈：闪红 + 击退
+	flash_red()
+	if hitbox.source != null:
+		apply_knockback(hitbox.source.global_position)
 	enemy_state_machine.send_event("hurt")
 
 ## 功能：单位死亡时的回调
-## 说明：触发状态机切换到 "dead" 死亡状态（播放死亡动画、禁用碰撞等）
+## 说明：先生成掉落货币，再触发状态机切换到 "dead" 死亡状态
 func _on_died() -> void:
+	_spawn_coins()
 	enemy_state_machine.change_to("dead")
+
+## 功能：在死亡位置生成 1-3 个货币，随机方向弹出
+func _spawn_coins() -> void:
+	var count: int = randi_range(1, 3)
+	for i in count:
+		var coin: CoinPickup = COIN_PICKUP_SCENE.instantiate()
+		get_parent().add_child(coin)
+		coin.global_position = global_position
+		var angle: float = randf_range(0, TAU)
+		coin.spawn(COIN_DATA, Vector2.from_angle(angle), randf_range(100.0, 200.0))
 
 ## 功能：玩家进入视野区域时标记 detected
 func _on_vision_area_body_entered(body: Node2D) -> void:

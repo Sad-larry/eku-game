@@ -17,8 +17,6 @@ var is_loading := false
 # ========================== TODO 待完善事项 ==========================
 # TODO: 可以选用画布下拉动画进行初始游戏界面，比如在主菜单界面和游戏界面之间加入画布下拉动画，
 #       动画背景为初始游戏界面画面，实现无缝转场，而不是用定时器。
-# TODO: 退出游戏应该也用 GameManager 来更新游戏状态，改为 QUIT 状态，
-#       在 QUIT 状态下需要保存游戏数据，然后再销毁。
 
 # ========================== 生命周期模块 ==========================
 ## 功能：节点就绪时设置游戏状态为主菜单
@@ -48,9 +46,9 @@ func _on_settings_button_pressed() -> void:
 	UIManager.open_settings_menu()
 
 ## 功能：退出游戏按钮被按下时的回调
-## 说明：退出游戏（当前直接调用 get_tree().quit()）
-## TODO: 应通过 GameManager 切换到 QUIT 状态，在 QUIT 状态下保存游戏数据后再退出
+## 说明：保存存档后退出游戏
 func _on_quit_button_pressed() -> void:
+	SaveManager.save_immediately()
 	get_tree().quit()
 
 # ========================== 场景加载模块 ==========================

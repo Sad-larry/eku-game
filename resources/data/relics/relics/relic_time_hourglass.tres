@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RelicData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/data/relics/relic_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = "time_hourglass"
+display_name = "时间沙漏"
+description = "技能冷却时间减少 15%"
+rarity = 3
+is_stackable = false

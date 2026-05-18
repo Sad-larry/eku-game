@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CoinData" format=3 uid="uid://bu1u3m3avi4i2"]
+
+[ext_resource type="Script" uid="uid://pvv8crqpho13" path="res://resources/data/currency/coin_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dxunjgwati2co" path="res://assets/sprites/coin/copper_coin_tiles.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "尘元（铜币）"
+icon = ExtResource("2_tex")
+color = Color(0.7490196, 0.47843137, 0.2901961, 1)

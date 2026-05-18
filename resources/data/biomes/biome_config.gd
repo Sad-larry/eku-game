@@ -24,3 +24,17 @@ class_name BiomeConfig
 ## 0.0 → 使用基准阈值（草地占主体）。
 ## 建议范围 [-0.5, 0.5]，相邻 ring 之间的 bias 差值不超过 0.15 以保过渡自然。
 @export var height_bias: float = 0.0
+
+# ========================== S7 地形效果扩展 ==========================
+## 该生态对玩家/敌人施加的状态效果列表（如水面减速、火山灼烧）
+@export var terrain_effects: Array[Resource] = []
+## 地形效果施加间隔（秒）
+@export var terrain_effect_interval: float = 2.0
+## 环境装饰物场景列表
+@export var decoration_scenes: Array[PackedScene] = []
+## 装饰物密度（0.0-1.0，每区块的期望数量比例）
+@export var decoration_density: float = 0.1
+## 环境粒子效果
+@export var ambient_particles: PackedScene
+## 环境音效
+@export var ambient_sound: AudioStream

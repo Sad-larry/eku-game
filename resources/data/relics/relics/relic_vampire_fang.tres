@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RelicData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/data/relics/relic_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = "vampire_fang"
+display_name = "吸血之牙"
+description = "攻击时回复造成伤害的 5% 生命值"
+rarity = 1
+is_stackable = false

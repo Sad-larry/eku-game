@@ -1,0 +1,82 @@
+[gd_resource type="Resource" script_class="PlayerProgression" format=3]
+
+[ext_resource type="Script" path="res://resources/data/entities/player/player_progression.gd" id="1_data"]
+[ext_resource type="Script" path="res://resources/data/entities/player/level_up_reward.gd" id="2_reward"]
+
+[sub_resource type="Resource" id="reward_lv2"]
+script = ExtResource("2_reward")
+max_health_bonus = 10
+damage_bonus = 1
+speed_bonus = 3.0
+crit_rate_bonus = 0.005
+crit_damage_bonus = 0.03
+
+[sub_resource type="Resource" id="reward_lv3"]
+script = ExtResource("2_reward")
+max_health_bonus = 10
+damage_bonus = 1
+speed_bonus = 3.0
+crit_rate_bonus = 0.005
+crit_damage_bonus = 0.03
+
+[sub_resource type="Resource" id="reward_lv4"]
+script = ExtResource("2_reward")
+max_health_bonus = 15
+damage_bonus = 2
+speed_bonus = 4.0
+crit_rate_bonus = 0.01
+crit_damage_bonus = 0.05
+
+[sub_resource type="Resource" id="reward_lv5"]
+script = ExtResource("2_reward")
+max_health_bonus = 15
+damage_bonus = 2
+speed_bonus = 4.0
+crit_rate_bonus = 0.01
+crit_damage_bonus = 0.05
+
+[sub_resource type="Resource" id="reward_lv6"]
+script = ExtResource("2_reward")
+max_health_bonus = 20
+damage_bonus = 3
+speed_bonus = 5.0
+crit_rate_bonus = 0.01
+crit_damage_bonus = 0.05
+
+[sub_resource type="Resource" id="reward_lv7"]
+script = ExtResource("2_reward")
+max_health_bonus = 20
+damage_bonus = 3
+speed_bonus = 5.0
+crit_rate_bonus = 0.015
+crit_damage_bonus = 0.08
+
+[sub_resource type="Resource" id="reward_lv8"]
+script = ExtResource("2_reward")
+max_health_bonus = 25
+damage_bonus = 4
+speed_bonus = 5.0
+crit_rate_bonus = 0.015
+crit_damage_bonus = 0.08
+
+[sub_resource type="Resource" id="reward_lv9"]
+script = ExtResource("2_reward")
+max_health_bonus = 25
+damage_bonus = 4
+speed_bonus = 6.0
+crit_rate_bonus = 0.02
+crit_damage_bonus = 0.1
+
+[sub_resource type="Resource" id="reward_lv10"]
+script = ExtResource("2_reward")
+max_health_bonus = 30
+damage_bonus = 5
+speed_bonus = 6.0
+crit_rate_bonus = 0.02
+crit_damage_bonus = 0.1
+
+[resource]
+script = ExtResource("1_data")
+max_level = 10
+level_up_costs = Array[int]([20, 40, 60, 100, 150, 200, 300, 400, 500])
+level_rewards = Array[Resource]([SubResource("reward_lv2"), SubResource("reward_lv3"), SubResource("reward_lv4"), SubResource("reward_lv5"), SubResource("reward_lv6"), SubResource("reward_lv7"), SubResource("reward_lv8"), SubResource("reward_lv9"), SubResource("reward_lv10")])

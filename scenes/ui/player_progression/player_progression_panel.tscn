@@ -1,0 +1,164 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/player_progression/player_progression_panel.gd" id="1_script"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.1, 0.1, 0.1, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="PlayerProgressionPanel" type="CanvasLayer"]
+layer = 999
+script = ExtResource("1_script")
+
+[node name="BgDim" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.3)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainPanel" type="Panel" parent="CenterContainer"]
+custom_minimum_size = Vector2(500, 420)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/MainPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MainPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "角色成长"
+horizontal_alignment = 1
+
+[node name="LevelLabel" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="StatsTitle" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "当前属性"
+
+[node name="StatsGrid" type="GridContainer" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="LabelHealth" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/StatsGrid"]
+layout_mode = 2
+text = "生命值:"
+
+[node name="StatHealth" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/StatsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="LabelDamage" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/StatsGrid"]
+layout_mode = 2
+text = "攻击力:"
+
+[node name="StatDamage" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/StatsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="LabelSpeed" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/StatsGrid"]
+layout_mode = 2
+text = "移速:"
+
+[node name="StatSpeed" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/StatsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="LabelCritRate" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/StatsGrid"]
+layout_mode = 2
+text = "暴击率:"
+
+[node name="StatCritRate" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/StatsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="LabelCritDamage" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/StatsGrid"]
+layout_mode = 2
+text = "暴击伤害:"
+
+[node name="StatCritDamage" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer/StatsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="HSeparator2" type="HSeparator" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="RewardPreviewLabel" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+
+[node name="CostLabel" type="Label" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 1
+
+[node name="LevelUpButton" type="Button" parent="CenterContainer/MainPanel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 20
+text = "升级"
+
+[node name="CloseButton" type="Button" parent="CenterContainer/MainPanel"]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -28.0
+offset_top = 6.0
+offset_right = -6.0
+offset_bottom = 37.0
+text = "✕"
+
+[connection signal="pressed" from="CenterContainer/MainPanel/CloseButton" to="." method="_on_close_button_pressed"]

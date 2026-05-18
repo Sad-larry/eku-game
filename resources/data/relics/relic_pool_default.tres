@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="RelicPool" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://resources/data/relics/relic_pool.gd" id="1_script"]
+[ext_resource type="Resource" path="res://resources/data/relics/relics/relic_health_leaf.tres" id="2_leaf"]
+[ext_resource type="Resource" path="res://resources/data/relics/relics/relic_wind_boots.tres" id="3_boots"]
+[ext_resource type="Resource" path="res://resources/data/relics/relics/relic_vampire_fang.tres" id="4_fang"]
+[ext_resource type="Resource" path="res://resources/data/relics/relics/relic_crit_gem.tres" id="5_gem"]
+[ext_resource type="Resource" path="res://resources/data/relics/relics/relic_time_hourglass.tres" id="6_hourglass"]
+[ext_resource type="Resource" path="res://resources/data/relics/relics/relic_phoenix_feather.tres" id="7_feather"]
+[ext_resource type="Resource" path="res://resources/data/relics/relics/relic_chaos_heart.tres" id="8_chaos"]
+
+[resource]
+script = ExtResource("1_script")
+relics = [ExtResource("2_leaf"), ExtResource("3_boots"), ExtResource("4_fang"), ExtResource("5_gem"), ExtResource("6_hourglass"), ExtResource("7_feather"), ExtResource("8_chaos")]

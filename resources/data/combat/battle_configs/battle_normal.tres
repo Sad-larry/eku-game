@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="BattleRoomConfig" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/data/combat/battle_room_config.gd" id="1"]
+[ext_resource type="Script" path="res://resources/data/combat/enemy_entry.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://ceolu6sw8qgju" path="res://prefabs/entities/enemies/common/enemy_skeleton.tscn" id="3"]
+
+[sub_resource type="Resource" id="enemy_entry_1"]
+script = ExtResource("2")
+enemy_scene = ExtResource("3")
+count = 5
+weight = 1.0
+
+[resource]
+script = ExtResource("1")
+enemy_entries = Array[Resource]([SubResource("enemy_entry_1")])
+difficulty_scale = 1.2

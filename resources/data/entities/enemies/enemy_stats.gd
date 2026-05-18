@@ -19,6 +19,12 @@ class_name EnemyStats
 ## 攻击冷却时间（秒）
 @export var attack_cooldown: float = 1.5
 
+## 暴击率（0.0 ~ 1.0）
+@export var crit_rate: float = 0.0
+
+## 暴击伤害倍率
+@export var crit_damage: float = 2.0
+
 ## 受击硬直时间（秒）
 @export var hurt_duration: float = 0.3
 

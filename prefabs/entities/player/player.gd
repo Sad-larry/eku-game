@@ -21,6 +21,8 @@ class_name Player
 @onready var input_handler: PlayerInputHandler = $InputHandler
 
 # ========================== 变量定义模块 ==========================
+## 状态效果组件（管理增益、减益、DOT 等效果）
+var status_effect_component: StatusEffectComponent
 ## 最后有效移动方向（只读，委托至 MovementComponent）
 var last_direction: Vector2:
 	get:
@@ -36,14 +38,25 @@ func _ready() -> void:
 	health_component.unit_died.connect(_on_unit_died)
 	energy_component.energy_changed.connect(_on_energy_forward_to_bus)
 
+	# 创建 stats 运行时副本，避免修改共享 .tres 资源
+	stats_resource = stats_resource.duplicate()
+	PlayerProgressionManager.apply_progression_to_stats(stats_resource)
+
 	health_component.setup(stats_resource)
 	energy_component.setup(stats_resource)
 	movement_component.setup(stats_resource)
+
+	# 初始化状态效果组件
+	status_effect_component = StatusEffectComponent.new()
+	status_effect_component.name = "StatusEffectComponent"
+	add_child(status_effect_component)
+	status_effect_component.setup(self)
 
 	input_handler.input_action.connect(_on_input_action)
 	input_handler.movement_dir_changed.connect(_on_movement_changed)
 
 	EventBus.player_died.connect(_on_player_died)
+	PlayerProgressionManager.stats_updated.connect(_on_progression_stats_updated)
 
 	EventBus.player_ready.emit()
 	print("Player: 初始化完成")
@@ -106,6 +119,9 @@ func _on_hurtbox_component_damaged(hitbox: HitboxComponent) -> void:
 	if health_component.current_health <= 0:
 		return
 	health_component.take_damage(hitbox.damage)
+	# 记录玩家受到的伤害统计
+	if RunManager.is_run_active():
+		RunManager.record_damage_taken(hitbox.damage)
 	player_state_machine.send_event("hurt")
 
 ## 功能：将生命值变化转发到全局事件总线（供 HUD 界面监听）
@@ -123,15 +139,33 @@ func _on_energy_forward_to_bus(new_energy: int, max_energy: int) -> void:
 func _on_unit_died() -> void:
 	player_state_machine.send_event("dead")
 
-## 功能：死亡动画播放完毕后的回调，打开游戏结束面板
+## 功能：死亡动画播放完毕后的回调，结束运行并打开游戏结束面板
 func _on_player_died() -> void:
+	# 结束当前运行
+	if RunManager.is_run_active():
+		RunManager.end_run(RunManager.RunStatus.FAILED, "enemy")
+	# 打开游戏结束界面
 	UIManager.open_game_over()
+
+## 功能：玩家成长属性更新时重新应用加成并刷新组件
+func _on_progression_stats_updated() -> void:
+	# 重新从基础 .tres 创建副本并叠加新的成长加成
+	var base_stats: Resource = load("res://resources/data/entities/player/stats_player.tres")
+	stats_resource = base_stats.duplicate()
+	PlayerProgressionManager.apply_progression_to_stats(stats_resource)
+	health_component.setup(stats_resource)
+	energy_component.setup(stats_resource)
+	movement_component.setup(stats_resource)
 
 # ========================== 辅助方法模块 ==========================
 ## 功能：获取当前状态的移速倍率。
-## 说明：技能释放期间若允许移动，技能数据可能附带移速倍率。
+## 说明：技能释放期间若允许移动，技能数据可能附带移速倍率。同时叠加状态效果修正。
 func _get_current_speed_multiplier() -> float:
+	var state_mult := 1.0
 	var state := player_state_machine.get_current_state()
 	if state and state.has_method("get_move_speed_multiplier"):
-		return state.get_move_speed_multiplier()
-	return 1.0
+		state_mult = state.get_move_speed_multiplier()
+	var effect_mult := 1.0
+	if status_effect_component:
+		effect_mult = status_effect_component.get_speed_multiplier()
+	return state_mult * effect_mult

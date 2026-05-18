@@ -34,3 +34,16 @@ static func show_at(position: Vector2, value: float, is_crit: bool = false) -> v
 	_instance.add_child(popup)
 	popup.global_position = position
 	popup.setup(value, is_crit)
+
+## 功能：在指定世界坐标位置生成自定义文本飘字（如 "+1 尘元"）
+## 参数：
+##   position (Vector2) - 生成位置的全局坐标
+##   text (String) - 要显示的文本
+##   color (Color) - 文本颜色（默认白色）
+static func show_text_at(position: Vector2, text: String, color: Color = Color.WHITE) -> void:
+	if _instance == null:
+		return
+	var popup: DamageNumber = _instance.damage_number_scene.instantiate() as DamageNumber
+	_instance.add_child(popup)
+	popup.global_position = position
+	popup.setup_text(text, color)

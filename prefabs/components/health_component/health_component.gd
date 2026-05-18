@@ -52,3 +52,9 @@ func heal(amount: int) -> void:
 	current_health += amount
 	current_health = min(current_health, max_health)
 	health_updated.emit(current_health, max_health)
+
+## 功能：获取当前血量百分比（0.0 ~ 1.0）
+func get_health_percentage() -> float:
+	if max_health <= 0:
+		return 0.0
+	return float(current_health) / float(max_health)

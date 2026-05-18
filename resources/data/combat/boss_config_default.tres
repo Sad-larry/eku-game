@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="BossConfig" format=3]
+
+[ext_resource type="Script" uid="uid://dqq1nf88cyv7u" path="res://resources/data/combat/boss_config.gd" id="1_config"]
+[ext_resource type="PackedScene" uid="uid://bxwo4kcy81ksl" path="res://prefabs/entities/enemies/boss/enemy_boss.tscn" id="2_boss"]
+
+[resource]
+script = ExtResource("1_config")
+boss_scene = ExtResource("2_boss")
+boss_name = "守关者"
+phases = 2
+phase_health_thresholds = Array[float]([0.5])
+arena_size = 300.0
+reward_coins = 100
+unlock_next_layer = true
+metadata/_custom_type_script = "uid://dqq1nf88cyv7u"

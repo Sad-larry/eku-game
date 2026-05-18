@@ -26,6 +26,17 @@ const COLORS: Dictionary = {
 func setup(value: float, is_crit: bool = false) -> void:
 	_label.text = str(int(value))
 	_label.self_modulate = COLORS["crit"] if is_crit else COLORS["normal"]
+	_start_popup()
+
+## 功能：初始化自定义文本控件（用于飘字提示，如 "+1 尘元"）
+## 参数：text (String) - 要显示的文本；color (Color) - 文本颜色
+func setup_text(text: String, color: Color = Color.WHITE) -> void:
+	_label.text = text
+	_label.self_modulate = color
+	_start_popup()
+
+## 功能：启动弹出动画并连接销毁回调
+func _start_popup() -> void:
 	_anim.play("popup")
 	_anim.animation_finished.connect(_on_anim_finished)
 

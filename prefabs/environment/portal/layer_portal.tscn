@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://c4hbpivltt64b"]
+
+[ext_resource type="Script" uid="uid://cdx3rijk2ga3j" path="res://prefabs/environment/portal/layer_portal.gd" id="1_47v10"]
+
+[node name="LayerPortal" type="Node2D" unique_id=1443210145]
+script = ExtResource("1_47v10")
+
+[node name="Visual" type="Node2D" parent="." unique_id=136243477]
+
+[node name="PortalArea" type="Area2D" parent="." unique_id=884849744]

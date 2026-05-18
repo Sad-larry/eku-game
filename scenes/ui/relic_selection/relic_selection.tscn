@@ -1,0 +1,44 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/relic_selection/relic_selection.gd" id="1_script"]
+
+[node name="RelicSelection" type="CanvasLayer"]
+layer = 15
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainPanel" type="VBoxContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(600, 320)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 16
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/MainPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+text = "选择一个遗物"
+horizontal_alignment = 1
+
+[node name="OptionContainer" type="HBoxContainer" parent="CenterContainer/MainPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+alignment = 1

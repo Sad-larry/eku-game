@@ -9,22 +9,11 @@ extends CanvasLayer
 class_name HUD
 
 # ========================== 节点引用模块 ==========================
-## 生命值数值文本标签
 @onready var health_label: Label = %HealthLabel
-
-## 生命值进度条
 @onready var health_bar: ProgressBar = %HealthBar
-
-## 能量值数值文本标签
 @onready var energy_label: Label = %EnergyLabel
-
-## 能量值进度条
 @onready var energy_bar: ProgressBar = %EnergyBar
-
-## 连击数文本标签
 @onready var combo_label: Label = %ComboLabel
-
-## 金币数量文本标签
 @onready var coin_label: Label = %CoinLabel
 
 ## 技能快捷栏槽位数组（通过 %SkillSlot1 ~ %SkillSlot4 命名）
@@ -37,6 +26,9 @@ class_name HUD
 
 ## 暂停按钮节点
 @onready var pause_button: Button = %PauseButton
+
+## 遗物栏容器（运行时动态创建）
+var _relic_bar: HBoxContainer = null
 
 # ========================== 常量定义模块 ==========================
 ## 输入动作名到技能槽索引的映射表
@@ -62,12 +54,18 @@ func _ready():
 	update_health_display()
 	update_energy_display()
 	update_combo_display()
+	# 从 CurrencyManager 同步初始货币数量（根据游戏状态选择当前/永久）
+	_sync_coin_from_currency_manager()
+	update_coin_display()
 
 	# 连接全局事件总线信号
 	EventBus.health_updated.connect(_on_health_updated)
 	EventBus.energy_updated.connect(_on_energy_updated)
 	EventBus.combo_updated.connect(_on_combo_updated)
-	EventBus.coin_collected.connect(_on_coin_collected)
+	# 连接货币信号（coin_changed 覆盖收集和消费两种场景）
+	CurrencyManager.coin_changed.connect(_on_coin_changed)
+	# 监听游戏状态变更，重新同步货币显示（解决场景切换时信号丢失问题）
+	GameManager.game_state_changed.connect(_on_game_state_changed)
 
 	# 连接技能冷却信号（冷却计算由 SkillRunner 负责，HUD 仅展示）
 	EventBus.skill_cooldown_updated.connect(_on_skill_cooldown_updated)
@@ -92,12 +90,17 @@ func _ready():
 	if Global.player != null:
 		_init_skill_slot_icons()
 
+	# 初始化遗物栏
+	_init_relic_bar()
+	RelicManager.relics_changed.connect(_on_relics_changed)
+
 ## 功能：节点退出场景树时断开所有全局信号连接，防止悬挂回调。
 func _exit_tree() -> void:
 	EventBus.health_updated.disconnect(_on_health_updated)
 	EventBus.energy_updated.disconnect(_on_energy_updated)
 	EventBus.combo_updated.disconnect(_on_combo_updated)
-	EventBus.coin_collected.disconnect(_on_coin_collected)
+	CurrencyManager.coin_changed.disconnect(_on_coin_changed)
+	GameManager.game_state_changed.disconnect(_on_game_state_changed)
 	EventBus.skill_cooldown_updated.disconnect(_on_skill_cooldown_updated)
 	EventBus.skill_cooldown_finished.disconnect(_on_skill_cooldown_finished)
 	EventBus.skill_slot_changed.disconnect(_on_skill_slot_changed)
@@ -106,6 +109,8 @@ func _exit_tree() -> void:
 		EventBus.player_ready.disconnect(_on_player_ready)
 	if InputManager.action_triggered.is_connected(_on_input_action_triggered):
 		InputManager.action_triggered.disconnect(_on_input_action_triggered)
+	if RelicManager.relics_changed.is_connected(_on_relics_changed):
+		RelicManager.relics_changed.disconnect(_on_relics_changed)
 
 # ========================== 技能槽初始化模块 ==========================
 ## 功能：从 Global.player 获取技能数据，初始化 4 个技能槽的图标。
@@ -151,15 +156,21 @@ func update_energy_display():
 func update_combo_display():
 	combo_label.text = "Combo: %s" % current_combo
 
+## 功能：更新货币数量显示。
+func update_coin_display():
+	coin_label.text = "尘元: %d" % coin_count
+
 ## 功能：重置 HUD 状态（玩家复活或进入新关卡时调用）。
 ## 说明：重置 HP/MP/连击数显示，重新初始化技能槽图标，清除所有冷却状态。
 func reset_hud():
 	current_health = max_health
 	current_energy = max_energy
 	current_combo = 0
+	coin_count = 0
 	update_health_display()
 	update_energy_display()
 	update_combo_display()
+	update_coin_display()
 	# 重新初始化技能槽图标
 	_init_skill_slot_icons()
 	# 清除所有技能槽的冷却显示
@@ -222,11 +233,40 @@ func _on_combo_updated(new_combo: int):
 	current_combo = new_combo
 	update_combo_display()
 
-## 功能：金币数量增加时更新显示。
-## 参数：amount (int) - 本次增加的金币数量
-func _on_coin_collected(amount: int) -> void:
-	coin_count += amount
-	coin_label.text = str(coin_count)
+## 功能：货币数量变化时更新显示并播放闪烁动画。
+## 说明：根据游戏状态选择显示当前持有量（IN_GAME）或永久积累量（LOBBY）。
+## 参数：new_current (int) - 当前持有量；new_permanent (int) - 永久积累量
+func _on_coin_changed(new_current: int, new_permanent: int) -> void:
+	if GameManager.current_game_state == GameManager.GameState.IN_GAME:
+		coin_count = new_current
+	else:
+		coin_count = new_permanent
+	update_coin_display()
+	_flash_coin_label()
+
+## 功能：货币标签闪烁动画（缩放弹跳 + 颜色闪烁）
+func _flash_coin_label() -> void:
+	var tween: Tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(coin_label, "scale", Vector2(1.3, 1.3), 0.1)
+	tween.tween_property(coin_label, "scale", Vector2.ONE, 0.15).set_delay(0.1)
+	tween.tween_property(coin_label, "self_modulate", Color(1, 1, 0.5), 0.1)
+	tween.tween_property(coin_label, "self_modulate", Color.WHITE, 0.3).set_delay(0.1)
+
+# ========================== 货币同步模块 ==========================
+## 功能：从 CurrencyManager 同步初始货币数量到本地状态。
+## 说明：根据游戏状态选择当前持有量（IN_GAME）或永久积累量（LOBBY）。
+func _sync_coin_from_currency_manager() -> void:
+	if GameManager.current_game_state == GameManager.GameState.IN_GAME:
+		coin_count = CurrencyManager.get_current_coin()
+	else:
+		coin_count = CurrencyManager.get_permanent_coin()
+
+## 功能：游戏状态变更时重新同步货币显示。
+## 说明：解决场景切换时 coin_changed 信号在旧 HUD 销毁与新 HUD 创建之间发出导致丢失的问题。
+func _on_game_state_changed(_new_state: GameManager.GameState, _old_state: GameManager.GameState) -> void:
+	_sync_coin_from_currency_manager()
+	update_coin_display()
 
 # ========================== 玩家就绪回调模块 ==========================
 ## 功能：Player 初始化完成时延迟初始化技能槽图标。
@@ -234,3 +274,34 @@ func _on_coin_collected(amount: int) -> void:
 ##       确保 Global.player 已非 null 后再读取技能数据。
 func _on_player_ready() -> void:
 	_init_skill_slot_icons()
+
+# ========================== 遗物栏模块 ==========================
+## 功能：初始化遗物栏，在 HUD 底部状态栏上方创建一个 HBoxContainer
+func _init_relic_bar() -> void:
+	if _relic_bar:
+		return
+	_relic_bar = HBoxContainer.new()
+	_relic_bar.name = "RelicBar"
+	_relic_bar.add_theme_constant_override("separation", 4)
+	# 插入到 StatusContainer 下方（作为 MarginContainer 的子节点）
+	var margin: MarginContainer = $MarginContainer
+	margin.add_child(_relic_bar)
+	# 将遗物栏移到技能槽之前（底部对齐布局中，在技能槽上方显示）
+	margin.move_child(_relic_bar, 0)
+	_update_relic_bar()
+
+## 功能：刷新遗物栏显示（清除后重建）
+func _update_relic_bar() -> void:
+	if not _relic_bar:
+		return
+	for child in _relic_bar.get_children():
+		child.queue_free()
+	var relics := RelicManager.get_active_relics()
+	for relic in relics:
+		var icon: PanelContainer = load("res://prefabs/ui/relic_icon/relic_icon.tscn").instantiate()
+		_relic_bar.add_child(icon)
+		icon.setup(relic)
+
+## 功能：遗物变化时刷新遗物栏
+func _on_relics_changed() -> void:
+	_update_relic_bar()

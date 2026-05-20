@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="RandomEvent" format=3]
+
+[ext_resource type="Script" path="res://resources/data/events/random_event.gd" id="1_evt"]
+
+[resource]
+script = ExtResource("1_evt")
+id = "random_merchant"
+display_name = "旅行商人"
+description = "遇到了一位旅行商人"
+min_ring = 2
+max_ring = 99
+weight = 0.8
+event_type = "merchant"
+max_triggers_per_run = 1
+cooldown_rooms = 5

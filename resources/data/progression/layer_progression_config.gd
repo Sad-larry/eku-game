@@ -8,7 +8,7 @@ class_name LayerProgressionConfig
 
 # ========================== 导出变量模块 ==========================
 ## 所有层级的配置列表（索引 0 = 第 1 层）
-@export var layers: Array[Resource] = []
+@export var layers: Array[LayerConfig] = []
 
 ## 难度曲线（X = 层索引归一化值，Y = 综合难度系数）
 ## 为空时使用默认公式：1 + 0.15 * (layer - 1)
@@ -42,7 +42,7 @@ func get_max_ring(layer: int) -> int:
 func get_difficulty_coefficient(layer: int) -> float:
 	if difficulty_curve:
 		# 将层索引归一化到曲线的 X 范围
-		var max_layer := max(layers.size(), 1)
+		var max_layer :int = max(layers.size(), 1)
 		var t := float(layer - 1) / float(max_layer)
 		return difficulty_curve.sample(clampf(t, 0.0, 1.0))
 	# 默认公式：每层增加 15% 难度

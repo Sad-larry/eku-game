@@ -1,16 +1,15 @@
 [gd_scene format=3 uid="uid://cid6ctcxuhehs"]
 
 [ext_resource type="Script" uid="uid://bxfo4ttnt5g8j" path="res://scenes/game/game_world.gd" id="1_60nf8"]
+[ext_resource type="Resource" uid="uid://3iiaugj3ttag" path="res://resources/data/combat/battle_room_config.tres" id="2_battle"]
 [ext_resource type="Resource" uid="uid://c0a1op68lstgq" path="res://resources/data/maps/radial_grid_config.tres" id="2_nms8r"]
-[ext_resource type="Resource" path="res://resources/data/combat/battle_room_config.tres" id="2_battle"]
-[ext_resource type="Resource" path="res://resources/data/progression/layer_progression.tres" id="2_progression"]
+[ext_resource type="Resource" uid="uid://byr1nu7d2t0bb" path="res://resources/data/progression/layer_progression.tres" id="2_progression"]
 [ext_resource type="TileSet" uid="uid://da0qlqx0x5l2p" path="res://resources/data/tilesets/tileset_grassland.tres" id="3_jmprd"]
 [ext_resource type="Script" uid="uid://begwagd0w8e0k" path="res://scripts/systems/map_generation/chunk_manager.gd" id="3_nms8r"]
 [ext_resource type="Script" uid="uid://ctnn8d726sofc" path="res://scripts/systems/map_generation/chunk_pool.gd" id="4_60nf8"]
 [ext_resource type="PackedScene" uid="uid://dohnbnw4ew3hp" path="res://prefabs/entities/player/player.tscn" id="5_0jb8d"]
 [ext_resource type="PackedScene" uid="uid://ceolu6sw8qgju" path="res://prefabs/entities/enemies/common/enemy_skeleton.tscn" id="6_bsk45"]
 [ext_resource type="Script" uid="uid://blel2cfdsi8ge" path="res://scripts/systems/combat/damage_popup_spawner.gd" id="7_spawner"]
-[ext_resource type="PackedScene" uid="uid://bsfixqwy2msgs" path="res://prefabs/fx/damage_number/damage_number.tscn" id="8_dmgnum"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_yeg30"]
 font_size = 28
@@ -48,7 +47,6 @@ position = Vector2(-112, 117)
 
 [node name="DamagePopupSpawner" type="Node" parent="." unique_id=1698760426]
 script = ExtResource("7_spawner")
-damage_number_scene = ExtResource("8_dmgnum")
 
 [node name="MapMinimap" type="CanvasLayer" parent="." unique_id=1610804728]
 

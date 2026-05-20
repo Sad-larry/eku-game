@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BossConfig" format=3 uid="uid://dd3kruv7pmuva"]
+
+[ext_resource type="Script" uid="uid://dqq1nf88cyv7u" path="res://resources/data/combat/bosses/boss_config.gd" id="1_config"]
+[ext_resource type="PackedScene" uid="uid://bxwo4kcy81ksl" path="res://prefabs/entities/enemies/boss/enemy_boss.tscn" id="2_boss"]
+
+[resource]
+script = ExtResource("1_config")
+boss_scene = ExtResource("2_boss")
+boss_name = "守关者"
+phases = 2
+metadata/_custom_type_script = "uid://dqq1nf88cyv7u"

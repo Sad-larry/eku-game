@@ -30,10 +30,8 @@ func _ready() -> void:
 # ========================== 初始化辅助模块 ==========================
 ## 功能：初始化 skills_by_type 字典，为每个技能类型创建空数组
 func _initialize_type_dict() -> void:
-	var type_names = SkillEffect.SkillType.keys()
-	for type_name in type_names:
-		var type_value = SkillEffect.SkillType[type_name]
-		skills_by_type[type_value] = []
+	for type in SkillEffect.SkillType.values():
+		skills_by_type[type] = []
 
 # ========================== 技能加载核心模块 ==========================
 ## 功能：递归加载目录下所有技能资源（.tres / .res）
@@ -71,8 +69,8 @@ func _recursive_load_skills(dir: DirAccess, current_path: String) -> void:
 ## 参数：path (String) - 资源文件路径
 func _load_skill_resource(path: String) -> void:
 	var resource = load(path) as SkillEffect
+	# 静默跳过非 SkillEffect 资源（如 SkillUpgradeData）
 	if not resource:
-		push_warning("[SkillLibrary] 无法加载技能资源: ", path)
 		return
 	if resource.id.is_empty():
 		push_warning("[SkillLibrary] 技能资源缺少 id 字段，跳过: ", path)
@@ -133,33 +131,8 @@ func get_random_skill(type: int = -1) -> SkillEffect:
 	if candidates.is_empty():
 		return null
 
-	var random_index = randi() % candidates.size()
+	var random_index := randi_range(0, candidates.size() - 1)
 	return candidates[random_index]
-
-## 功能：根据技能类型枚举获取对应的目录名称
-## 参数：type (SkillEffect.SkillType) - 技能类型
-## 返回值：String - 目录名称（如 "initiator"、"finisher"）
-func type_dir_from_enum(type: SkillEffect.SkillType) -> String:
-	match type:
-		SkillEffect.SkillType.INITIATOR:
-			return "initiator"
-		SkillEffect.SkillType.FINISHER:
-			return "finisher"
-		SkillEffect.SkillType.CONTROL:
-			return "control"
-		SkillEffect.SkillType.SURVIVAL:
-			return "survival"
-		_:
-			return "unknown"
-
-## 功能：根据目录名称推导对应的技能类型枚举
-## 参数：dir_name (String) - 目录名称
-## 返回值：SkillEffect.SkillType - 对应的技能类型，未匹配返回 UNKNOWN
-func type_enum_from_dir(dir_name: String) -> SkillEffect.SkillType:
-	for type in SkillEffect.SkillType.values():
-		if SkillEffect.SkillType.keys()[type].to_lower() == dir_name:
-			return type
-	return SkillEffect.SkillType.UNKNOWN
 
 # ========================== 重新加载与调试模块 ==========================
 ## 功能：重新加载所有技能（支持热重载）

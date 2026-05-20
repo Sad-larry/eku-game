@@ -17,8 +17,7 @@ class_name DamageCalculator
 ## 示例：calculate(100.0, 1.5, 0.3, 2.0) 返回 {"damage": 150.0, "is_crit": false} 或暴击时 damage 为 300.0
 func calculate(base_damage: float, skill_multiplier: float, crit_rate: float, crit_damage: float) -> Dictionary:
 	# 判断是否触发暴击
-	# 注意：Global.get_chance_success 是静态函数，必须通过类型名调用，而非实例
-	var is_crit = Global.get_chance_success(crit_rate)
+	var is_crit = RandomUtils.get_chance_success(crit_rate)
 
 	# 计算暴击修正后的基准伤害
 	# 若暴击，基准伤害乘以暴击倍率；否则保持不变

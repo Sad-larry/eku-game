@@ -11,13 +11,10 @@ extends Resource
 
 ## 地图生成时使用的配置资源
 @export var config: RadialGridConfig
-
 ## 所有单元格数据的数组
 @export var cells: Array[CellData]
-
 ## 最大圈层数（0 为起点，1~N 为向外扩散的圈）
 @export var max_ring: int
-
 ## 单元格总数
 @export var total_cells: int
 

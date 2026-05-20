@@ -5,7 +5,7 @@
 class_name RandomSpawner extends RoomContentSpawner
 
 ## 随机事件候选列表
-var _sub_events: Array[String] = ["battle", "treasure", "rest", "trap"]
+var _sub_events: Array[String] = ["battle"]
 
 ## 注册表引用（用于递归查找子事件的 Spawner）
 var registry: RoomContentRegistry

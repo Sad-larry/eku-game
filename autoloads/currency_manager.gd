@@ -15,6 +15,10 @@ signal coin_changed(current: int, permanent: int)
 ## 参数：amount (int) - 收集的数量
 signal coin_collected(amount: int)
 
+# ========================== 常量 ==========================
+## 调试模式开关
+const DEBUG_MODE: bool = true
+
 # ========================== 内部变量模块 ==========================
 ## 当前持有的货币数量（冒险中获得，冒险结束后可转为永久积累）
 var _current_coin: int = 0
@@ -26,6 +30,7 @@ var _lifetime_coin: int = 0
 # ========================== 生命周期模块 ==========================
 func _ready() -> void:
 	SaveManager.data_loaded.connect(_on_save_data_loaded)
+	GameManager.game_state_changed.connect(_on_game_state_changed)
 	print("CurrencyManager: 货币管理器初始化完成")
 
 # ========================== 存档集成模块 ==========================
@@ -35,7 +40,8 @@ func _on_save_data_loaded() -> void:
 	_permanent_coin = currency.get("permanent_coin", 0)
 	var statistics: Dictionary = SaveManager.get_section("statistics", SaveManager.DEFAULT_SECTIONS["statistics"])
 	_lifetime_coin = statistics.get("lifetime_coin", 0)
-	print("[CurrencyManager] 永久货币: ", _permanent_coin, " | 累计货币: ", _lifetime_coin)
+	if DEBUG_MODE:
+		print("[CurrencyManager] 永久货币: ", _permanent_coin, " | 累计货币: ", _lifetime_coin)
 
 ## 功能：将当前货币数据同步到 SaveManager 并保存
 func _sync_to_save() -> void:
@@ -58,6 +64,16 @@ func add_coin(amount: int) -> void:
 	_lifetime_coin += amount
 	coin_changed.emit(_current_coin, _permanent_coin)
 	coin_collected.emit(amount)
+
+## 功能：直接增加永久积累货币（成就奖励等永久性来源调用）
+## 参数：amount (int) - 增加的数量
+func add_permanent_coin(amount: int) -> void:
+	if amount <= 0:
+		return
+	_permanent_coin += amount
+	_lifetime_coin += amount
+	coin_changed.emit(_current_coin, _permanent_coin)
+	_sync_to_save()
 
 ## 功能：从永久积累中消耗货币（大厅中购买/升级时调用）
 ## 参数：amount (int) - 消耗的数量
@@ -94,6 +110,11 @@ func spend_run_coin(amount: int) -> bool:
 func get_permanent_coin() -> int:
 	return _permanent_coin
 
+## 功能：获取累计获得的总货币数量（统计数据）
+## 返回值：int - 累计量
+func get_lifetime_coin() -> int:
+	return _lifetime_coin
+
 ## 功能：将当前持有的货币转为永久积累（冒险结束时调用）
 func transfer_to_permanent() -> void:
 	if _current_coin <= 0:
@@ -102,9 +123,33 @@ func transfer_to_permanent() -> void:
 	_current_coin = 0
 	coin_changed.emit(_current_coin, _permanent_coin)
 	_sync_to_save()
-	print("[CurrencyManager] 货币已转为永久积累: ", _permanent_coin)
+	if DEBUG_MODE:
+		print("[CurrencyManager] 货币已转为永久积累: ", _permanent_coin)
 
 ## 功能：重置当前持有的货币为 0（新冒险开始时调用）
 func reset_current() -> void:
 	_current_coin = 0
 	coin_changed.emit(_current_coin, _permanent_coin)
+
+# ========================== 状态变更响应模块 ==========================
+## 功能：游戏状态变更时的货币处理
+## 说明：离开冒险状态时，根据运行状态决定是否转移货币
+##       - 运行完成/失败：转移货币为永久积累
+##       - 运行暂停（保存退出）：保留当前货币，不转移
+func _on_game_state_changed(new_state: GameManager.GameState, old_state: GameManager.GameState) -> void:
+	if old_state != GameManager.GameState.IN_GAME or new_state == GameManager.GameState.PAUSED:
+		return
+
+	match RunManager.run_status:
+		RunManager.RunStatus.COMPLETED, RunManager.RunStatus.FAILED:
+			transfer_to_permanent()
+			if DEBUG_MODE:
+				print("[CurrencyManager] 运行结束，货币已转为永久积累")
+		RunManager.RunStatus.PAUSED:
+			if DEBUG_MODE:
+				print("[CurrencyManager] 运行暂停，货币保留为当前持有")
+		_:
+			# 兜底：非 RunManager 管理的场景（如直接从 GameWorld 返回大厅）
+			transfer_to_permanent()
+			if DEBUG_MODE:
+				print("[CurrencyManager] 离开冒险状态（非 RunManager 管理），货币已保存")

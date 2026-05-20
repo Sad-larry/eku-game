@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="RandomEvent" format=3]
+
+[ext_resource type="Script" path="res://resources/data/events/random_event.gd" id="1_evt"]
+
+[resource]
+script = ExtResource("1_evt")
+id = "random_trap"
+display_name = "陷阱房间"
+description = "布满了陷阱的房间"
+min_ring = 2
+max_ring = 99
+weight = 0.5
+event_type = "trap"
+max_triggers_per_run = 2
+cooldown_rooms = 3

@@ -4,8 +4,6 @@
 # ==============================================================================
 class_name StartSpawner extends RoomContentSpawner
 
-const _SAFE_ZONE_SCENE: PackedScene = preload("res://prefabs/environment/safe_zone/safe_zone_marker.tscn")
-
 func spawn(coord: Vector2i, _ring: int, context: Dictionary) -> void:
 	var world: GameWorld = context.get("world")
 	if world == null:
@@ -15,7 +13,7 @@ func spawn(coord: Vector2i, _ring: int, context: Dictionary) -> void:
 		return
 	world._spawned_rooms[coord] = true
 
-	var safe_zone := _SAFE_ZONE_SCENE.instantiate() as SafeZoneMarker
+	var safe_zone := Global.SAFE_ZONE_SCENE.instantiate() as SafeZoneMarker
 	safe_zone.position = world._chunk_to_world_center(coord.x, coord.y)
 	world.add_child(safe_zone)
 

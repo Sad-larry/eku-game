@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="SynergyRule" format=3]
+
+[ext_resource type="Script" path="res://resources/data/synergy/synergy_rule.gd" id="1_script"]
+[ext_resource type="Resource" path="res://resources/data/synergy/synergy_effect_melt.tres" id="2_effect"]
+
+[resource]
+script = ExtResource("1_script")
+id = "ice_fire_melt"
+display_name = "融化"
+description = "冰+火：火焰融化冰霜，造成额外伤害"
+required_debuff_tags = Array[String](["ice", "slow"])
+trigger_skill_tags = Array[String](["fire"])
+synergy_effect = ExtResource("2_effect")
+trigger_chance = 1.0
+cooldown = 2.0
+max_triggers_per_run = 0

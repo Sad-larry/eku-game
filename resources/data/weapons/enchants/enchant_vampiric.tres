@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="WeaponEnchant" format=3]
+
+[ext_resource type="Script" path="res://resources/data/weapons/weapon_enchant.gd" id="1_enc"]
+
+[resource]
+script = ExtResource("1_enc")
+id = "enchant_vampiric"
+display_name = "吸血附魔"
+description = "攻击时偷取生命值"
+damage_bonus = 1.0
+lifesteal_ratio = 0.08
+tags = Array[String](["dark", "lifesteal"])

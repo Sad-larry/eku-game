@@ -7,6 +7,10 @@
 extends Resource
 class_name PlayerProgression
 
+# ========================== 等级配置模块 ==========================
+## 玩家最大等级
 @export var max_level: int = 10
+## 逐级升级费用（长度 = max_level - 1，index 0 = Lv1→Lv2 的费用）
 @export var level_up_costs: Array[int] = []
+## 逐级升级奖励（长度 = max_level - 1，index 0 = Lv1→Lv2 的奖励）
 @export var level_rewards: Array[Resource] = []  # Array[LevelUpReward]

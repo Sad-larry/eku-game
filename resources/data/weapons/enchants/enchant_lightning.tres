@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="WeaponEnchant" format=3]
+
+[ext_resource type="Script" path="res://resources/data/weapons/weapon_enchant.gd" id="1_enc"]
+
+[resource]
+script = ExtResource("1_enc")
+id = "enchant_lightning"
+display_name = "雷电附魔"
+description = "攻击附加雷电伤害，提升暴击率"
+damage_bonus = 2.0
+crit_rate_bonus = 0.08
+element_tag = "lightning"
+tags = Array[String](["lightning", "elemental"])

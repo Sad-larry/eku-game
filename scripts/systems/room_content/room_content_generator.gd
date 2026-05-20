@@ -34,8 +34,6 @@ func _register_default_spawners() -> void:
 	_registry.register("elite", EliteSpawner.new())
 	_registry.register("boss", BossSpawner.new())
 	_registry.register("start", StartSpawner.new())
-	_registry.register("treasure", TreasureSpawner.new())
-	_registry.register("rest", RestSpawner.new())
 	_registry.register("trap", TrapSpawner.new())
 	_registry.register("merchant", MerchantSpawner.new())
 	_registry.register("npc", NpcSpawner.new())

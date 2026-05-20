@@ -8,6 +8,7 @@ extends Node
 
 # ========================== 枚举定义模块 ==========================
 ## 游戏全局状态枚举
+## MAIN_MENU、LOBBY、IN_GAME、PAUSED、SETTINGS、GAME_OVER、UNINITIALIZED
 enum GameState {
 	MAIN_MENU,       ## 主菜单界面
 	LOBBY,           ## 游戏大厅/房间界面
@@ -36,24 +37,12 @@ var _state_stack: Array[GameState] = []
 # ========================== 生命周期模块 ==========================
 ## 功能：节点就绪时完成初始化并设置初始状态为主菜单
 func _ready() -> void:
-	GameManager.game_state_changed.connect(_on_game_state_changed)
 	# 通过 EventBus 监听来自 UIManager 的状态推入/弹出请求
 	EventBus.game_state_push_requested.connect(push_state)
 	EventBus.game_state_pop_requested.connect(pop_state)
-	# 监听全局返回主菜单请求（此时 UIManager 也会独立清空自己的模态栈）
-	EventBus.return_to_main_menu_requested.connect(reset_to_main_menu)
 	# 初始化游戏状态为主菜单
 	set_game_state(GameState.MAIN_MENU)
 	print("GameManager: 游戏状态管理器初始化完成")
-
-## 功能：每帧更新（仅调试模式生效）
-## 参数：_delta (float) - 帧间隔时间（未使用）
-func _process(_delta: float) -> void:
-	# 调试功能：按 F11 快捷键循环切换游戏状态（仅调试模式生效）
-	if DEBUG_MODE and Input.is_action_just_pressed("debug_toggle_game_state"):
-		var next_state: int = (current_game_state + 1) % GameState.values().size()
-		set_game_state(next_state)
-		print("[GameManager] 调试 - 游戏状态：", GameState.keys()[current_game_state])
 
 # ========================== 公共 API 模块 ==========================
 ## 功能：切换游戏状态（触发 game_state_changed 信号）
@@ -62,13 +51,6 @@ func _process(_delta: float) -> void:
 func set_game_state(new_state: GameState) -> void:
 	if new_state == current_game_state:
 		return
-
-	if get_tree():
-		match new_state:
-			GameState.PAUSED, GameState.SETTINGS, GameState.GAME_OVER:
-				get_tree().paused = true
-			GameState.MAIN_MENU, GameState.IN_GAME, GameState.LOBBY:
-				get_tree().paused = false
 
 	var old_state: GameState = current_game_state
 	current_game_state = new_state
@@ -103,32 +85,3 @@ func clear_state_stack() -> void:
 	_state_stack.clear()
 	if DEBUG_MODE:
 		print("[GameManager] 状态栈已清空")
-
-## 功能：彻底返回主菜单，清空状态栈并设置状态为 MAIN_MENU
-func reset_to_main_menu() -> void:
-	clear_state_stack()
-	set_game_state(GameState.MAIN_MENU)
-
-# ========================== 内部回调模块 ==========================
-## 功能：游戏状态变更时的内部响应（例如控制 UI 显示/隐藏）
-## 参数：new_state (GameState) - 新状态；old_state (GameState) - 旧状态
-func _on_game_state_changed(new_state: GameState, old_state: GameState) -> void:
-	# 退出游戏时场景树可能已被销毁，防止 get_tree() 为 null 导致崩溃
-	if not get_tree():
-		return
-
-	# 离开冒险状态时，仅在运行结束（完成/失败）时转移货币
-	# "保存并退出"（PAUSED 状态）时不转移，因为运行还未结束
-	if old_state == GameState.IN_GAME and new_state != GameState.PAUSED:
-		if RunManager.run_status == RunManager.RunStatus.COMPLETED or RunManager.run_status == RunManager.RunStatus.FAILED:
-			CurrencyManager.transfer_to_permanent()
-			if DEBUG_MODE:
-				print("[GameManager] 运行结束，货币已转为永久积累")
-		elif RunManager.run_status == RunManager.RunStatus.PAUSED:
-			if DEBUG_MODE:
-				print("[GameManager] 运行暂停，货币保留为当前持有")
-		else:
-			# 兜底：非 RunManager 管理的场景（如直接从 GameWorld 返回大厅）
-			CurrencyManager.transfer_to_permanent()
-			if DEBUG_MODE:
-				print("[GameManager] 离开冒险状态（非 RunManager 管理），货币已保存")

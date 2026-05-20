@@ -13,47 +13,56 @@ const DEBUG_MODE: bool = true
 
 # ========================== 资源预加载模块 ==========================
 ## 通知消息框场景
-const NOTIFICATION_MSGBOX_SCENE = preload("uid://c43tgh2u63611")
+const NOTIFICATION_MSGBOX_SCENE = preload("res://prefabs/ui/notification_msgbox/notification_msgbox.tscn")
 ## 暂停菜单场景
-const PAUSE_MENU_SCENE = preload("uid://b0to31obmue6u")
+const PAUSE_MENU_SCENE = preload("res://scenes/ui/pause_menu/pause_menu.tscn")
 ## 设置菜单场景
-const SETTINGS_SCENE = preload("uid://c2l1texcrid4e")
+const SETTINGS_SCENE = preload("res://scenes/ui/settings/settings.tscn")
 ## 游戏结束界面场景
-const GAME_OVER_SCENE = preload("uid://c2dh8ol77s0lp")
+const GAME_OVER_SCENE = preload("res://scenes/ui/game_over/game_over.tscn")
 ## HUD 界面场景
-const HUD_SCENE = preload("uid://d2miww5iawxo")
+const HUD_SCENE = preload("res://scenes/ui/hud/hud.tscn")
 ## 技能选择面板场景
 const SKILL_SELECTION_SCENE = preload("res://scenes/ui/skill_selection/skill_selection_dialog.tscn")
 ## 大厅商店场景
 const LOBBY_SHOP_SCENE = preload("res://scenes/ui/lobby_shop/lobby_shop.tscn")
 ## 玩家成长面板场景
 const PLAYER_PROGRESSION_SCENE = preload("res://scenes/ui/player_progression/player_progression_panel.tscn")
+## 遗物选择面板场景
+const RELIC_SELECTION_SCENE = preload("res://scenes/ui/relic_selection/relic_selection.tscn")
+## 商人商店场景
+const MERCHANT_SHOP_SCENE = preload("res://scenes/ui/merchant_shop/merchant_shop.tscn")
+## 对话框场景
+const DIALOG_BOX_SCENE = preload("res://scenes/ui/dialog_box/dialog_box.tscn")
+
+# ========================== UI 注册表模块 ==========================
+## UI 名称 -> 场景资源映射
+const _UI_SCENES: Dictionary = {
+	"pause_menu": PAUSE_MENU_SCENE,
+	"settings_menu": SETTINGS_SCENE,
+	"game_over": GAME_OVER_SCENE,
+	"skill_selection": SKILL_SELECTION_SCENE,
+	"lobby_shop": LOBBY_SHOP_SCENE,
+	"player_progression": PLAYER_PROGRESSION_SCENE,
+	"relic_selection": RELIC_SELECTION_SCENE,
+	"merchant_shop": MERCHANT_SHOP_SCENE,
+	"dialog_box": DIALOG_BOX_SCENE,
+}
+
+## UI 名称 -> 游戏状态映射（需要状态管理的 UI）
+const _UI_STATE_MAP: Dictionary = {
+	"pause_menu": GameManager.GameState.PAUSED,
+	"settings_menu": GameManager.GameState.SETTINGS,
+	"game_over": GameManager.GameState.GAME_OVER,
+}
 
 # ========================== 变量定义模块 ==========================
-## 暂停菜单实例
-var _pause_menu_instance: Node = null
-## 设置菜单实例
-var _settings_menu_instance: Node = null
-## 游戏结束界面实例
-var _game_over_instance: Node = null
-## 技能选择面板实例
-var _skill_selection_instance: Node = null
-## 大厅商店实例
-var _lobby_shop_instance: Node = null
-## 玩家成长面板实例
-var _player_progression_instance: Node = null
-## 遗物选择面板实例
-var _relic_selection_instance: Node = null
-## HUD 实例
+## UI 实例缓存：ui_name -> Node
+var _ui_instances: Dictionary = {}
+## HUD 实例（特殊处理，不在模态栈中）
 var _hud_instance: HUD = null
-## 场景资源路径 -> 游戏状态映射表（用于自动状态管理）
-var _ui_state_map: Dictionary = {
-	PAUSE_MENU_SCENE.resource_path: GameManager.GameState.PAUSED,
-	SETTINGS_SCENE.resource_path: GameManager.GameState.SETTINGS,
-	GAME_OVER_SCENE.resource_path: GameManager.GameState.GAME_OVER
-}
 ## 模态 UI 栈（手动关闭的界面）
-## 栈中元素：{scene_path: String, instance: Node, state: GameState}
+## 栈中元素：{ui_name: String, instance: Node}
 var _modal_stack: Array[Dictionary] = []
 ## 通知队列（自动消失的提示消息）
 var _notification_queue: Array[Dictionary] = []  # {text: String, duration: float}
@@ -61,84 +70,94 @@ var _notification_queue: Array[Dictionary] = []  # {text: String, duration: floa
 var _is_showing_notification: bool = false
 
 # ========================== 生命周期模块 ==========================
-## 功能：节点就绪时连接输入管理器的暂停请求信号
+## 功能：节点就绪时连接信号
 func _ready() -> void:
-	EventBus.pause_menu_requested.connect(_on_pause_menu_requested)
-	EventBus.settings_menu_requested.connect(_on_settings_menu_requested)
-	EventBus.game_over_requested.connect(_on_game_over_requested)
-	EventBus.skill_selection_requested.connect(_on_skill_selection_requested)
+	EventBus.pause_menu_requested.connect(_on_ui_requested.bind("pause_menu"))
+	EventBus.settings_menu_requested.connect(_on_ui_requested.bind("settings_menu"))
+	EventBus.game_over_requested.connect(_on_ui_requested.bind("game_over"))
+	EventBus.skill_selection_requested.connect(_on_ui_requested.bind("skill_selection"))
 	EventBus.relic_selection_requested.connect(_on_relic_selection_requested)
 	EventBus.return_to_main_menu_requested.connect(_on_return_to_main_menu)
 
 	InputManager.pause_requested.connect(_on_pause_requested)
-	# 监听游戏状态变化，自动控制 HUD 显示/隐藏
-	GameManager.game_state_changed.connect(_on_game_state_changed_for_hud)
+	GameManager.game_state_changed.connect(_on_game_state_changed)
 
 ## 功能：响应暂停键输入，切换暂停菜单的打开/关闭状态
 func _on_pause_requested() -> void:
-	if _pause_menu_instance and is_instance_valid(_pause_menu_instance):
-		close_pause_menu()
+	if is_ui_open("pause_menu"):
+		close_ui("pause_menu")
 	else:
-		open_pause_menu()
+		open_ui("pause_menu")
 
 # ========================== 模态 UI 栈核心 API ==========================
 ## 功能：将一个模态 UI 推入栈顶并显示
-## 参数：ui_scene (PackedScene) - UI 场景资源
+## 参数：ui_name (String) - UI 名称（必须在 _UI_SCENES 中注册）
+##       setup_args (Array) - 传递给 UI 的 setup 方法的参数（可选）
 ## 返回值：Node - 创建的 UI 实例
-func push_ui(ui_scene: PackedScene) -> Node:
-	var instance = ui_scene.instantiate()
-	var scene_path = ui_scene.resource_path
-	var state = _ui_state_map.get(scene_path, null)
+func push_ui(ui_name: String, setup_args: Array = []) -> Node:
+	var scene: PackedScene = _UI_SCENES.get(ui_name)
+	if scene == null:
+		push_warning("UIManager: 未知 UI 名称: %s" % ui_name)
+		return null
 
-	# 通过 EventBus 请求 GameManager 推入游戏状态
-	if state != null:
-		EventBus.game_state_push_requested.emit(state)
-
+	var instance = scene.instantiate()
 	get_tree().root.add_child(instance)
-	_modal_stack.append({scene_path = scene_path, instance = instance, state = state})
+
+	# 调用 setup 方法（如果存在）
+	if not setup_args.is_empty() and instance.has_method("setup"):
+		instance.setup.callv(setup_args)
+
+	# 记录到模态栈
+	_modal_stack.append({ui_name = ui_name, instance = instance})
+	_ui_instances[ui_name] = instance
 
 	# 监听 UI 自动销毁（如点击关闭按钮时调用 queue_free），自动从栈中移除
-	instance.tree_exited.connect(_on_ui_closed.bind(instance))
+	instance.tree_exited.connect(_on_ui_closed.bind(ui_name, instance))
+
+	# 请求游戏状态切换
+	var state = _UI_STATE_MAP.get(ui_name)
+	if state != null:
+		EventBus.game_state_push_requested.emit(state)
 
 	_update_input_blocking()
 	return instance
 
 ## 功能：关闭栈顶的模态 UI（销毁实例）
-## 返回值：void
 func pop_ui() -> void:
 	if _modal_stack.is_empty():
 		return
 	var top = _modal_stack.pop_back()
 	if top.instance and is_instance_valid(top.instance):
 		top.instance.queue_free()
-	# 注意：不立即从栈中删除记录，等待 _on_ui_closed 回调完成清理
 
-## 功能：从 UI 栈中移除指定的 UI 实例并销毁
-## 参数：ui_instance (Node) - 要移除的 UI 实例
-func remove_ui(ui_instance: Node) -> void:
-	if not ui_instance or not is_instance_valid(ui_instance):
+## 功能：关闭指定名称的 UI
+## 参数：ui_name (String) - UI 名称
+func remove_ui_by_name(ui_name: String) -> void:
+	var instance = _ui_instances.get(ui_name)
+	if not instance or not is_instance_valid(instance):
 		return
 
-	# 查找 UI 实例在栈中的位置
-	var found_idx = -1
+	# 查找并从栈中移除，记录是否为栈顶
+	var was_top = false
 	for i in range(_modal_stack.size()):
-		if _modal_stack[i].instance == ui_instance:
-			found_idx = i
+		if _modal_stack[i].ui_name == ui_name:
+			was_top = (i == _modal_stack.size() - 1)
+			_modal_stack.remove_at(i)
 			break
 
-	if found_idx == -1:
-		return
+	instance.queue_free()
+	_ui_instances.erase(ui_name)
+	_update_input_blocking()
 
-	var record = _modal_stack[found_idx]
-	if record.instance and is_instance_valid(record.instance):
-		record.instance.queue_free()
-	# 不在此时从栈中移除记录，等待 tree_exited 信号统一处理
+	# 如果被销毁的 UI 是栈顶，且它对应一个需要状态管理的场景，则恢复之前的状态
+	if was_top and _UI_STATE_MAP.has(ui_name):
+		EventBus.game_state_pop_requested.emit()
 
-## 功能：UI 节点销毁时的回调，清理栈记录并恢复游戏状态
-## 参数：ui (Node) - 被销毁的 UI 实例
-func _on_ui_closed(ui: Node) -> void:
-	if not ui or not is_instance_valid(ui):
-		return
+## 功能：UI 节点销毁时的回调，清理栈记录（处理用户主动关闭对话框的情况）
+## 参数：ui_name (String) - UI 名称；ui (Node) - 被销毁的 UI 实例
+func _on_ui_closed(ui_name: String, ui: Node) -> void:
+	# 清理缓存引用（处理用户主动关闭对话框时缓存未更新的情况）
+	_ui_instances.erase(ui_name)
 
 	# 查找该 UI 在栈中的位置
 	var idx = -1
@@ -148,84 +167,47 @@ func _on_ui_closed(ui: Node) -> void:
 			break
 
 	if idx == -1:
-		return  # 可能已经被清理过了
-	# 清理缓存引用（处理用户主动关闭对话框时缓存未更新的情况）
-	if ui == _skill_selection_instance:
-		_skill_selection_instance = null
-	if ui == _pause_menu_instance:
-		_pause_menu_instance = null
-	if ui == _settings_menu_instance:
-		_settings_menu_instance = null
-	if ui == _game_over_instance:
-		_game_over_instance = null
-	if ui == _lobby_shop_instance:
-		_lobby_shop_instance = null
-	if ui == _player_progression_instance:
-		_player_progression_instance = null
-	if ui == _relic_selection_instance:
-		_relic_selection_instance = null
+		return  # 已被 remove_ui_by_name 清理过
 
 	var was_top = (idx == _modal_stack.size() - 1)
-	var record = _modal_stack[idx]
-	var scene_path = record.scene_path
-	var state = record.state
 
 	# 从栈中移除该 UI 的记录
 	_modal_stack.remove_at(idx)
 	_update_input_blocking()
 
 	# 如果被销毁的 UI 是栈顶，且它对应一个需要状态管理的场景，则恢复之前的状态
-	if was_top and state != null and _ui_state_map.has(scene_path):
+	if was_top and _UI_STATE_MAP.has(ui_name):
 		EventBus.game_state_pop_requested.emit()
 
-# ========================== 暂停菜单专用 API ==========================
-## 功能：打开暂停菜单
-## 返回值：Node - 暂停菜单实例
-func open_pause_menu() -> Node:
-	if _pause_menu_instance and is_instance_valid(_pause_menu_instance):
+# ========================== UI 打开/关闭通用 API ==========================
+## 功能：打开指定名称的 UI
+## 参数：ui_name (String) - UI 名称；setup_args (Array) - 传递给 setup 方法的参数
+## 返回值：Node - UI 实例
+func open_ui(ui_name: String, setup_args: Array = []) -> Node:
+	# 防重复打开
+	if is_ui_open(ui_name):
+		return _ui_instances[ui_name]
+	return push_ui(ui_name, setup_args)
+
+## 功能：关闭指定名称的 UI
+## 参数：ui_name (String) - UI 名称
+func close_ui(ui_name: String) -> void:
+	# HUD 特殊处理
+	if ui_name == "hud":
+		hide_hud()
 		return
-	_pause_menu_instance = push_ui(PAUSE_MENU_SCENE)
-	return _pause_menu_instance
+	remove_ui_by_name(ui_name)
 
-## 功能：关闭暂停菜单
-func close_pause_menu():
-	if _pause_menu_instance and is_instance_valid(_pause_menu_instance):
-		remove_ui(_pause_menu_instance)
-		_pause_menu_instance = null
-
-# ========================== 设置菜单专用 API ==========================
-## 功能：打开设置菜单
-## 返回值：Node - 设置菜单实例
-func open_settings_menu() -> Node:
-	if _settings_menu_instance and is_instance_valid(_settings_menu_instance):
-		return
-	_settings_menu_instance = push_ui(SETTINGS_SCENE)
-	return _settings_menu_instance
-
-## 功能：关闭设置菜单
-func close_settings_menu():
-	if _settings_menu_instance and is_instance_valid(_settings_menu_instance):
-		remove_ui(_settings_menu_instance)
-		_settings_menu_instance = null
-
-# ========================== 游戏结束界面专用 API ==========================
-## 功能：打开游戏结束界面
-## 返回值：Node - 游戏结束界面实例
-func open_game_over() -> Node:
-	if _game_over_instance and is_instance_valid(_game_over_instance):
-		return
-	_game_over_instance = push_ui(GAME_OVER_SCENE)
-	return _game_over_instance
-
-## 功能：关闭游戏结束界面
-func close_game_over():
-	if _game_over_instance and is_instance_valid(_game_over_instance):
-		remove_ui(_game_over_instance)
-		_game_over_instance = null
+## 功能：检查指定 UI 是否已打开
+## 参数：ui_name (String) - UI 名称
+## 返回值：bool - true 表示已打开
+func is_ui_open(ui_name: String) -> bool:
+	var instance = _ui_instances.get(ui_name)
+	return instance != null and is_instance_valid(instance)
 
 # ========================== HUD 专用 API ==========================
 ## 功能：显示 HUD 界面
-func show_hud():
+func show_hud() -> void:
 	if _hud_instance and is_instance_valid(_hud_instance):
 		return
 	_hud_instance = HUD_SCENE.instantiate()
@@ -237,77 +219,33 @@ func hide_hud() -> void:
 		_hud_instance.queue_free()
 		_hud_instance = null
 
-# ========================== 技能选择面板专用 API ==========================
-## 功能：打开技能选择面板
-## 返回值：Node - 技能选择面板实例
-func open_skill_selection() -> Node:
-	if _skill_selection_instance and is_instance_valid(_skill_selection_instance):
-		return _skill_selection_instance
-	_skill_selection_instance = push_ui(SKILL_SELECTION_SCENE)
-	return _skill_selection_instance
-
-## 功能：关闭技能选择面板
-func close_skill_selection() -> void:
-	if _skill_selection_instance and is_instance_valid(_skill_selection_instance):
-		remove_ui(_skill_selection_instance)
-	_skill_selection_instance = null
-	# 信号由对话框的 _exit_tree 发射，此处不重复发射
-
-## 功能：检查技能选择面板是否已打开
-## 返回值：bool - true 表示已打开
-func is_skill_selection_open() -> bool:
-	return _skill_selection_instance != null and is_instance_valid(_skill_selection_instance)
-
-# ========================== 大厅商店专用 API ==========================
-## 功能：打开大厅商店
-## 返回值：Node - 大厅商店实例
-func open_lobby_shop() -> Node:
-	if _lobby_shop_instance and is_instance_valid(_lobby_shop_instance):
-		return _lobby_shop_instance
-	_lobby_shop_instance = push_ui(LOBBY_SHOP_SCENE)
-	return _lobby_shop_instance
-
-## 功能：关闭大厅商店
-func close_lobby_shop() -> void:
-	if _lobby_shop_instance and is_instance_valid(_lobby_shop_instance):
-		remove_ui(_lobby_shop_instance)
-	_lobby_shop_instance = null
-
-# ========================== 玩家成长面板专用 API ==========================
-## 功能：打开玩家成长面板
-## 返回值：Node - 玩家成长面板实例
-func open_player_progression() -> Node:
-	if _player_progression_instance and is_instance_valid(_player_progression_instance):
-		return _player_progression_instance
-	_player_progression_instance = push_ui(PLAYER_PROGRESSION_SCENE)
-	return _player_progression_instance
-
-## 功能：关闭玩家成长面板
-func close_player_progression() -> void:
-	if _player_progression_instance and is_instance_valid(_player_progression_instance):
-		remove_ui(_player_progression_instance)
-	_player_progression_instance = null
-
-# ========================== S7 冒险 UI ==========================
-## 功能：打开冒险中商人商店 UI
-func _open_merchant_shop() -> Node:
-	var scene := load("res://scenes/ui/merchant_shop/merchant_shop.tscn") as PackedScene
-	if scene == null:
-		push_warning("UIManager: 无法加载 merchant_shop 场景")
-		return null
-	var instance := push_ui(scene)
-	EventBus.game_state_push_requested.emit(GameManager.GameState.IN_GAME)
+# ========================== 特殊 UI 专用 API ==========================
+## 功能：打开遗物选择面板（需要传递参数）
+## 参数：options (Array[RelicData]) - 遗物选项
+## 返回值：Node - 遗物选择面板实例
+func open_relic_selection(options: Array[RelicData]) -> Node:
+	if is_ui_open("relic_selection"):
+		return _ui_instances["relic_selection"]
+	var instance := push_ui("relic_selection", [options])
 	return instance
 
-## 功能：打开对话框 UI
-func _open_dialog_box() -> Node:
-	var scene := load("res://scenes/ui/dialog_box/dialog_box.tscn") as PackedScene
-	if scene == null:
-		push_warning("UIManager: 无法加载 dialog_box 场景")
-		return null
-	var instance := push_ui(scene)
-	EventBus.game_state_push_requested.emit(GameManager.GameState.IN_GAME)
-	return instance
+## 功能：收到遗物选择面板请求（默认从默认池随机 3 个）
+func _on_relic_selection_requested() -> void:
+	if is_ui_open("relic_selection"):
+		return
+	var pool: RelicPool = RelicManager.get_default_pool()
+	if pool == null:
+		push_warning("UIManager: 遗物池为空")
+		return
+	var options := pool.roll_relics(3)
+	if options.is_empty():
+		return
+	open_relic_selection(options)
+
+## 功能：收到 UI 请求（通用处理）
+## 参数：ui_name (String) - UI 名称
+func _on_ui_requested(ui_name: String) -> void:
+	open_ui(ui_name)
 
 # ========================== 通知队列 API ==========================
 ## 功能：添加一条通知消息到队列（按顺序依次显示）
@@ -318,7 +256,7 @@ func show_message(text: String, duration: float = 2.0) -> void:
 		_show_next_notification()
 
 ## 功能：显示下一条通知消息（内部递归调用）
-func _show_next_notification():
+func _show_next_notification() -> void:
 	if _notification_queue.is_empty():
 		_is_showing_notification = false
 		return
@@ -343,86 +281,35 @@ func _update_input_blocking() -> void:
 			blocked_prefixes.append_array(inst.get_blocked_input_prefixes())
 	EventBus.input_blocking_updated.emit(blocked_prefixes)
 
-## 功能：根据字符串名称分发到对应的 UI 打开方法
-## 参数：ui_name (String) - UI 名称（如 "skill_selection"、"pause_menu" 等）
-## 返回值：Node - 创建的 UI 实例
-func open_ui(ui_name: String) -> Node:
-	match ui_name:
-		"skill_selection":
-			return open_skill_selection()
-		"pause_menu":
-			return open_pause_menu()
-		"settings_menu":
-			return open_settings_menu()
-		"game_over":
-			return open_game_over()
-		"lobby_shop":
-			return open_lobby_shop()
-		"player_progression":
-			return open_player_progression()
-		"merchant_shop":
-			return _open_merchant_shop()
-		"dialog_box":
-			return _open_dialog_box()
-		_:
-			if DEBUG_MODE:
-				print("[UIManager] 未知 UI 名称: ", ui_name)
-			return null
-
-## 功能：根据字符串名称关闭对应的 UI
-## 参数：ui_name (String) - UI 名称
-func close_ui(ui_name: String) -> void:
-	match ui_name:
-		"skill_selection":
-			close_skill_selection()
-		"pause_menu":
-			close_pause_menu()
-		"settings_menu":
-			close_settings_menu()
-		"game_over":
-			close_game_over()
-		"lobby_shop":
-			close_lobby_shop()
-		"player_progression":
-			close_player_progression()
-		"relic_selection":
-			close_relic_selection()
-		_:
-			if DEBUG_MODE:
-				print("[UIManager] 未知 UI 名称: ", ui_name)
-
 # ========================== 全局重置模块 ==========================
 ## 功能：监听 return_to_main_menu_requested 信号，
-##        清空模态 UI 栈和所有缓存实例引用，与 GameManager 的状态栈独立同步清理
+##        清空模态 UI 栈、所有缓存实例引用，并重置 GameManager 状态
 func _on_return_to_main_menu() -> void:
-	# 先清空缓存引用，防止后续逻辑误用
-	_pause_menu_instance = null
-	_settings_menu_instance = null
-	_game_over_instance = null
-	_skill_selection_instance = null
-	_lobby_shop_instance = null
-	_player_progression_instance = null
-	_relic_selection_instance = null
-
 	# 收集所有待销毁的 UI 实例
 	var instances_to_free: Array[Node] = []
 	for record in _modal_stack:
 		if record.instance and is_instance_valid(record.instance):
 			instances_to_free.append(record.instance)
 
-	# 清空模态栈（此后 _on_ui_closed 回调会因找不到记录而 early return）
+	# 清空缓存和模态栈
+	_ui_instances.clear()
 	_modal_stack.clear()
 
 	# 销毁所有 UI 实例
 	for inst in instances_to_free:
 		inst.queue_free()
 
-	if DEBUG_MODE:
-		print("[UIManager] 模态栈和所有 UI 实例已清空")
+	# 重置 GameManager 状态栈并切换到主菜单
+	GameManager.clear_state_stack()
+	GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
 
-## 功能：游戏状态变化时的回调，控制 HUD 显示/隐藏
+	if DEBUG_MODE:
+		print("[UIManager] 模态栈和所有 UI 实例已清空，游戏状态已重置为主菜单")
+
+## 功能：游戏状态变化时的回调，控制 HUD 显示/隐藏和场景树暂停
 ## 参数：new_state (GameManager.GameState) - 新状态；_old_state (GameManager.GameState) - 旧状态
-func _on_game_state_changed_for_hud(new_state: GameManager.GameState, _old_state: GameManager.GameState) -> void:
+func _on_game_state_changed(new_state: GameManager.GameState, _old_state: GameManager.GameState) -> void:
+	# 控制 HUD 显示/隐藏
 	match new_state:
 		GameManager.GameState.IN_GAME, GameManager.GameState.LOBBY:
 			show_hud()
@@ -431,65 +318,10 @@ func _on_game_state_changed_for_hud(new_state: GameManager.GameState, _old_state
 		_:
 			hide_hud()
 
-## 功能：收到暂停菜单请求，推入暂停菜单
-func _on_pause_menu_requested() -> void:
-	# 防重复：检查栈中是否已有暂停菜单
-	for record in _modal_stack:
-		if record.scene_path == PAUSE_MENU_SCENE.resource_path:
-			return
-	push_ui(PAUSE_MENU_SCENE)
-
-## 功能：收到设置菜单请求，推入设置菜单
-func _on_settings_menu_requested() -> void:
-	for record in _modal_stack:
-		if record.scene_path == SETTINGS_SCENE.resource_path:
-			return
-	push_ui(SETTINGS_SCENE)
-
-## 功能：收到游戏结束界面请求，推入游戏结束界面
-func _on_game_over_requested() -> void:
-	for record in _modal_stack:
-		if record.scene_path == GAME_OVER_SCENE.resource_path:
-			return
-	push_ui(GAME_OVER_SCENE)
-
-## 功能：收到技能选择面板请求，推入技能选择面板
-func _on_skill_selection_requested() -> void:
-	for record in _modal_stack:
-		if record.scene_path == SKILL_SELECTION_SCENE.resource_path:
-			return
-	push_ui(SKILL_SELECTION_SCENE)
-
-# ========================== 遗物选择面板专用 API ==========================
-## 功能：打开遗物选择面板
-func open_relic_selection(options: Array[RelicData]) -> Node:
-	if _relic_selection_instance and is_instance_valid(_relic_selection_instance):
-		return _relic_selection_instance
-	var scene := load("res://scenes/ui/relic_selection/relic_selection.tscn") as PackedScene
-	if scene == null:
-		push_warning("UIManager: 无法加载 relic_selection 场景")
-		return null
-	var instance := push_ui(scene)
-	instance.setup(options)
-	_relic_selection_instance = instance
-	EventBus.game_state_push_requested.emit(GameManager.GameState.IN_GAME)
-	return instance
-
-## 功能：关闭遗物选择面板
-func close_relic_selection() -> void:
-	if _relic_selection_instance and is_instance_valid(_relic_selection_instance):
-		remove_ui(_relic_selection_instance)
-	_relic_selection_instance = null
-
-## 功能：收到遗物选择面板请求（默认从默认池随机 3 个）
-func _on_relic_selection_requested() -> void:
-	if _relic_selection_instance and is_instance_valid(_relic_selection_instance):
-		return
-	var pool: RelicPool = RelicManager.get_default_pool()
-	if pool == null:
-		push_warning("UIManager: 遗物池为空")
-		return
-	var options := pool.roll_relics(3)
-	if options.is_empty():
-		return
-	open_relic_selection(options)
+	# 控制场景树暂停/恢复
+	if get_tree():
+		match new_state:
+			GameManager.GameState.PAUSED, GameManager.GameState.SETTINGS, GameManager.GameState.GAME_OVER:
+				get_tree().paused = true
+			GameManager.GameState.MAIN_MENU, GameManager.GameState.IN_GAME, GameManager.GameState.LOBBY:
+				get_tree().paused = false

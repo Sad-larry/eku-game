@@ -1,12 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://event_npc_placeholder"]
+[gd_scene format=3 uid="uid://cyw6i1di3fms0"]
 
-[ext_resource type="Script" path="res://prefabs/entities/npcs/event_npc.gd" id="1"]
+[ext_resource type="Script" uid="uid://b1mlytvhqpoy4" path="res://prefabs/entities/npcs/event_npc.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://c08w5bd71wvrx" path="res://prefabs/environment/interactable/interactable_area.tscn" id="2_5bxor"]
 
-[node name="event_npc" type="StaticBody2D"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_o50jx"]
+
+[node name="EventNpc" type="StaticBody2D" unique_id=1547709721]
 script = ExtResource("1")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=970746711]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1679879235]
+shape = SubResource("CircleShape2D_o50jx")
 
-[node name="InteractableArea" parent="." instance=ExtResource("res://prefabs/environment/interactable/interactable_area.tscn")]
+[node name="InteractableArea" parent="." unique_id=872337966 instance=ExtResource("2_5bxor")]

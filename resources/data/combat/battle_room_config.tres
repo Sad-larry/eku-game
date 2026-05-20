@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="BattleRoomConfig" format=3]
+[gd_resource type="Resource" script_class="BattleRoomConfig" format=3 uid="uid://3iiaugj3ttag"]
 
 [ext_resource type="Script" uid="uid://crjab0s44f1c7" path="res://resources/data/combat/battle_room_config.gd" id="1_config"]
 [ext_resource type="Script" uid="uid://d2arx5omlr712" path="res://resources/data/combat/enemy_entry.gd" id="2_entry"]
@@ -8,11 +8,9 @@
 script = ExtResource("2_entry")
 enemy_scene = ExtResource("3_skeleton")
 count = 3
-weight = 1.0
 metadata/_custom_type_script = "uid://d2arx5omlr712"
 
 [resource]
 script = ExtResource("1_config")
 enemy_entries = Array[ExtResource("2_entry")]([SubResource("Resource_skeleton_entry")])
-difficulty_scale = 1.0
 metadata/_custom_type_script = "uid://crjab0s44f1c7"

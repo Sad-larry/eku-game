@@ -12,16 +12,7 @@ const DEBUG_MODE: bool = true
 ## 默认解锁费用（未在费用表中单独配置的技能使用此值）
 const DEFAULT_UNLOCK_COST: int = 50
 
-## 默认已解锁技能列表（游戏初始即拥有的技能）
-const DEFAULT_UNLOCKED_SKILLS: Array[String] = [
-	"fireball_01",
-	"slash_fire_01",
-	"void_burst_skill_01",
-	"vortex_01",
-	"thornfire_01",
-]
-
-## 技能解锁费用配置表（skill_id -> 费用）
+## 技能解锁费用配置表（skill_id -> 费用）。费用为 0 的技能默认已解锁
 const UNLOCK_COSTS: Dictionary = {
 	"fireball_01": 0,
 	"slash_fire_01": 0,
@@ -56,7 +47,8 @@ func _on_save_data_loaded() -> void:
 	var all_skills: Dictionary = SkillLibrary.get_all_skills()
 	for skill_id in all_skills:
 		var cost: int = UNLOCK_COSTS.get(skill_id, DEFAULT_UNLOCK_COST)
-		var unlocked: bool = skill_id in DEFAULT_UNLOCKED_SKILLS
+		# 费用为 0 的技能默认已解锁
+		var unlocked: bool = cost == 0
 		_unlock_data[skill_id] = SkillUnlockData.new(skill_id, cost, unlocked)
 
 	# 2. 从 SaveManager 恢复已解锁状态（覆盖默认值）
@@ -67,11 +59,7 @@ func _on_save_data_loaded() -> void:
 			_unlock_data[skill_id].is_unlocked = true
 
 	if DEBUG_MODE:
-		var unlocked_count: int = 0
-		for data in _unlock_data.values():
-			if data.is_unlocked:
-				unlocked_count += 1
-		print("[SkillUnlockManager] 已加载解锁数据，技能总数: ", _unlock_data.size(), " | 已解锁: ", unlocked_count)
+		print("[SkillUnlockManager] 已加载解锁数据，技能总数: ", _unlock_data.size(), " | 已解锁: ", get_unlocked_skills().size())
 
 ## 功能：将当前解锁状态同步到 SaveManager 并保存
 func _sync_to_save() -> void:
@@ -184,4 +172,31 @@ func unlock_skill(skill_id: String) -> bool:
 
 	if DEBUG_MODE:
 		print("[SkillUnlockManager] 技能解锁成功: ", skill_id, " (花费 ", data.unlock_cost, " 尘元)")
+	return true
+
+## 功能：直接解锁技能（不扣费，用于BOSS掉落等场景）
+## 参数：skill_id (String) - 技能 ID
+## 返回值：bool - true 表示解锁成功
+func unlock_skill_by_id(skill_id: String) -> bool:
+	var data: SkillUnlockData = _unlock_data.get(skill_id)
+	if data == null:
+		# 如果技能不存在，创建一个临时数据（使用默认费用，无前置条件）
+		data = SkillUnlockData.new(skill_id, DEFAULT_UNLOCK_COST, false)
+		_unlock_data[skill_id] = data
+
+	# 已解锁检查
+	if data.is_unlocked:
+		if DEBUG_MODE:
+			print("[SkillUnlockManager] 技能已解锁，无需重复操作: ", skill_id)
+		return false
+
+	# 直接解锁（不扣费）
+	data.is_unlocked = true
+	_sync_to_save()
+
+	# 发射信号
+	skill_unlock_state_changed.emit(skill_id, true)
+
+	if DEBUG_MODE:
+		print("[SkillUnlockManager] 技能直接解锁成功: ", skill_id)
 	return true

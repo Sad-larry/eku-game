@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponEnchant" format=3]
+
+[ext_resource type="Script" path="res://resources/data/weapons/weapon_enchant.gd" id="1_enc"]
+
+[resource]
+script = ExtResource("1_enc")
+id = "enchant_ice"
+display_name = "寒冰附魔"
+description = "攻击附加冰霜伤害，有概率减速敌人"
+damage_bonus = 2.0
+attack_speed_bonus = 0.1
+element_tag = "ice"
+status_chance = 0.25
+status_duration = 2.0
+tags = Array[String](["ice", "elemental"])

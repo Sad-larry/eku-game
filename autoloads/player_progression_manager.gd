@@ -7,16 +7,25 @@
 extends Node
 
 # ========================== 常量定义模块 ==========================
+## 调试模式开关
 const DEBUG_MODE: bool = true
+## 成长配置资源路径
 const PROGRESSION_DATA_PATH: String = "res://resources/data/entities/player/player_progression.tres"
+## 默认初始等级
 const DEFAULT_LEVEL: int = 1
 
 # ========================== 信号声明模块 ==========================
+## 触发时机：玩家升级时
+## 参数：new_level (int) - 升级后的新等级
 signal player_level_up(new_level: int)
+
+## 触发时机：属性加成更新时（升级后触发，UI 可连接此信号刷新显示）
 signal stats_updated()
 
 # ========================== 内部变量模块 ==========================
+## 当前玩家等级
 var _player_level: int = DEFAULT_LEVEL
+## 成长配置数据（从 .tres 资源加载）
 var _progression_data: PlayerProgression = null
 
 # ========================== 生命周期模块 ==========================
@@ -40,6 +49,7 @@ func _on_save_data_loaded() -> void:
 	if DEBUG_MODE:
 		print("[PlayerProgressionManager] 玩家等级: Lv.", _player_level)
 
+## 功能：将当前等级数据同步到 SaveManager 并立即保存
 func _sync_to_save() -> void:
 	SaveManager.set_section("player_progression", {
 		"player_level": _player_level
@@ -47,9 +57,13 @@ func _sync_to_save() -> void:
 	SaveManager.save_immediately()
 
 # ========================== 公共查询 API ==========================
+## 功能：获取当前玩家等级
+## 返回值：int - 当前等级
 func get_player_level() -> int:
 	return _player_level
 
+## 功能：获取最大可升级等级
+## 返回值：int - 最大等级，配置未加载时返回 DEFAULT_LEVEL
 func get_max_level() -> int:
 	if _progression_data == null:
 		return DEFAULT_LEVEL
@@ -66,6 +80,8 @@ func get_level_up_cost() -> int:
 		return _progression_data.level_up_costs[cost_index]
 	return -1
 
+## 功能：检查当前是否可以升级（未满级且尘元充足）
+## 返回值：bool - true 表示可以升级
 func can_level_up() -> bool:
 	var cost := get_level_up_cost()
 	if cost < 0:

@@ -52,7 +52,7 @@ func _update_stats_display() -> void:
 	lines.append("累计伤害: %d" % stats.get("total_damage_dealt", 0))
 	lines.append("金币获取: %d" % stats.get("coins_collected", 0))
 
-	var minutes: int = int(elapsed) / 60
+	var minutes: int = int(elapsed / 60)
 	var seconds: int = int(elapsed) % 60
 	lines.append("用时: %02d:%02d" % [minutes, seconds])
 
@@ -69,14 +69,14 @@ func _on_back_button_pressed() -> void:
 	if RunManager.is_run_active():
 		RunManager.end_run(RunManager.RunStatus.FAILED, "death")
 	RunManager.cleanup_run_state()
-	UIManager.close_game_over()
+	UIManager.close_ui("game_over")
 	SaveManager.save_immediately()
 	await SceneLoader.change_scene(Global.GAME_LOBBY_SCENE_PATH)
 	GameManager.set_game_state(GameManager.GameState.LOBBY)
 
 func _on_continue_button_pressed() -> void:
 	# 从检查点恢复继续冒险
-	UIManager.close_game_over()
+	UIManager.close_ui("game_over")
 	var checkpoint_data: Dictionary = RunManager.restore_from_checkpoint()
 	var world_seed: int = checkpoint_data.get("world_seed", 0)
 	var current_layer: int = checkpoint_data.get("current_layer", 1)

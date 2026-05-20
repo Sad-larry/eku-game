@@ -6,7 +6,7 @@ class_name MerchantSpawner extends RoomContentSpawner
 
 const _MERCHANT_SCENE: PackedScene = preload("res://prefabs/entities/npcs/merchant_npc.tscn")
 
-func spawn(coord: Vector2i, _ring: int, context: Dictionary) -> void:
+func spawn(coord: Vector2i, ring: int, context: Dictionary) -> void:
 	var world: GameWorld = context.get("world")
 	if world == null:
 		return
@@ -16,6 +16,7 @@ func spawn(coord: Vector2i, _ring: int, context: Dictionary) -> void:
 	world._spawned_rooms[coord] = true
 
 	var npc: MerchantNPC = _MERCHANT_SCENE.instantiate()
+	npc.ring = ring
 	npc.position = world._chunk_to_world_center(coord.x, coord.y)
 	world.add_child(npc)
 

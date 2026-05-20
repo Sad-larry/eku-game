@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AchievementData" format=3]
+
+[ext_resource type="Script" path="res://resources/data/achievements/achievement_data.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "layer_master"
+display_name = "深层探索者"
+description = "到达第5层"
+condition_type = 2
+condition_value = 5
+reward_coins = 100
+is_hidden = false
+sort_order = 20

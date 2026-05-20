@@ -1,12 +1,12 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://b2igdp62qn40g"]
 
-[ext_resource type="Script" path="res://scenes/ui/relic_selection/relic_selection.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://c0ysy2t717jrs" path="res://scenes/ui/relic_selection/relic_selection.gd" id="1_script"]
 
-[node name="RelicSelection" type="CanvasLayer"]
+[node name="RelicSelection" type="CanvasLayer" unique_id=108619282]
 layer = 15
 script = ExtResource("1_script")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=1866886413]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -14,28 +14,28 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1381709474]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MainPanel" type="VBoxContainer" parent="CenterContainer"]
+[node name="MainPanel" type="VBoxContainer" parent="CenterContainer" unique_id=2135260756]
 custom_minimum_size = Vector2(600, 320)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_constants/separation = 16
 
-[node name="TitleLabel" type="Label" parent="CenterContainer/MainPanel"]
+[node name="TitleLabel" type="Label" parent="CenterContainer/MainPanel" unique_id=1620764585]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
 text = "选择一个遗物"
 horizontal_alignment = 1
 
-[node name="OptionContainer" type="HBoxContainer" parent="CenterContainer/MainPanel"]
+[node name="OptionContainer" type="HBoxContainer" parent="CenterContainer/MainPanel" unique_id=1606628238]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4

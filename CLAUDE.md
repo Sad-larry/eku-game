@@ -106,7 +106,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 └─styles                    # 主题样式表（.tres）
 ```
 
-Autoload 加载顺序（从先到后）：Global → EventBus → GameManager → InputManager → UIManager → AudioManager → RoomManager → SkillLibrary → SaveManager → SceneLoader
+Autoload 加载顺序（从先到后）：Global → EventBus → SaveManager → GameManager → InputManager → SkillLibrary → RoomManager → UIManager → AudioManager → CurrencyManager → RunManager → SkillUnlockManager → PlayerProgressionManager → WeaponManager → SkillUpgradeManager → SceneLoader → RelicManager → SynergyManager → AchievementManager → CodexManager → AnalyticsManager → SignalLens
 
 ## Focus Areas
 

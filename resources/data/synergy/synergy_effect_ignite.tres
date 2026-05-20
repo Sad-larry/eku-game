@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SynergyEffect" format=3]
+
+[ext_resource type="Script" path="res://resources/data/synergy/synergy_effect.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+effect_type = 4
+damage_multiplier = 2.0
+status_effect = null
+status_duration = 0.0
+projectile_scene = null
+area_radius = 80.0
+heal_amount = 0.0
+visual_effect = null

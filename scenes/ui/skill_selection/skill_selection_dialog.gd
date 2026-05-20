@@ -119,7 +119,7 @@ func _rebuild_card_grid() -> void:
 	for data in skills:
 		if not data is SkillEffect:
 			continue
-		var card: SkillSelectionCard = load(Global.SKILL_CARD_SCENE).instantiate()
+		var card: SkillSelectionCard = Global.SKILL_CARD_SCENE.instantiate()
 		_card_grid.add_child(card)
 		card.setup(data, _equipped_ids)
 		card.selected.connect(_on_card_selected)

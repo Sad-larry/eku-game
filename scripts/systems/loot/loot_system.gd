@@ -9,19 +9,14 @@ class_name LootSystem
 # ========================== 导出变量模块 ==========================
 ## 金币掉落物场景（需预先创建金币 PackedScene）
 @export var coin_scene: PackedScene
-
 ## 生命回复球掉落物场景
 @export var health_orb_scene: PackedScene
-
 ## 能量回复球掉落物场景
 @export var energy_orb_scene: PackedScene
-
 ## 金币掉落概率（0.0 - 1.0），默认 25%
 @export var coin_drop_rate: float = 0.25
-
 ## 生命球掉落概率（0.0 - 1.0），默认 10%
 @export var health_orb_drop_rate: float = 0.1
-
 ## 能量球掉落概率（0.0 - 1.0），默认 8%
 @export var energy_orb_drop_rate: float = 0.08
 

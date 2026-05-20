@@ -17,8 +17,8 @@ var _owner_entity: Node2D
 # ========================== 公共 API ==========================
 ## 功能：初始化组件，绑定宿主实体
 ## 参数：owner - 被挂载的实体节点（Player 或 Enemy）
-func setup(owner: Node2D) -> void:
-	_owner_entity = owner
+func setup(owner_node: Node2D) -> void:
+	_owner_entity = owner_node
 
 ## 功能：施加一个状态效果
 ## 参数：effect_type - 效果类型资源，source - 施加来源

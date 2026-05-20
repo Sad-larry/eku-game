@@ -39,7 +39,8 @@
       "mcp__godot-mcp__rename_node",
       "mcp__godot-mcp__attach_script",
       "mcp__godot-mcp__create_script",
-      "mcp__godot-mcp__get_editor_state"
+      "mcp__godot-mcp__get_editor_state",
+      "mcp__godot-mcp__list_project_resources"
     ]
   }
 }

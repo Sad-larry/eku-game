@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="WeaponEnchant" format=3]
+
+[ext_resource type="Script" path="res://resources/data/weapons/weapon_enchant.gd" id="1_enc"]
+
+[resource]
+script = ExtResource("1_enc")
+id = "enchant_fire"
+display_name = "烈焰附魔"
+description = "攻击附加火焰伤害，有概率灼烧敌人"
+damage_bonus = 3.0
+element_tag = "fire"
+status_chance = 0.2
+status_duration = 3.0
+tags = Array[String](["fire", "elemental"])

@@ -6,7 +6,7 @@ class_name EliteSpawner extends RoomContentSpawner
 
 const _ELITE_SCENE: PackedScene = preload("res://prefabs/entities/enemies/elite/enemy_elite.tscn")
 
-func spawn(coord: Vector2i, ring: int, context: Dictionary) -> void:
+func spawn(coord: Vector2i, _ring: int, context: Dictionary) -> void:
 	var world: GameWorld = context.get("world")
 	if world == null:
 		return

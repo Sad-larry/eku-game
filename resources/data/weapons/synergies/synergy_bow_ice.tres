@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponSkillSynergy" format=3]
+
+[ext_resource type="Script" path="res://resources/data/weapons/weapon_skill_synergy.gd" id="1_syn"]
+
+[resource]
+script = ExtResource("1_syn")
+id = "synergy_bow_ice"
+display_name = "寒冰箭雨"
+description = "冰属性技能配合远程武器，伤害提升并延长冻结时间"
+required_weapon_tags = Array[String](["ranged"])
+required_skill_tags = Array[String](["ice"])
+damage_multiplier = 1.5
+trigger_chance = 1.0
+cooldown = 3.0
+max_triggers_per_run = 0

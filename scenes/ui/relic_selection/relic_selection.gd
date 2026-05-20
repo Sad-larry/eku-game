@@ -7,7 +7,6 @@ extends CanvasLayer
 class_name RelicSelectionDialog
 
 # ========================== 节点引用模块 ==========================
-@onready var _title_label: Label = %TitleLabel
 @onready var _option_container: HBoxContainer = %OptionContainer
 
 # ========================== 内部变量模块 ==========================
@@ -44,7 +43,7 @@ func _build_option_cards() -> void:
 		_option_panels.append(panel)
 
 func _create_card(relic: RelicData, index: int) -> PanelContainer:
-	var panel := PanelContainer()
+	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(180, 240)
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 

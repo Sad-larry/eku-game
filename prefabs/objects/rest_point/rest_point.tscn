@@ -1,12 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://rest_point_placeholder"]
+[gd_scene format=3 uid="uid://blou5rdflb5nx"]
 
-[ext_resource type="Script" path="res://prefabs/objects/rest_point/rest_point.gd" id="1"]
+[ext_resource type="Script" uid="uid://dsld43ho1h0yp" path="res://prefabs/objects/rest_point/rest_point.gd" id="1"]
 
-[node name="rest_point" type="StaticBody2D"]
+[node name="RestPoint" type="StaticBody2D" unique_id=1335769848]
 script = ExtResource("1")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1873119359]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-
-[node name="InteractableArea" parent="." instance=ExtResource("res://prefabs/environment/interactable/interactable_area.tscn")]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1434346256]

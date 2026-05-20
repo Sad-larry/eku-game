@@ -3,21 +3,15 @@
 [ext_resource type="PackedScene" uid="uid://dugie7jwjpd23" path="res://prefabs/entities/enemies/enemy.tscn" id="1_n1ha2"]
 [ext_resource type="Script" uid="uid://c5kj3aspalq23" path="res://prefabs/entities/enemies/boss/enemy_boss.gd" id="2_ljtiq"]
 [ext_resource type="Texture2D" uid="uid://crh7t8tca7ujl" path="res://assets/sprites/enemy/boss/boss.png" id="3_0x3bj"]
+[ext_resource type="Script" uid="uid://cj55053enfrnr" path="res://resources/data/combat/bosses/boss_phase_data.gd" id="3_jqymk"]
 [ext_resource type="Resource" path="res://resources/data/entities/enemies/stats_enemy_boss.tres" id="4_boss_stats"]
 
 [node name="EneryBoss" unique_id=1067563861 instance=ExtResource("1_n1ha2")]
-collision_layer = 2
-collision_mask = 0
 script = ExtResource("2_ljtiq")
+boss_config = null
+phases_data = Array[ExtResource("3_jqymk")]([])
+skill_drop_config = null
 stats_resource = ExtResource("4_boss_stats")
 
 [node name="Sprite2D" parent="." index="0" unique_id=1433278372]
 texture = ExtResource("3_0x3bj")
-
-[node name="HitboxComponent" parent="StatsComponents" parent_id_path=PackedInt32Array(2005283585) index="0" unique_id=1295885130]
-collision_layer = 8
-collision_mask = 16
-
-[node name="HurtboxComponent" parent="StatsComponents" parent_id_path=PackedInt32Array(2005283585) index="1" unique_id=1445624055]
-collision_layer = 32
-collision_mask = 4

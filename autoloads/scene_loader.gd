@@ -53,6 +53,9 @@ func change_scene(scene_path: String, fade_duration: float = 0.3) -> void:
 	_fade_duration = fade_duration
 	_target_path = scene_path
 
+	# 锁定输入，防止转场期间玩家操作
+	InputManager.set_input_lock(true)
+
 	# 创建并添加过渡覆盖层
 	_overlay = TRANSITION_OVERLAY_SCENE.instantiate()
 	get_tree().root.add_child(_overlay)
@@ -77,6 +80,7 @@ func cancel_loading() -> void:
 	_target_path = ""
 	set_process(false)
 	_cleanup_overlay()
+	InputManager.set_input_lock(false)
 	if DEBUG_MODE:
 		print("SceneLoader: 加载已取消")
 
@@ -144,16 +148,13 @@ func _on_load_complete() -> void:
 	# 6) 将暂存的相机挂载到新场景根节点下
 	_attach_camera_to_new_scene()
 
-	# 7) 淡出覆盖层
-	if _overlay and is_instance_valid(_overlay) and _overlay.has_method("hide_progress"):
-		_overlay.hide_progress()
-	if _overlay and is_instance_valid(_overlay) and _overlay.has_method("fade_out"):
-		await _overlay.fade_out(_fade_duration)
-	else:
-		# 防御：若覆盖层无效，直接清理
-		_cleanup_overlay()
+	# 7) 淡出覆盖层（完成后才解锁输入）
+	await _fade_out_overlay()
 
-	# 8) 完成清理并发射完成信号
+	# 8) 解锁输入，允许玩家操作
+	InputManager.set_input_lock(false)
+
+	# 9) 完成清理并发射完成信号
 	_cleanup_overlay()
 	is_loading = false
 	_target_path = ""
@@ -161,12 +162,22 @@ func _on_load_complete() -> void:
 	if DEBUG_MODE:
 		print("[SceneLoader] 场景加载完成 -> ", get_tree().current_scene.name)
 
+## 功能：淡出覆盖层
+func _fade_out_overlay() -> void:
+	if not _overlay or not is_instance_valid(_overlay):
+		return
+	if _overlay.has_method("hide_progress"):
+		_overlay.hide_progress()
+	if _overlay.has_method("fade_out"):
+		await _overlay.fade_out(_fade_duration)
+
 ## 功能：加载失败时的错误处理与清理
 ## 参数：error_msg (String) - 错误描述信息
 func _abort(error_msg: String) -> void:
 	push_error("SceneLoader: " + error_msg)
 	loading_failed.emit(error_msg)
 	_cleanup_overlay()
+	InputManager.set_input_lock(false)
 	is_loading = false
 	_target_path = ""
 	set_process(false)

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="WeaponEnchant" format=3]
+
+[ext_resource type="Script" path="res://resources/data/weapons/weapon_enchant.gd" id="1_enc"]
+
+[resource]
+script = ExtResource("1_enc")
+id = "enchant_poison"
+display_name = "剧毒附魔"
+description = "攻击附加毒素，造成持续伤害"
+damage_bonus = 1.5
+element_tag = "poison"
+status_chance = 0.3
+status_duration = 4.0
+tags = Array[String](["poison", "dot"])

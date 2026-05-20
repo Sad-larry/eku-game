@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3]
+
+[ext_resource type="Script" path="res://resources/data/weapons/weapon_data.gd" id="1_wpn"]
+
+[resource]
+script = ExtResource("1_wpn")
+id = "sword_iron"
+display_name = "铁剑"
+description = "均衡的近战武器，攻守兼备"
+weapon_type = 0
+base_damage = 15.0
+attack_speed = 1.2
+crit_rate = 0.08
+crit_damage = 1.6
+attack_range = 60.0
+tags = Array[String](["physical", "melee", "slash"])
+max_level = 10
+upgrade_costs = Array[int]([20, 40, 60, 100, 150, 200, 280, 380, 500, 650])
+level_multipliers = Array[float]([1.0, 1.1, 1.2, 1.35, 1.5, 1.7, 1.9, 2.15, 2.4, 2.7])
+max_enchant_slots = 2

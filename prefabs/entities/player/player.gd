@@ -145,7 +145,7 @@ func _on_player_died() -> void:
 	if RunManager.is_run_active():
 		RunManager.end_run(RunManager.RunStatus.FAILED, "enemy")
 	# 打开游戏结束界面
-	UIManager.open_game_over()
+	UIManager.open_ui("game_over")
 
 ## 功能：玩家成长属性更新时重新应用加成并刷新组件
 func _on_progression_stats_updated() -> void:

@@ -64,6 +64,23 @@ const DEFAULT_SECTIONS: Dictionary = {
 		"best_run_time": -1,
 		"total_enemies_killed": 0,
 		"total_rooms_cleared": 0
+	},
+	"boss_defeats": {
+		"defeated_bosses": {},
+		"first_clear_claimed": []
+	},
+	"weapons": {
+		"owned_weapons": [],
+		"equipped_weapon": "",
+		"weapon_levels": {},
+		"weapon_enchants": {}
+	},
+	"achievements": {
+		"unlocked": [],
+		"progress": {}
+	},
+	"codex": {
+		"unlocked_entries": []
 	}
 }
 
@@ -84,7 +101,15 @@ var _pending_play_time: float = 0.0
 func _ready() -> void:
 	get_tree().auto_accept_quit = false
 	load_save_data()
+	# 延迟到下一帧发射信号，确保所有 Autoload 已完成 _ready() 并连接了 data_loaded
+	call_deferred("_notify_data_loaded")
 	print("SaveManager: 存档管理器初始化完成（JSON 格式）")
+
+## 功能：延迟通知数据已加载（在所有 Autoload 初始化完成后执行）
+func _notify_data_loaded() -> void:
+	data_loaded.emit()
+	if DEBUG_MODE:
+		print("[SaveManager] data_loaded 信号已发射")
 
 ## 功能：捕获窗口关闭事件，确保退出前保存
 func _notification(what: int) -> void:
@@ -106,8 +131,6 @@ func load_save_data() -> void:
 		var parse_result = json.parse(json_string)
 		if parse_result == OK and json.data is Dictionary:
 			_root = _merge_with_defaults(json.data)
-			if DEBUG_MODE:
-				print("[SaveManager] permanent_coin存档文件内容:", get_section("currency"))
 		else:
 			push_warning("[SaveManager] 存档文件损坏，使用默认数据")
 			_root = _get_default_root()
@@ -122,7 +145,6 @@ func load_save_data() -> void:
 		_migrate_version(_root["version"])
 		flush_to_disk()
 
-	data_loaded.emit()
 	if DEBUG_MODE:
 		print("[SaveManager] 存档数据已加载，版本: ", _root.get("version", 0))
 
@@ -168,7 +190,7 @@ func has_save_file() -> bool:
 func get_save_version() -> int:
 	return _root.get("version", 0)
 
-# ========================== 兼容性 API（保留旧接口）==========================
+# ========================== 便捷操作 API ==========================
 ## 功能：增加游戏次数（每次开始新游戏时调用）
 func increment_games_played() -> void:
 	var stats = get_section("statistics", DEFAULT_SECTIONS["statistics"])
@@ -185,15 +207,16 @@ func add_play_time(seconds: float) -> void:
 		stats["play_time"] += int(_pending_play_time)
 		_pending_play_time = fmod(_pending_play_time, 1.0)
 		set_section("statistics", stats)
+		save_immediately()
 
 ## 功能：获取格式化的总游戏时间（HH:MM:SS 格式）
 ## 返回值：String - 格式化的时间字符串
 func get_formatted_play_time() -> String:
 	var stats = get_section("statistics", DEFAULT_SECTIONS["statistics"])
-	var total_seconds = stats.get("play_time", 0)
-	var hours = total_seconds / 3600
-	var minutes = (total_seconds % 3600) / 60
-	var seconds = total_seconds % 60
+	var total_seconds: int = stats.get("play_time", 0)
+	var hours: int = int(float(total_seconds) / 3600)
+	var minutes: int = int(float(total_seconds % 3600) / 60)
+	var seconds: int = total_seconds % 60
 	return "%02d:%02d:%02d" % [hours, minutes, seconds]
 
 # ========================== 重置与删除模块 ==========================
@@ -201,7 +224,8 @@ func get_formatted_play_time() -> String:
 func reset_save_data() -> void:
 	_root = _get_default_root()
 	flush_to_disk()
-	print("[SaveManager] 存档数据已重置为默认值")
+	if DEBUG_MODE:
+		print("[SaveManager] 存档数据已重置为默认值")
 
 ## 功能：删除存档文件
 func delete_save_file() -> void:

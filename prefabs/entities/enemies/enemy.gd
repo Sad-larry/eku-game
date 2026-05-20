@@ -200,8 +200,10 @@ func _on_hurtbox_component_damaged(hitbox: HitboxComponent) -> void:
 	enemy_state_machine.send_event("hurt")
 
 ## 功能：单位死亡时的回调
-## 说明：先生成掉落货币，再触发状态机切换到 "dead" 死亡状态
+## 说明：清理行为组件，生成掉落货币，触发状态机切换到 "dead" 死亡状态
 func _on_died() -> void:
+	for behavior in behaviors:
+		behavior.cleanup()
 	_spawn_coins()
 	enemy_state_machine.change_to("dead")
 

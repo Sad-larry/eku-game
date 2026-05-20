@@ -159,4 +159,58 @@ signal relic_lost(relic_id: String)
 ## 触发时机：请求打开遗物选择界面时
 signal relic_selection_requested
 
+# ========================== S8 协同系统信号 ==========================
+## 触发时机：技能协同时
+## 参数：rule_id (String) - 协同规则ID；context (Dictionary) - 上下文信息
+signal synergy_triggered(rule_id: String, context: Dictionary)
+
+## 触发时机：武器技能协同时
+## 参数：synergy_id (String) - 协同ID；weapon_id (String) - 武器ID；skill_id (String) - 技能ID
+signal weapon_skill_synergy_triggered(synergy_id: String, weapon_id: String, skill_id: String)
+
+# ========================== S8 BOSS系统信号 ==========================
+## 触发时机：BOSS阶段变化时
+## 参数：coord (Vector2i) - BOSS房间坐标；new_phase (int) - 新阶段索引
+signal boss_phase_changed(coord: Vector2i, new_phase: int)
+
+## 触发时机：BOSS技能掉落时
+## 参数：boss_id (String) - BOSS ID；skill_id (String) - 技能ID
+signal boss_skill_dropped(boss_id: String, skill_id: String)
+
+# ========================== S8 武器系统信号 ==========================
+## 触发时机：武器装备时
+## 参数：weapon_id (String) - 武器ID
+signal weapon_equipped(weapon_id: String)
+
+## 触发时机：武器卸下时
+## 参数：weapon_id (String) - 武器ID
+signal weapon_unequipped(weapon_id: String)
+
+## 触发时机：武器升级时
+## 参数：weapon_id (String) - 武器ID；new_level (int) - 新等级
+signal weapon_upgraded(weapon_id: String, new_level: int)
+
+## 触发时机：武器附魔时
+## 参数：weapon_id (String) - 武器ID；enchant_id (String) - 附魔ID
+signal weapon_enchanted(weapon_id: String, enchant_id: String)
+
+## 触发时机：武器技能使用时
+## 参数：weapon_id (String) - 武器ID
+signal weapon_skill_used(weapon_id: String)
+
+# ========================== S8 成就系统信号 ==========================
+## 触发时机：成就解锁时
+## 参数：achievement_id (String) - 成就ID
+signal achievement_unlocked(achievement_id: String)
+
+# ========================== S8 图鉴系统信号 ==========================
+## 触发时机：图鉴条目解锁时
+## 参数：entry_id (String) - 图鉴条目ID
+signal codex_entry_unlocked(entry_id: String)
+
+# ========================== S8 随机事件信号 ==========================
+## 触发时机：随机事件触发时
+## 参数：event_id (String) - 事件ID；coord (Vector2i) - 房间坐标
+signal random_event_triggered(event_id: String, coord: Vector2i)
+
 @warning_ignore_restore("unused_signal")

@@ -5,15 +5,27 @@
 extends Node
 
 # ========================== 常量 ==========================
+## 调试模式开关
+const DEBUG_MODE: bool = true
+## 遗物栏上限
 const MAX_RELICS: int = 8
 
 # ========================== 信号 ==========================
+## 触发时机：成功获取遗物时
+## 参数：relic (RelicData) - 获取的遗物数据
 signal relic_added(relic: RelicData)
+
+## 触发时机：成功移除遗物时
+## 参数：relic (RelicData) - 移除的遗物数据
 signal relic_removed(relic: RelicData)
+
+## 触发时机：遗物列表发生变化时（添加/移除/清空）
 signal relics_changed()
 
 # ========================== 运行时状态 ==========================
+## 当前持有的遗物列表
 var _active_relics: Array[RelicData] = []
+## 默认遗物池（用于商店/奖励生成）
 var _default_pool: RelicPool = preload("res://resources/data/relics/relic_pool_default.tres")
 
 # ========================== 公共 API ==========================
@@ -41,7 +53,7 @@ func acquire_relic(relic: RelicData) -> bool:
 
 	UIManager.show_message("获得遗物: %s" % relic.display_name)
 
-	if Global.DEBUG_MODE:
+	if DEBUG_MODE:
 		print("[RelicManager] 获取遗物: ", relic.display_name)
 	return true
 
@@ -84,13 +96,17 @@ func get_default_pool() -> RelicPool:
 	return _default_pool
 
 # ========================== 内部方法 ==========================
+## 功能：应用遗物的被动效果到玩家
+## 参数：relic (RelicData) - 要应用的遗物数据
 func _apply_passive_effect(relic: RelicData) -> void:
 	if relic.passive_effect == null:
 		return
 	var player := Global.player
 	if player and player.status_effect_component:
-		player.status_effect_component.apply_effect(relic.passive_effect, self)
+		player.status_effect_component.apply_effect(relic.passive_effect)
 
+## 功能：移除遗物的被动效果
+## 参数：relic (RelicData) - 要移除的遗物数据
 func _remove_passive_effect(relic: RelicData) -> void:
 	if relic.passive_effect == null:
 		return

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponSkillSynergy" format=3]
+
+[ext_resource type="Script" path="res://resources/data/weapons/weapon_skill_synergy.gd" id="1_syn"]
+
+[resource]
+script = ExtResource("1_syn")
+id = "synergy_staff_lightning"
+display_name = "雷电风暴"
+description = "雷电属性技能配合魔法武器，伤害提升并增加弹射次数"
+required_weapon_tags = Array[String](["magic"])
+required_skill_tags = Array[String](["lightning"])
+damage_multiplier = 1.8
+trigger_chance = 1.0
+cooldown = 4.0
+max_triggers_per_run = 0

@@ -16,8 +16,6 @@ class_name GameWorld
 @export var layer_progression_config: LayerProgressionConfig
 
 # ========================== 常量定义模块 ==========================
-## 安全区预制体
-const _SAFE_ZONE_SCENE: PackedScene = preload("res://prefabs/environment/safe_zone/safe_zone_marker.tscn")
 ## 层间传送门预制体
 const _LAYER_PORTAL_SCENE: PackedScene = preload("res://prefabs/environment/portal/layer_portal.tscn")
 
@@ -243,7 +241,7 @@ func _handle_start_event(coord: Vector2i) -> void:
 	_spawned_rooms[coord] = true
 
 	# 在安全区生成标记
-	var safe_zone := _SAFE_ZONE_SCENE.instantiate() as SafeZoneMarker
+	var safe_zone := Global.SAFE_ZONE_SCENE.instantiate() as SafeZoneMarker
 	safe_zone.position = _chunk_to_world_center(coord.x, coord.y)
 	add_child(safe_zone)
 
@@ -291,16 +289,16 @@ func _handle_trap_event(coord: Vector2i, ring: int) -> void:
 	if player and player.health_component:
 		var trap_damage: int = 2 + ring
 		player.health_component.take_damage(trap_damage)
+		if Global.DEBUG_MODE:
+			print("[GameWorld] 陷阱房间: 受到 ", trap_damage, " 点伤害")
 	RoomManager.set_state(coord, RoomManager.RoomState.CLEARED)
-	if Global.DEBUG_MODE:
-		print("[GameWorld] 陷阱房间: 受到 ", trap_damage, " 点伤害")
 
 ## 功能：处理随机事件（随机选择子事件执行）
 func _handle_random_event(coord: Vector2i, ring: int) -> void:
-	var sub_events := ["battle", "treasure", "rest", "trap"]
+	var sub_events := ["battle"]
 	var rng := RandomNumberGenerator.new()
 	rng.seed = hash(coord)
-	var chosen := sub_events[rng.randi() % sub_events.size()]
+	var chosen :String = sub_events[rng.randi() % sub_events.size()]
 	_on_room_entered(coord, ring, chosen)
 
 ## 功能：处理 NPC 事件（占位实现，S7 扩展）

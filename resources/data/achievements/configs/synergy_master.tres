@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AchievementData" format=3]
+
+[ext_resource type="Script" path="res://resources/data/achievements/achievement_data.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "synergy_master"
+display_name = "协同大师"
+description = "触发10次技能协同"
+condition_type = 3
+condition_value = 10
+reward_coins = 100
+is_hidden = false
+sort_order = 30

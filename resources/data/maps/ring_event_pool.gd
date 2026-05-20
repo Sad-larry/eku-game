@@ -11,15 +11,12 @@ class_name RingEventPool
 @export var ring_index: int
 
 ## 事件类型 → 权重映射（权重越高出现概率越大）
-## 支持的键：battle, elite, merchant, treasure, rest, random, trap, npc
+## 支持的键：battle, elite, merchant, random, npc
 @export var weights: Dictionary = {
 	"battle": 70,
 	"elite": 30,
 	"merchant": 20,
-	"treasure": 15,
-	"rest": 10,
 	"random": 5,
-	"trap": 5,
 	"npc": 5,
 }
 

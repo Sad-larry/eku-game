@@ -1,6 +1,6 @@
 # ==============================================================================
 #   input_manager.gd
-#   功能：全局输入管理器（Autoload 单例），负责输入映射动态注册、输入缓冲、按键状态跟踪、
+#   功能：全局输入管理器（Autoload 单例），负责输入缓冲、按键状态跟踪、
 #        移动向量检测、输入锁定控制（根据游戏状态自动锁定/解锁），并解耦提供输入查询接口。
 #   自动加载配置：Project -> Project Settings -> Autoloads 中添加，命名为 InputManager
 # ==============================================================================
@@ -25,25 +25,8 @@ signal pause_requested()
 # ========================== 常量定义模块 ==========================
 ## 调试模式开关（开启后输出更多调试信息）
 const DEBUG_MODE: bool = false
-
 ## 输入缓冲时长（毫秒），超过此时长的缓冲输入将失效
 const INPUT_BUFFER_DURATION_MS: int = 150
-
-## 按键名称 -> Godot Key 枚举映射表（用于动态注册 InputMap）
-const KEY_NAME_MAP: Dictionary = {
-	"A": KEY_A, "B": KEY_B, "C": KEY_C, "D": KEY_D,
-	"E": KEY_E, "F": KEY_F, "P": KEY_P, "Q": KEY_Q,
-	"S": KEY_S, "W": KEY_W, "Z": KEY_Z, "X": KEY_X,
-	"1": KEY_1, "2": KEY_2, "3": KEY_3, "4": KEY_4,
-	"Space": KEY_SPACE, "Enter": KEY_ENTER, "Escape": KEY_ESCAPE,
-	"Backspace": KEY_BACKSPACE, "Tab": KEY_TAB,
-	"Left Shift": KEY_SHIFT, "Right Shift": KEY_SHIFT,
-	"Left Ctrl": KEY_CTRL, "Right Ctrl": KEY_CTRL,
-	"Left Alt": KEY_ALT, "Right Alt": KEY_ALT,
-	"Left Arrow": KEY_LEFT, "Right Arrow": KEY_RIGHT,
-	"Up Arrow": KEY_UP, "Down Arrow": KEY_DOWN
-}
-
 ## 输入动作配置字典（从 INPUTACTIONS 资源导入）
 const INPUT_ACTIONS := InputActions.INPUT_ACTIONS_DICTIONARY
 
@@ -58,8 +41,6 @@ const INPUT_ACTIONS := InputActions.INPUT_ACTIONS_DICTIONARY
 var input_locked: bool = true
 ## 输入缓冲队列，存储 Dictionary{action: String, time_ms: int}
 var _buffer: Array[Dictionary] = []
-## 暂停键防抖标记（避免重复触发）
-var _pause_key_just_handled: bool = false
 ## 缓存的非轴动作名列表（避免每帧遍历全部字典）
 var _action_names: Array[String] = []
 ## 上一帧的移动向量（用于检测变化后发射信号）
@@ -70,7 +51,6 @@ var _blocked_action_prefixes: Array[String] = []
 # ========================== 生命周期模块 ==========================
 ## 功能：节点就绪时执行初始化（注册 InputMap、缓存动作名、连接游戏状态信号）
 func _ready() -> void:
-	_setup_input_map()
 	_cache_action_names()
 	_connect_game_state()
 	EventBus.input_blocking_updated.connect(_on_input_blocking_updated)
@@ -95,40 +75,6 @@ func _input(event: InputEvent) -> void:
 		print("[InputManager] 按键: ", event.as_text())
 
 # ========================== 初始化辅助方法模块 ==========================
-## 功能：遍历 INPUT_ACTIONS，将未在 project.godot 中注册的按键补注册到 InputMap
-func _setup_input_map() -> void:
-	for action_name: String in INPUT_ACTIONS:
-		var config: Dictionary = INPUT_ACTIONS[action_name]
-		if InputMap.has_action(action_name):
-			continue
-		InputMap.add_action(action_name)
-		for key_name: String in config["keyboard"]:
-			_register_key(action_name, key_name)
-		if DEBUG_MODE:
-			print("[InputManager] InputMap 补注册: ", action_name)
-
-## 功能：将单个按键名注册到 InputMap 动作
-## 参数：action_name (String) - 动作名称；key_name (String) - 按键名称
-func _register_key(action_name: String, key_name: String) -> void:
-	# 处理鼠标按键
-	if key_name.contains("Mouse"):
-		var button_index: int = MOUSE_BUTTON_LEFT if "Left" in key_name else MOUSE_BUTTON_RIGHT
-		var event_btn := InputEventMouseButton.new()
-		event_btn.button_index = button_index as MouseButton
-		event_btn.double_click = false
-		InputMap.action_add_event(action_name, event_btn)
-		return
-
-	# 处理键盘按键
-	var key: Key = KEY_NAME_MAP.get(key_name, KEY_NONE)
-	if key == KEY_NONE:
-		if DEBUG_MODE:
-			push_warning("[InputManager] 未知按键名: ", key_name, "（动作: ", action_name, "）")
-		return
-	var event := InputEventKey.new()
-	event.physical_keycode = key
-	InputMap.action_add_event(action_name, event)
-
 ## 功能：缓存非轴、非暂停的动作名列表（供每帧遍历）
 func _cache_action_names() -> void:
 	for action_name: String in INPUT_ACTIONS:
@@ -140,31 +86,19 @@ func _cache_action_names() -> void:
 
 ## 功能：连接 GameManager 的游戏状态变化信号，实现自动输入锁定
 func _connect_game_state() -> void:
-	if not GameManager:
-		if DEBUG_MODE:
-			print("[InputManager] 警告: GameManager 未找到，输入锁定将不会自动响应游戏状态")
-		return
-
-	if GameManager.has_signal("game_state_changed"):
-		GameManager.game_state_changed.connect(_on_game_state_changed)
-		_on_game_state_changed(GameManager.current_game_state, GameManager.current_game_state)
+	GameManager.game_state_changed.connect(_on_game_state_changed)
+	_on_game_state_changed(GameManager.current_game_state, GameManager.current_game_state)
 
 # ========================== 输入状态更新核心模块 ==========================
 ## 功能：单独处理暂停键，确保在锁定状态下也能响应（但根据游戏状态决定是否生效）
 func _handle_pause_input() -> void:
-	if not Input.is_action_just_pressed("pause"):
-		_pause_key_just_handled = false
-		return
-
-	if _pause_key_just_handled:
-		return
-	_pause_key_just_handled = true
-
-	pause_requested.emit()
-	if DEBUG_MODE:
-		print("[InputManager] pause_requested 信号发出")
+	if Input.is_action_just_pressed("pause"):
+		pause_requested.emit()
+		if DEBUG_MODE:
+			print("[InputManager] pause_requested 信号发出")
 
 ## 功能：遍历动作名列表，检测按键按下后自动缓冲并发射 action_triggered 信号
+## 说明：单个事件最多触发一个动作，匹配后立即返回
 func _detect_actions(event: InputEvent) -> void:
 	if input_locked:
 		return
@@ -174,12 +108,13 @@ func _detect_actions(event: InputEvent) -> void:
 
 		if event.is_action_pressed(action_name):
 			var config: Dictionary = INPUT_ACTIONS[action_name]
-			# 若该动作支持输入缓冲，则存入缓冲队列
+			# 若该动作支持输入缓冲，则存入缓冲队列（供攻击动画结束时读取）
 			if config["bufferable"]:
 				buffer_input(action_name)
 			action_triggered.emit(action_name)
 			if DEBUG_MODE:
 				print("[InputManager] action_triggered: ", action_name)
+			return
 
 ## 功能：检测移动向量变化并发射信号
 func _emit_movement_vector() -> void:
@@ -211,8 +146,6 @@ func _is_action_blocked(action: String) -> bool:
 ## 功能：检查移动输入是否被阻塞
 ## 返回值：bool - true 表示移动输入应被屏蔽
 func _has_movement_block() -> bool:
-	if _blocked_action_prefixes.is_empty():
-		return false
 	for prefix in _blocked_action_prefixes:
 		if "move" in prefix:
 			return true
@@ -220,6 +153,9 @@ func _has_movement_block() -> bool:
 
 # ========================== 输入缓冲核心接口模块 ==========================
 ## 功能：将输入动作加入缓冲队列
+## 说明：缓冲队列用于"输入排队"——玩家在攻击动画最后 150ms 内按下技能，
+##       动画结束后自动读取并执行，避免因时机不对而丢失输入。
+##       50ms 去重防止同一帧/连续帧重复入队。
 ## 参数：action (String) - 动作名称
 ## 返回值：bool - true 表示成功加入缓冲，false 表示失败
 func buffer_input(action: String) -> bool:
@@ -229,10 +165,10 @@ func buffer_input(action: String) -> bool:
 	if not config or not config["bufferable"]:
 		return false
 
-	var now_ms = Time.get_ticks_msec()
-	# 防止短时间内重复缓冲同一动作（50 毫秒去重）
+	var now_ms := Time.get_ticks_msec()
+	# 50ms 去重：防止同一动作在短时间内重复入队
 	if _buffer.size() > 0:
-		var last = _buffer[-1]
+		var last: Dictionary = _buffer[-1]
 		if last["action"] == action and (now_ms - last["time_ms"]) < 50:
 			return false
 
@@ -242,6 +178,8 @@ func buffer_input(action: String) -> bool:
 	return true
 
 ## 功能：取出并返回最早未过期的缓冲输入
+## 说明：由 PlayerAttackState 在攻击动画结束时调用，实现输入排队。
+##       若队列为空或已锁定，返回空字符串表示无待执行动作。
 ## 返回值：String - 缓冲的动作名称，若无有效缓冲则返回空字符串
 func get_buffered_input() -> String:
 	_clean_expired_buffer()
@@ -249,8 +187,8 @@ func get_buffered_input() -> String:
 	if _buffer.is_empty() or input_locked:
 		return ""
 
-	var entry = _buffer.pop_front()
-	return entry.action
+	var entry: Dictionary = _buffer.pop_front()
+	return entry["action"]
 
 ## 功能：清空缓冲队列（可选清空指定动作）
 ## 参数：action (String) - 若不为空则只清空该动作，否则清空全部
@@ -258,17 +196,17 @@ func clear_buffer(action: String = "") -> void:
 	if action.is_empty():
 		_buffer.clear()
 	else:
-		_buffer = _buffer.filter(func(e): return e.action != action)
+		_buffer = _buffer.filter(func(e: Dictionary) -> bool: return e["action"] != action)
 
 ## 功能：清理过期的缓冲输入（超过 INPUT_BUFFER_DURATION_MS 毫秒）
+## 说明：条目按时间顺序入队，缓冲时长仅 150ms，所有条目几乎同时过期，
+##       因此只需检查首元素，过期则直接清空整个队列。
 func _clean_expired_buffer() -> void:
-	var now_ms = Time.get_ticks_msec()
-	var i = 0
-	while i < _buffer.size():
-		if now_ms - _buffer[i]["time_ms"] > INPUT_BUFFER_DURATION_MS:
-			_buffer.remove_at(i)
-		else:
-			i += 1
+	if _buffer.is_empty():
+		return
+	var now_ms := Time.get_ticks_msec()
+	if now_ms - _buffer[0]["time_ms"] > INPUT_BUFFER_DURATION_MS:
+		_buffer.clear()
 
 # ========================== 输入状态查询接口模块 ==========================
 ## 功能：获取当前移动向量（归一化后）
@@ -330,5 +268,8 @@ func _on_game_state_changed(new_state: GameManager.GameState, _old_state: GameMa
 		_:
 			set_input_lock(false)
 
+## 功能：更新输入阻塞前缀列表（由 UIManager 通过 EventBus 发出）
+## 说明：匹配前缀的动作将被临时屏蔽，用于模态 UI 打开时阻止游戏输入穿透
+## 参数：prefixes (Array[String]) - 需要阻塞的动作名前缀列表
 func _on_input_blocking_updated(prefixes: Array[String]) -> void:
 	_blocked_action_prefixes = prefixes

@@ -4,6 +4,10 @@
 # ==============================================================================
 class_name DialogLine extends Resource
 
+# ========================== 导出变量模块 ==========================
+## 说话者名称（空字符串表示旁白）
 @export var speaker_name: String = ""
+## 对话文本内容
 @export var text: String = ""
+## 立绘图片（可选，用于对话框头像显示）
 @export var portrait: Texture2D

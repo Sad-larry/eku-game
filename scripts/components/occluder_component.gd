@@ -8,13 +8,10 @@ class_name OccluderComponent
 # ========================== 导出变量模块 ==========================
 ## 树被遮挡时的透明度（0.0=完全透明，1.0=完全不透明）
 @export var occluded_alpha: float = 0.3
-
 ## 玩家被遮挡时的透视效果透明度
 @export var player_ghost_alpha: float = 0.5
-
 ## 透明度过渡时长（秒）
 @export var fade_duration: float = 0.2
-
 ## 碰撞框尺寸（未手动添加 CollisionShape2D 时生效）
 @export var shape_size: Vector2 = Vector2(32, 32)
 

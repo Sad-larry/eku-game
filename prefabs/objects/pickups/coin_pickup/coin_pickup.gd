@@ -9,10 +9,8 @@ class_name CoinPickup
 # ========================== 导出变量模块 ==========================
 ## 货币数据资源（配置价值、颜色等属性）
 @export var coin_data: CoinData
-
 ## 磁吸移动速度（像素/秒）
 @export var magnet_speed: float = 300.0
-
 ## 自动消失时间（秒）
 @export var lifetime: float = 15.0
 
@@ -25,13 +23,10 @@ class_name CoinPickup
 # ========================== 内部变量模块 ==========================
 ## 是否可拾取（生成后延迟拾取，防止瞬间拾取）
 var _is_collectable: bool = false
-
 ## 磁吸目标（玩家节点）
 var _magnet_target: Node2D = null
-
 ## 剩余弹出动画时间
 var _bounce_timer: float = 0.0
-
 ## 弹出速度向量（由 spawn 时设置）
 var _velocity: Vector2 = Vector2.ZERO
 

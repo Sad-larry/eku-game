@@ -180,7 +180,7 @@ func reset_hud():
 # ========================== UI 按钮回调模块 ==========================
 ## 功能：暂停按钮被点击时，通知 UIManager 打开暂停菜单。
 func _on_pause_button_pressed():
-	UIManager.open_pause_menu()
+	UIManager.open_ui("pause_menu")
 
 ## 功能：技能槽被鼠标点击时，通过 EventBus 通知 Player 释放技能。
 ## 参数：slot_index (int) - 被点击的技能槽索引

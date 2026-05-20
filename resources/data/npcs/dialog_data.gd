@@ -4,5 +4,8 @@
 # ==============================================================================
 class_name DialogData extends Resource
 
+# ========================== 导出变量模块 ==========================
+## 对话文本行序列（按顺序显示的台词列表）
 @export var lines: Array[DialogLine] = []
+## 对话选项列表（台词播放完毕后呈现给玩家的选择）
 @export var choices: Array[DialogChoice] = []

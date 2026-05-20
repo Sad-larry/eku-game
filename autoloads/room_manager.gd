@@ -30,12 +30,8 @@ signal room_state_changed(coord: Vector2i, new_state: int)
 # ========================== 变量定义模块 ==========================
 ## 房间状态字典：key="x,y" → RoomState
 var _room_states: Dictionary = {}
-## 当前房间坐标
+## 当前房间坐标（用于检查点保存）
 var current_coord: Vector2i = Vector2i.ZERO
-## 当前房间的 ring 值
-var current_ring: int = 0
-## 当前房间的事件类型
-var current_event_type: String = ""
 
 # ========================== 公共 API 模块 ==========================
 ## 功能：通知 RoomManager 玩家进入了指定房间
@@ -45,12 +41,9 @@ func enter_room(coord: Vector2i, ring: int, event_type: String) -> bool:
 	if coord == current_coord:
 		return false
 
-	# 更新当前房间（不清除上一个房间，由战斗系统通过 set_state 显式触发）
 	current_coord = coord
-	current_ring = ring
-	current_event_type = event_type
 
-	# 首次进入则初始化为 ACTIVE
+	# 首次进入则记录状态
 	var key := _key(coord)
 	if not _room_states.has(key):
 		_room_states[key] = RoomState.ACTIVE
@@ -83,8 +76,6 @@ func is_cleared(coord: Vector2i) -> bool:
 func reset_all() -> void:
 	_room_states.clear()
 	current_coord = Vector2i.ZERO
-	current_ring = 0
-	current_event_type = ""
 
 # ========================== 工具方法模块 ==========================
 ## 功能：将房间坐标转换为字典键

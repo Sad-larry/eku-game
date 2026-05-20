@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponSkillSynergy" format=3]
+
+[ext_resource type="Script" path="res://resources/data/weapons/weapon_skill_synergy.gd" id="1_syn"]
+
+[resource]
+script = ExtResource("1_syn")
+id = "synergy_sword_fire"
+display_name = "烈焰斩"
+description = "火属性技能配合近战武器，伤害大幅提升并附带范围爆炸"
+required_weapon_tags = Array[String](["melee"])
+required_skill_tags = Array[String](["fire"])
+damage_multiplier = 2.0
+trigger_chance = 1.0
+cooldown = 5.0
+max_triggers_per_run = 0

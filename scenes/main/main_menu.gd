@@ -43,7 +43,7 @@ func _on_start_button_pressed() -> void:
 ## 功能：设置按钮被按下时的回调
 ## 说明：打开设置菜单（委托给 UIManager）
 func _on_settings_button_pressed() -> void:
-	UIManager.open_settings_menu()
+	UIManager.open_ui("settings_menu")
 
 ## 功能：退出游戏按钮被按下时的回调
 ## 说明：保存存档后退出游戏

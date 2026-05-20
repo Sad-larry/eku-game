@@ -6,20 +6,13 @@
 extends UnitStats
 class_name PlayerStats
 
-# ========================== 导出变量模块 ==========================
-# ----- 能量值属性 -----
 ## 最大能量值
 @export var max_energy := 1
-
 ## 每秒自动恢复能量值
 @export var energy_regen: float = 1
-
-# ----- 战斗属性 -----
 ## 攻击速度（每秒攻击次数）
 @export var attack_speed: float = 1.0
-
 ## 暴击率（0.0 - 1.0），默认 5%
 @export var crit_rate: float = 0.05
-
 ## 暴击伤害倍率（如 1.5 表示 150% 暴击伤害），默认 150%
 @export var crit_damage: float = 1.5

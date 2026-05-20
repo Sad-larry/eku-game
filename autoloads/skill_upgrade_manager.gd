@@ -13,6 +13,8 @@ const UPGRADE_DATA_DIR: String = "res://resources/data/skills/upgrades/"
 const DEFAULT_LEVEL: int = 1
 
 # ========================== 信号声明模块 ==========================
+## 触发时机：技能升级成功时
+## 参数：skill_id (String) - 技能 ID；new_level (int) - 升级后的新等级
 signal skill_upgraded(skill_id: String, new_level: int)
 
 # ========================== 内部变量模块 ==========================
@@ -52,6 +54,7 @@ func _on_save_data_loaded() -> void:
 		print("[SkillUpgradeManager] 已加载升级配置: ", _upgrade_configs.size(), " 个技能")
 
 ## 功能：递归加载目录下的 .tres 资源
+## 参数：dir_path (String) - 要加载的目录路径
 func _recursive_load_configs(dir_path: String) -> void:
 	var dir := DirAccess.open(dir_path)
 	if dir == null:
@@ -59,13 +62,16 @@ func _recursive_load_configs(dir_path: String) -> void:
 	dir.list_dir_begin()
 	var file_name := dir.get_next()
 	while file_name != "":
+		# 跳过隐藏文件
 		if file_name.begins_with("."):
 			file_name = dir.get_next()
 			continue
 		var full_path := dir_path.path_join(file_name)
 		if dir.current_is_dir():
+			# 递归加载子目录
 			_recursive_load_configs(full_path)
 		elif file_name.ends_with(".tres") or file_name.ends_with(".res"):
+			# 加载资源并验证类型
 			var res = load(full_path)
 			if res is SkillUpgradeData and not res.skill_id.is_empty():
 				_upgrade_configs[res.skill_id] = res

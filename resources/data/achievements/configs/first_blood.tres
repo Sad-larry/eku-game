@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AchievementData" format=3]
+
+[ext_resource type="Script" path="res://resources/data/achievements/achievement_data.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = "first_blood"
+display_name = "初次击杀"
+description = "击败你的第一个敌人"
+condition_type = 0
+condition_value = 1
+reward_coins = 10
+is_hidden = false
+sort_order = 1

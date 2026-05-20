@@ -18,9 +18,9 @@ func _ready() -> void:
 	close_button.pressed.connect(_close)
 	_update_coin_display()
 
-func setup(ring: int, layer: int) -> void:
+func setup(ring: int, layer_arg: int) -> void:
 	var pool := MerchantPool.new()
-	_items = pool.roll_items(4, ring, layer)
+	_items = pool.roll_items(4, ring, layer_arg)
 	_sold_indices.clear()
 	_refresh_list()
 

@@ -9,21 +9,14 @@ class_name HealthBar
 # ========================== 导出变量模块 ==========================
 ## 血条背景颜色（延迟条的背景色）
 @export var back_color: Color
-
 ## 主血条填充颜色（即时响应部分）
 @export var fill_color: Color
-
 ## 延迟条填充颜色（受伤后的缓慢回落效果）
 @export var delay_color: Color
 
 # ========================== 节点引用模块 ==========================
-## 主血条进度条节点（即时血量变化）
 @onready var progress_bar: ProgressBar = $ProgressBar
-
-## 血量数字显示标签
 @onready var health_label: Label = $HealthAmount
-
-## 延迟伤害条进度条节点（缓慢跟随，模拟受伤后血条渐变效果）
 @onready var delay_bar: ProgressBar = $DelayBar
 
 # ========================== 变量定义模块 ==========================

@@ -26,10 +26,6 @@ signal run_started(seed: int, layer: int)
 ## 参数：stats (Dictionary) - 本次运行统计
 signal run_ended(stats: Dictionary)
 
-## 触发时机：Boss 被击败时
-## 参数：coord (Vector2i) - Boss 房间坐标；layer (int) - 当前层数
-signal boss_defeated(coord: Vector2i, layer: int)
-
 ## 触发时机：层数推进时
 ## 参数：new_layer (int) - 新层数
 signal layer_advanced(new_layer: int)
@@ -56,25 +52,18 @@ var run_seed: int = 0
 var run_start_time: int = 0
 ## 运行累计用时（秒，暂停时不计）
 var run_elapsed_time: float = 0.0
+## 当前层 Boss 是否已击败
+var _boss_defeated: bool = false
 
 # ========================== 运行统计变量模块 ==========================
 ## 本次运行统计
-var _run_stats: Dictionary = {
-	"enemies_killed": 0,
-	"rooms_cleared": 0,
-	"damage_dealt": 0,
-	"damage_taken": 0,
-	"coins_collected": 0,
-	"max_combo": 0,
-	"elapsed_time": 0.0,
-	"layer_reached": 1,
-	"bosses_defeated": 0,
-	"cause_of_death": "",
-}
+var _run_stats: Dictionary = {}
 
 # ========================== 生命周期模块 ==========================
 ## 功能：节点就绪时连接信号
 func _ready() -> void:
+	# 初始化运行统计
+	_reset_run_stats()
 	# 监听运行结束信号，自动记录 Meta 进度
 	run_ended.connect(_on_run_ended)
 	# 监听敌人击杀信号，自动更新统计
@@ -85,6 +74,8 @@ func _ready() -> void:
 	EventBus.combo_updated.connect(_on_combo_updated)
 	# 监听金币收集，追踪金币统计
 	CurrencyManager.coin_collected.connect(_on_coin_collected)
+	# 监听 Boss 击败，记录当前层 Boss 状态
+	EventBus.boss_defeated.connect(_on_boss_defeated)
 	print("RunManager: 运行管理器初始化完成")
 
 ## 功能：每帧累加运行用时
@@ -103,7 +94,7 @@ func start_new_run(seed_value: int = 0) -> void:
 
 	run_seed = seed_value if seed_value != 0 else randi()
 	current_layer = 1
-	run_start_time = Time.get_unix_time_from_system()
+	run_start_time = int(Time.get_unix_time_from_system())
 	run_elapsed_time = 0.0
 	run_status = RunStatus.IN_PROGRESS
 
@@ -163,6 +154,7 @@ func is_run_active() -> bool:
 ## 功能：推进到下一层
 func advance_layer() -> void:
 	current_layer += 1
+	_boss_defeated = false
 	_run_stats["layer_reached"] = current_layer
 	layer_advanced.emit(current_layer)
 	if DEBUG_MODE:
@@ -176,10 +168,6 @@ func record_damage_dealt(amount: int) -> void:
 ## 功能：记录受到伤害
 func record_damage_taken(amount: int) -> void:
 	_run_stats["damage_taken"] += amount
-
-## 功能：记录收集金币
-func record_coin_collected(amount: int) -> void:
-	_run_stats["coins_collected"] += amount
 
 ## 功能：获取当前运行统计
 ## 返回值：Dictionary - 统计数据的深拷贝
@@ -258,6 +246,7 @@ func cleanup_run_state() -> void:
 	current_layer = 1
 	run_seed = 0
 	run_elapsed_time = 0.0
+	_boss_defeated = false
 	_reset_run_stats()
 	clear_checkpoint()
 	if DEBUG_MODE:
@@ -284,6 +273,12 @@ func _on_combo_updated(new_combo: int) -> void:
 ## 功能：金币收集回调
 func _on_coin_collected(amount: int) -> void:
 	_run_stats["coins_collected"] += amount
+
+## 功能：Boss 击败回调
+## 参数：_coord (Vector2i) - Boss 房间坐标；_layer (int) - 当前层数
+func _on_boss_defeated(_coord: Vector2i, _layer: int) -> void:
+	_boss_defeated = true
+	_run_stats["bosses_defeated"] += 1
 
 # ========================== Meta 进度模块 ==========================
 ## 功能：将运行统计合并到 Meta 进度
@@ -337,9 +332,9 @@ func _reset_run_stats() -> void:
 
 ## 功能：格式化时间为 HH:MM:SS
 func _format_time(total_seconds: float) -> String:
-	var secs := int(total_seconds)
-	var hours := secs / 3600
-	var minutes := (secs % 3600) / 60
+	var secs :int = int(total_seconds)
+	var hours :int = int(float(secs) / 3600)
+	var minutes :int = int(float((secs % 3600)) / 60)
 	var seconds := secs % 60
 	return "%02d:%02d:%02d" % [hours, minutes, seconds]
 
@@ -368,16 +363,15 @@ func _serialize_room_states() -> Dictionary:
 	return result
 
 ## 功能：检查当前层 Boss 是否已击败
+## 返回值：bool - true 表示 Boss 已击败
 func _is_boss_defeated() -> bool:
-	# 查找 map_data 中的 boss 坐标，检查是否已清除
-	# 简化实现：检查所有 boss 类型的房间是否已清除
-	return false
+	return _boss_defeated
 
 ## 功能：从序列化数据恢复房间状态
 func _restore_room_states(data: Dictionary) -> void:
 	RoomManager.reset_all()
 	for key in data:
-		var parts := key.split(",")
+		var parts :Array = key.split(",")
 		if parts.size() == 2:
 			var coord := Vector2i(parts[0].to_int(), parts[1].to_int())
 			var state: int = data[key]

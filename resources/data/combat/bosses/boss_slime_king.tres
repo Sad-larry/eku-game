@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="BossConfig" format=3]
+
+[ext_resource type="Script" path="res://resources/data/combat/bosses/boss_config.gd" id="1_script"]
+[ext_resource type="Script" path="res://resources/data/combat/bosses/boss_phase_data.gd" id="2_phase_script"]
+[ext_resource type="PackedScene" path="res://prefabs/entities/enemies/common/enemy_slime.tscn" id="3_slime"]
+
+[resource]
+script = ExtResource("1_script")
+boss_name = "史莱姆王"
+phases = 3
+phase_health_thresholds = Array[float](0.7, 0.3)
+arena_size = 300.0
+reward_coins = 100
+unlock_next_layer = true
+
+phases_data = [
+	ExtResource("2_phase_script"),
+	ExtResource("2_phase_script"),
+	ExtResource("2_phase_script")
+]

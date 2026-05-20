@@ -8,6 +8,9 @@ class_name MerchantNPC
 @onready var interactable: InteractableArea = $InteractableArea
 @onready var sprite: Sprite2D = $Sprite2D
 
+## 商人所在的环数（由 Spawner 生成时设置）
+var ring: int = 0
+
 func _ready() -> void:
 	interactable.prompt_text = "按 F 打开商店"
 	interactable.interacted.connect(_on_interacted)
@@ -15,6 +18,4 @@ func _ready() -> void:
 func _on_interacted() -> void:
 	var shop_ui := UIManager.open_ui("merchant_shop")
 	if shop_ui and shop_ui.has_method("setup"):
-		var ring := RoomManager.current_ring
-		var layer := RunManager.current_layer
-		shop_ui.setup(ring, layer)
+		shop_ui.setup(ring, RunManager.current_layer)

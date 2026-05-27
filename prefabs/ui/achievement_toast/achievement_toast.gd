@@ -55,6 +55,8 @@ func _hide_toast() -> void:
 
 # ========================== 信号回调 ==========================
 func _on_achievement_unlocked(achievement_id: String) -> void:
+	if not AchievementManager.ENABLED:
+		return
 	var data: AchievementData = AchievementManager.get_all_achievements().get(achievement_id)
 	if data:
 		show_toast(data)

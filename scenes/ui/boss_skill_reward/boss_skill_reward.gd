@@ -45,8 +45,9 @@ func _on_claim_pressed() -> void:
 	if _current_skill == null:
 		return
 
-	# 解锁技能
-	SkillUnlockManager.unlock_skill_by_id(_current_skill.id)
+	# 解锁技能（后期系统禁用时跳过）
+	if SkillUnlockManager.ENABLED:
+		SkillUnlockManager.unlock_skill_by_id(_current_skill.id)
 
 	# 隐藏UI
 	hide()

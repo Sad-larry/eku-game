@@ -114,7 +114,8 @@ func _on_option_selected(index: int) -> void:
 		return
 
 	var relic: RelicData = _options[index]
-	RelicManager.acquire_relic(relic)
+	if RelicManager.ENABLED:
+		RelicManager.acquire_relic(relic)
 
 	if Global.DEBUG_MODE:
 		print("[RelicSelection] 选择了遗物: ", relic.display_name)

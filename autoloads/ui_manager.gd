@@ -231,6 +231,8 @@ func open_relic_selection(options: Array[RelicData]) -> Node:
 
 ## 功能：收到遗物选择面板请求（默认从默认池随机 3 个）
 func _on_relic_selection_requested() -> void:
+	if not RelicManager.ENABLED:
+		return
 	if is_ui_open("relic_selection"):
 		return
 	var pool: RelicPool = RelicManager.get_default_pool()

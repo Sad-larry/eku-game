@@ -5,6 +5,8 @@
 extends Node
 
 # ========================== 常量 ==========================
+## 模块启用开关（后期系统，暂时禁用）
+const ENABLED: bool = false
 ## 调试模式开关
 const DEBUG_MODE: bool = true
 ## 遗物栏上限
@@ -21,6 +23,12 @@ signal relic_removed(relic: RelicData)
 
 ## 触发时机：遗物列表发生变化时（添加/移除/清空）
 signal relics_changed()
+
+# ========================== 生命周期 ==========================
+func _ready() -> void:
+	if not ENABLED:
+		print("RelicManager: 已禁用")
+		return
 
 # ========================== 运行时状态 ==========================
 ## 当前持有的遗物列表

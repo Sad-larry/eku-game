@@ -1,26 +1,103 @@
 [gd_scene format=4 uid="uid://cteculjupcwol"]
 
 [ext_resource type="TileSet" uid="uid://r8i8ojam50px" path="res://resources/data/tilesets/tileset_stone_blocks.tres" id="2_kfkrw"]
+[ext_resource type="Texture2D" uid="uid://cwyn3ve1lgous" path="res://assets/sprites/shop/Asset_Building_Floor_Alt2.png" id="2_xlc73"]
 [ext_resource type="Texture2D" uid="uid://crbxit8gdkhmp" path="res://assets/sprites/map/decorations/bed.png" id="3_bugcc"]
 [ext_resource type="Texture2D" uid="uid://bd2aiorjaymw6" path="res://assets/sprites/map/decorations/bookshelf.png" id="4_i7hbt"]
 [ext_resource type="PackedScene" uid="uid://clo5p6whwxfes" path="res://prefabs/environment/portal_zone/portal_zone.tscn" id="5_eebke"]
 [ext_resource type="Texture2D" uid="uid://bt15s8utp3tt4" path="res://assets/sprites/map/decorations/flowerpot.png" id="5_jyyhs"]
 [ext_resource type="PackedScene" uid="uid://c08w5bd71wvrx" path="res://prefabs/environment/interactable/interactable_area.tscn" id="6_interactable"]
+[ext_resource type="Texture2D" uid="uid://bndnm70rmenmf" path="res://assets/sprites/shop/Asset_Decoration_Foot Mat.png" id="7_o4upc"]
+[ext_resource type="Texture2D" uid="uid://du3e7d6jsy63t" path="res://assets/sprites/shop/Asset_Bushes.png" id="8_7bb61"]
+[ext_resource type="Texture2D" uid="uid://bmonqtros23hk" path="res://assets/sprites/shop/Asset_Building_Windows_Alt1.png" id="9_d244a"]
+[ext_resource type="Texture2D" uid="uid://5im2kxdxql1n" path="res://assets/sprites/shop/Asset_Decoration_Tavern_Sign-Sheet.png" id="10_d23p8"]
+[ext_resource type="Texture2D" uid="uid://clj182e7p8i1l" path="res://assets/sprites/shop/Asset_Decoration_Tavern_Shelf.png" id="11_brt85"]
+[ext_resource type="Texture2D" uid="uid://cksehhcvu0y5b" path="res://assets/sprites/shop/Asset_Decoration_Tavern_Barrel_alt1_30x36-Sheet.png" id="12_yrh2x"]
+[ext_resource type="Texture2D" uid="uid://b2rl14o161kca" path="res://assets/sprites/shop/Asset_Decoration_Tavern_Beer_alt1-Sheet.png" id="13_0jmcg"]
+[ext_resource type="Texture2D" uid="uid://5k3eahfnn6eb" path="res://assets/sprites/shop/Asset_Decoration_Tavern_Cup.png" id="14_ceo7e"]
+[ext_resource type="Texture2D" uid="uid://drsdmoqvjd1sq" path="res://assets/sprites/shop/Asset_Decoration_Tavern_Plate.png" id="15_08tqt"]
+[ext_resource type="Texture2D" uid="uid://do2ccq3dpfy0p" path="res://assets/sprites/shop/Asset_Decoration_Tavern_Counter_alt164x64-Sheet.png" id="16_br6em"]
+[ext_resource type="Texture2D" uid="uid://d4f6mdirqlirg" path="res://assets/sprites/shop/Asset_Decoration_Tavern_Lantern-Sheet.png" id="17_d23p8"]
+[ext_resource type="Texture2D" uid="uid://b5jsabjy23uyw" path="res://assets/sprites/shop/Asset_Decoration_Tavern_Book_alt1-Sheet.png" id="18_brt85"]
+[ext_resource type="Texture2D" uid="uid://n0kvbu8dtad3" path="res://assets/sprites/shop/Asset_Decoration_Inkwell Quill.png" id="19_yrh2x"]
+[ext_resource type="Texture2D" uid="uid://bkh2q757wf5jm" path="res://assets/sprites/shop/Asset_Decoration_Bottom_Grape Juice.png" id="20_0jmcg"]
+[ext_resource type="Texture2D" uid="uid://beoqlg7gpjwg3" path="res://assets/sprites/shop/Asset_Decoration_Tavern_Chair_alt1-Sheet.png" id="21_ceo7e"]
+[ext_resource type="Texture2D" uid="uid://dlg06m35dwbri" path="res://assets/sprites/shop/Asset_Decoration_Tavern_Table_alt1-Sheet.png" id="22_08tqt"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_o4upc"]
+texture = ExtResource("2_xlc73")
+texture_region_size = Vector2i(32, 19)
+0:0/0 = 0
+0:0/0/texture_origin = Vector2i(0, -1)
+
+[sub_resource type="TileSet" id="TileSet_3tr64"]
+tile_shape = 1
+tile_layout = 5
+tile_size = Vector2i(32, 17)
+sources/1 = SubResource("TileSetAtlasSource_o4upc")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_3tr64"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_eebke"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1haeh"]
+atlas = ExtResource("10_d23p8")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uakws"]
+atlas = ExtResource("10_d23p8")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m3umr"]
+atlas = ExtResource("10_d23p8")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_vb88c"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1haeh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uakws")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m3umr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uakws")
+}],
+"loop": true,
+"name": &"default",
+"speed": 3.0
+}]
+
+[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_yrh2x"]
+points = PackedVector2Array(-55.001144, 40.11901, 55.46032, 39.60442, 106.84623, -31.981113, -3.1688385, -32.808437)
+
+[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_br6em"]
+points = PackedVector2Array(-18, 7, -11, 11, 4, 4, 13, 9, 30, 2, 31, -12, 22, -18)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ceo7e"]
+height = 115.41211
 
 [node name="Shop" type="Node2D" unique_id=698016401]
 
 [node name="TileMap" type="Node2D" parent="." unique_id=1073148841]
 
 [node name="Floor" type="TileMapLayer" parent="TileMap" unique_id=1762320026]
-tile_map_data = PackedByteArray("AAD9//3/AAAAAA4AAAD9//7/AAAAAA4AAAD9////AAAAAA4AAAD9/wAAAAAAAA4AAAD9/wEAAAAAAA4AAAD9/wIAAAAAAA4AAAD9/wMAAAAAAAgAAAD+//3/AAAAAA8AAAD+//7/AAAAAAAAAAD+////AAAAAAAAAAD+/wAAAAAAAAAAAAD+/wEAAAAAAAAAAAD+/wIAAAAAAAAAAAD+/wMAAAAAAAAAAAD///3/AAAAAA8AAAD///7/AAAAAAAAAAD/////AAAAAAAAAAD//wAAAAAAAAAAAAD//wEAAAAAAAAAAAD//wIAAAAAAAAAAAD//wMAAAAAAAAAAAAAAP3/AAAAAA8AAAAAAP7/AAAAAAAAAAAAAP//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAMAAAAAAAAAAAABAP3/AAAAAA8AAAABAP7/AAAAAAAAAAABAP//AAAAAAAAAAABAAAAAAAAAAAAAAABAAEAAAAAAAAAAAABAAIAAAAAAAAAAAABAAMAAAAAAAAAAAACAP3/AAAAAA8AAAACAP7/AAAAAAAAAAACAP//AAAAAAAAAAACAAAAAAAAAAAAAAACAAEAAAAAAAAAAAACAAIAAAAAAAAAAAACAAMAAAAAAAAAAAADAP3/AAAAAAkAAAADAP7/AAAAAAwAAAADAP//AAAAAAwAAAADAAAAAAAAAAwAAAADAAEAAAAAAAwAAAADAAIAAAAAAAwAAAADAAMAAAAAAAoAAAABAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAD//wQAAAAAAAAAAAD+/wQAAAAAAA4AAAD//wUAAAAAAA0AAAD+/wUAAAAAAAgAAAAAAAUAAAAAAA0AAAABAAUAAAAAAA0AAAACAAUAAAAAAAoAAAACAAQAAAAAAAwAAAD9/wQAAwAAAAAAAAD9/wUAAwAAAAAAAAD9/wYAAwAAAAAAAAD+/wYAAwAAAAAAAAD//wYAAwAAAAAAAAAAAAYAAwAAAAAAAAABAAYAAwAAAAAAAAACAAYAAwAAAAAAAAADAAYAAwAAAAAAAAADAAUAAwAAAAAAAAADAAQAAwAAAAAAAAA=")
 tile_set = ExtResource("2_kfkrw")
+metadata/_edit_lock_ = true
+
+[node name="TileMapLayer" type="TileMapLayer" parent="TileMap" unique_id=989904100]
+tile_map_data = PackedByteArray("AAAFAAMAAQAAAAAAAAAFAAIAAQAAAAAAAAAFAAEAAQAAAAAAAAAFAAAAAQAAAAAAAAAFAP//AQAAAAAAAAAFAP7/AQAAAAAAAAAGAP7/AQAAAAAAAAAGAP//AQAAAAAAAAAGAAAAAQAAAAAAAAAGAAEAAQAAAAAAAAAGAAIAAQAAAAAAAAAGAAMAAQAAAAAAAAAHAAMAAQAAAAAAAAAHAAIAAQAAAAAAAAAHAAEAAQAAAAAAAAAHAAAAAQAAAAAAAAAHAP//AQAAAAAAAAAHAP7/AQAAAAAAAAAIAP7/AQAAAAAAAAAIAP//AQAAAAAAAAAIAAAAAQAAAAAAAAAIAAEAAQAAAAAAAAAIAAIAAQAAAAAAAAAIAAMAAQAAAAAAAAAJAAMAAQAAAAAAAAAJAAIAAQAAAAAAAAAJAAEAAQAAAAAAAAAJAAAAAQAAAAAAAAAJAP//AQAAAAAAAAAJAP7/AQAAAAAAAAAKAP7/AQAAAAAAAAAKAP//AQAAAAAAAAAKAAAAAQAAAAAAAAAKAAEAAQAAAAAAAAAKAAIAAQAAAAAAAAAKAAMAAQAAAAAAAAALAAMAAQAAAAAAAAALAAIAAQAAAAAAAAALAAEAAQAAAAAAAAALAAAAAQAAAAAAAAALAP//AQAAAAAAAAALAP7/AQAAAAAAAAAMAP7/AQAAAAAAAAAMAP//AQAAAAAAAAAMAAAAAQAAAAAAAAAMAAEAAQAAAAAAAAAMAAIAAQAAAAAAAAAMAAMAAQAAAAAAAAABAAEAAQAAAAAAAAACAAEAAQAAAAAAAAADAAEAAQAAAAAAAAAEAAEAAQAAAAAAAAABAAIAAQAAAAAAAAACAAIAAQAAAAAAAAADAAIAAQAAAAAAAAAEAAIAAQAAAAAAAAABAAAAAQAAAAAAAAACAAAAAQAAAAAAAAADAAAAAQAAAAAAAAAEAAAAAQAAAAAAAAABAAMAAQAAAAAAAAACAAMAAQAAAAAAAAADAAMAAQAAAAAAAAAEAAMAAQAAAAAAAAAAAAMAAQAAAAAAAAD//wMAAQAAAAAAAAD+/wQAAQAAAAAAAAD9/wQAAQAAAAAAAAD9/wUAAQAAAAAAAAD+/wUAAQAAAAAAAAD//wUAAQAAAAAAAAAAAAUAAQAAAAAAAAABAAUAAQAAAAAAAAABAAQAAQAAAAAAAAACAAQAAQAAAAAAAAADAAQAAQAAAAAAAAACAAUAAQAAAAAAAAADAAUAAQAAAAAAAAAEAAUAAQAAAAAAAAAEAAQAAQAAAAAAAAD9/wMAAQAAAAAAAAD9/wIAAQAAAAAAAAD+/wIAAQAAAAAAAAD//wIAAQAAAAAAAAD+/wMAAQAAAAAAAAAAAAIAAQAAAAAAAAAAAAEAAQAAAAAAAAD//wEAAQAAAAAAAAD+/wEAAQAAAAAAAAD9/wEAAQAAAAAAAAD9/wAAAQAAAAAAAAD+/wAAAQAAAAAAAAD+////AQAAAAAAAAD/////AQAAAAAAAAD//wAAAQAAAAAAAAAAAAAAAQAAAAAAAAD9////AQAAAAAAAAD9//7/AQAAAAAAAAD+//7/AQAAAAAAAAD+//3/AQAAAAAAAAD///7/AQAAAAAAAAAAAP7/AQAAAAAAAAAAAP//AQAAAAAAAAABAP//AQAAAAAAAAD///3/AQAAAAAAAAAAAP3/AQAAAAAAAAABAP3/AQAAAAAAAAACAP3/AQAAAAAAAAADAP3/AQAAAAAAAAACAP7/AQAAAAAAAAACAP//AQAAAAAAAAABAP7/AQAAAAAAAAADAP//AQAAAAAAAAAEAP//AQAAAAAAAAADAP7/AQAAAAAAAAAEAP7/AQAAAAAAAAAEAP3/AQAAAAAAAAAFAP3/AQAAAAAAAAAFAAUAAQAAAAAAAAAGAAUAAQAAAAAAAAAHAAUAAQAAAAAAAAAIAAUAAQAAAAAAAAAJAAUAAQAAAAAAAAAKAAUAAQAAAAAAAAALAAUAAQAAAAAAAAAMAAUAAQAAAAAAAAAMAAQAAQAAAAAAAAALAAQAAQAAAAAAAAAKAAQAAQAAAAAAAAAJAAQAAQAAAAAAAAAIAAQAAQAAAAAAAAAFAAQAAQAAAAAAAAAGAAQAAQAAAAAAAAAHAAQAAQAAAAAAAAAGAP3/AQAAAAAAAAAHAP3/AQAAAAAAAAAIAP3/AQAAAAAAAAAJAP3/AQAAAAAAAAAKAP3/AQAAAAAAAAALAP3/AQAAAAAAAAAMAP3/AQAAAAAAAAAAAAQAAQAAAAAAAAD9//3/AQAAAAAAAAD9//z/AQAAAAAAAAD+//z/AQAAAAAAAAD///z/AQAAAAAAAAAAAPz/AQAAAAAAAAABAPz/AQAAAAAAAAACAPz/AQAAAAAAAAADAPz/AQAAAAAAAAAEAPz/AQAAAAAAAAAFAPz/AQAAAAAAAAAGAPv/AQAAAAAAAAAHAPv/AQAAAAAAAAAIAPv/AQAAAAAAAAAJAPv/AQAAAAAAAAAKAPv/AQAAAAAAAAAKAPz/AQAAAAAAAAALAPz/AQAAAAAAAAAMAPz/AQAAAAAAAAAMAPv/AQAAAAAAAAALAPv/AQAAAAAAAAAJAPz/AQAAAAAAAAAHAPz/AQAAAAAAAAAGAPz/AQAAAAAAAAAIAPz/AQAAAAAAAAAFAPv/AQAAAAAAAAAEAPv/AQAAAAAAAAADAPv/AQAAAAAAAAACAPv/AQAAAAAAAAABAPv/AQAAAAAAAAAAAPv/AQAAAAAAAAD///v/AQAAAAAAAAD+//v/AQAAAAAAAAD9//v/AQAAAAAAAAD//wQAAQAAAAAAAAD9/wYAAQAAAAAAAAD+/wYAAQAAAAAAAAD//wYAAQAAAAAAAAAAAAYAAQAAAAAAAAABAAYAAQAAAAAAAAACAAYAAQAAAAAAAAA=")
+tile_set = SubResource("TileSet_3tr64")
 metadata/_edit_lock_ = true
 
 [node name="Environment" type="Node2D" parent="." unique_id=591718736]
 
 [node name="Counter" type="StaticBody2D" parent="Environment" unique_id=1109595967]
+visible = false
 position = Vector2(5, -33)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Counter" unique_id=1692047366]
@@ -31,6 +108,7 @@ position = Vector2(24, -6)
 texture = ExtResource("3_bugcc")
 
 [node name="Shelf" type="StaticBody2D" parent="Environment" unique_id=1610143300]
+visible = false
 position = Vector2(-53, -21)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Environment/Shelf" unique_id=1340030745]
@@ -47,6 +125,7 @@ radius = 35.0
 target_ui_name = "lobby_shop"
 
 [node name="Flowerpot" type="StaticBody2D" parent="Environment" unique_id=787514069]
+visible = false
 position = Vector2(72, 21)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Flowerpot" unique_id=1603255716]
@@ -63,10 +142,353 @@ prompt_text = "按 F 打开商店"
 radius = 35.0
 target_ui_name = "player_progression"
 
+[node name="Carpet" type="StaticBody2D" parent="Environment" unique_id=778863034]
+position = Vector2(-61, 30)
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Carpet" unique_id=232611224]
+rotation = -1.0821041
+shape = SubResource("CapsuleShape2D_eebke")
+
+[node name="Sprite2D" type="Sprite2D" parent="Environment/Carpet" unique_id=577123995]
+texture = ExtResource("7_o4upc")
+
+[node name="DecorativeItems" type="Node2D" parent="Environment" unique_id=169858856]
+position = Vector2(-75, -57)
+
+[node name="Grassland" type="Sprite2D" parent="Environment/DecorativeItems" unique_id=36813399]
+position = Vector2(24, -1)
+texture = ExtResource("8_7bb61")
+
+[node name="Window" type="Sprite2D" parent="Environment/DecorativeItems" unique_id=555547752]
+position = Vector2(26, -15)
+texture = ExtResource("9_d244a")
+
+[node name="Bar" type="AnimatedSprite2D" parent="Environment/DecorativeItems" unique_id=1940731952]
+position = Vector2(-23, 7)
+sprite_frames = SubResource("SpriteFrames_vb88c")
+autoplay = "default"
+frame_progress = 0.35657373
+
+[node name="Reception" type="StaticBody2D" parent="Environment" unique_id=1664253704]
+position = Vector2(-4, -35)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Reception" unique_id=1133159785]
+position = Vector2(37.143158, -1.2453232)
+rotation = 0.46425754
+shape = SubResource("ConvexPolygonShape2D_yrh2x")
+
+[node name="Cabinet" type="Sprite2D" parent="Environment/Reception" unique_id=570289326]
+position = Vector2(66, -64)
+texture = ExtResource("11_brt85")
+
+[node name="WineBottle" type="Sprite2D" parent="Environment/Reception/Cabinet" unique_id=588766693]
+position = Vector2(-14, -42)
+texture = ExtResource("13_0jmcg")
+hframes = 15
+frame = 6
+
+[node name="WineBottle2" type="Sprite2D" parent="Environment/Reception/Cabinet" unique_id=1878175384]
+position = Vector2(-5, -38)
+texture = ExtResource("13_0jmcg")
+hframes = 15
+frame = 6
+
+[node name="WineBottle3" type="Sprite2D" parent="Environment/Reception/Cabinet" unique_id=523672883]
+position = Vector2(5, -34)
+texture = ExtResource("13_0jmcg")
+hframes = 15
+frame = 6
+
+[node name="WineBottle7" type="Sprite2D" parent="Environment/Reception/Cabinet" unique_id=1893596567]
+position = Vector2(-15, -21)
+texture = ExtResource("14_ceo7e")
+
+[node name="WineBottle8" type="Sprite2D" parent="Environment/Reception/Cabinet" unique_id=469406058]
+position = Vector2(-5, -16)
+texture = ExtResource("14_ceo7e")
+
+[node name="WineBottle9" type="Sprite2D" parent="Environment/Reception/Cabinet" unique_id=880261930]
+position = Vector2(5, -10)
+texture = ExtResource("14_ceo7e")
+
+[node name="WineBottle13" type="Sprite2D" parent="Environment/Reception/Cabinet" unique_id=640218859]
+position = Vector2(-17, -4)
+texture = ExtResource("14_ceo7e")
+
+[node name="WineBottle15" type="Sprite2D" parent="Environment/Reception/Cabinet" unique_id=2002775341]
+position = Vector2(-6, 1)
+texture = ExtResource("14_ceo7e")
+
+[node name="WineBottle16" type="Sprite2D" parent="Environment/Reception/Cabinet" unique_id=1088498771]
+position = Vector2(5, 7)
+texture = ExtResource("14_ceo7e")
+
+[node name="Plate" type="Sprite2D" parent="Environment/Reception/Cabinet" unique_id=1541720738]
+position = Vector2(-14, 18)
+texture = ExtResource("15_08tqt")
+
+[node name="Plate2" type="Sprite2D" parent="Environment/Reception/Cabinet" unique_id=815886679]
+position = Vector2(-14, 15)
+texture = ExtResource("15_08tqt")
+
+[node name="Plate3" type="Sprite2D" parent="Environment/Reception/Cabinet" unique_id=307057787]
+position = Vector2(-4, 24)
+texture = ExtResource("15_08tqt")
+
+[node name="Plate4" type="Sprite2D" parent="Environment/Reception/Cabinet" unique_id=1846352061]
+position = Vector2(8, 30)
+texture = ExtResource("15_08tqt")
+
+[node name="Plate5" type="Sprite2D" parent="Environment/Reception/Cabinet" unique_id=1034094006]
+position = Vector2(8, 27)
+texture = ExtResource("15_08tqt")
+
+[node name="Plate6" type="Sprite2D" parent="Environment/Reception/Cabinet" unique_id=1379425775]
+position = Vector2(8, 24)
+texture = ExtResource("15_08tqt")
+
+[node name="Cabinet2" type="Sprite2D" parent="Environment/Reception" unique_id=2040252422]
+position = Vector2(107, -44)
+texture = ExtResource("11_brt85")
+
+[node name="WineBottle4" type="Sprite2D" parent="Environment/Reception/Cabinet2" unique_id=512299148]
+position = Vector2(-16, -43)
+texture = ExtResource("13_0jmcg")
+hframes = 15
+frame = 6
+
+[node name="WineBottle5" type="Sprite2D" parent="Environment/Reception/Cabinet2" unique_id=965285321]
+position = Vector2(-6, -39)
+texture = ExtResource("13_0jmcg")
+hframes = 15
+frame = 6
+
+[node name="WineBottle6" type="Sprite2D" parent="Environment/Reception/Cabinet2" unique_id=1755304261]
+position = Vector2(4, -34)
+texture = ExtResource("13_0jmcg")
+hframes = 15
+frame = 6
+
+[node name="WineBottle10" type="Sprite2D" parent="Environment/Reception/Cabinet2" unique_id=814551406]
+position = Vector2(-15, -21)
+texture = ExtResource("14_ceo7e")
+
+[node name="WineBottle11" type="Sprite2D" parent="Environment/Reception/Cabinet2" unique_id=350648594]
+position = Vector2(-6, -16)
+texture = ExtResource("14_ceo7e")
+
+[node name="WineBottle12" type="Sprite2D" parent="Environment/Reception/Cabinet2" unique_id=1478935440]
+position = Vector2(5, -12)
+texture = ExtResource("14_ceo7e")
+
+[node name="WineBottle17" type="Sprite2D" parent="Environment/Reception/Cabinet2" unique_id=477497990]
+position = Vector2(-15, -3)
+texture = ExtResource("14_ceo7e")
+
+[node name="WineBottle18" type="Sprite2D" parent="Environment/Reception/Cabinet2" unique_id=1036250408]
+position = Vector2(6, 7)
+texture = ExtResource("14_ceo7e")
+
+[node name="Plate7" type="Sprite2D" parent="Environment/Reception/Cabinet2" unique_id=1143626404]
+position = Vector2(-14, 19)
+texture = ExtResource("15_08tqt")
+
+[node name="Plate8" type="Sprite2D" parent="Environment/Reception/Cabinet2" unique_id=839424218]
+position = Vector2(-14, 17)
+texture = ExtResource("15_08tqt")
+
+[node name="Plate9" type="Sprite2D" parent="Environment/Reception/Cabinet2" unique_id=1565259854]
+position = Vector2(-14, 15)
+texture = ExtResource("15_08tqt")
+
+[node name="Plate10" type="Sprite2D" parent="Environment/Reception/Cabinet2" unique_id=1225912130]
+position = Vector2(-14, 13)
+texture = ExtResource("15_08tqt")
+
+[node name="Plate11" type="Sprite2D" parent="Environment/Reception/Cabinet2" unique_id=668073281]
+position = Vector2(-3, 25)
+texture = ExtResource("15_08tqt")
+
+[node name="Plate12" type="Sprite2D" parent="Environment/Reception/Cabinet2" unique_id=635954518]
+position = Vector2(-3, 23)
+texture = ExtResource("15_08tqt")
+
+[node name="Plate13" type="Sprite2D" parent="Environment/Reception/Cabinet2" unique_id=1792769150]
+position = Vector2(-3, 21)
+texture = ExtResource("15_08tqt")
+
+[node name="Plate14" type="Sprite2D" parent="Environment/Reception/Cabinet2" unique_id=1711830838]
+position = Vector2(9, 30)
+texture = ExtResource("15_08tqt")
+
+[node name="Plate15" type="Sprite2D" parent="Environment/Reception/Cabinet2" unique_id=1181836054]
+position = Vector2(9, 28)
+texture = ExtResource("15_08tqt")
+
+[node name="Plate16" type="Sprite2D" parent="Environment/Reception/Cabinet2" unique_id=624467129]
+position = Vector2(9, 26)
+texture = ExtResource("15_08tqt")
+
+[node name="Barrel" type="Sprite2D" parent="Environment/Reception" unique_id=1989499944]
+position = Vector2(120, 19)
+texture = ExtResource("12_yrh2x")
+hframes = 3
+
+[node name="Table" type="Sprite2D" parent="Environment/Reception" unique_id=1070602238]
+texture = ExtResource("16_br6em")
+hframes = 4
+
+[node name="Table2" type="Sprite2D" parent="Environment/Reception" unique_id=930417149]
+position = Vector2(39, 19)
+texture = ExtResource("16_br6em")
+hframes = 4
+
+[node name="Table3" type="Sprite2D" parent="Environment/Reception" unique_id=1905611658]
+position = Vector2(79, 29)
+texture = ExtResource("16_br6em")
+hframes = 4
+frame = 3
+
+[node name="Light" type="Sprite2D" parent="Environment/Reception" unique_id=1424553734]
+position = Vector2(-4, -29)
+texture = ExtResource("17_d23p8")
+hframes = 9
+
+[node name="Book" type="Sprite2D" parent="Environment/Reception" unique_id=66843673]
+position = Vector2(20, -12)
+texture = ExtResource("18_brt85")
+hframes = 8
+frame = 7
+
+[node name="Pen" type="Sprite2D" parent="Environment/Reception" unique_id=469042447]
+position = Vector2(44, -8)
+texture = ExtResource("19_yrh2x")
+
+[node name="WineBottle19" type="Sprite2D" parent="Environment/Reception" unique_id=30830360]
+position = Vector2(72, 4)
+texture = ExtResource("20_0jmcg")
+
+[node name="WineBottle20" type="Sprite2D" parent="Environment/Reception" unique_id=699448429]
+position = Vector2(81, 1)
+texture = ExtResource("20_0jmcg")
+
+[node name="Table" type="StaticBody2D" parent="Environment" unique_id=1352346443]
+position = Vector2(79, 94)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Table" unique_id=22837145]
+position = Vector2(6, -2)
+shape = SubResource("ConvexPolygonShape2D_br6em")
+
+[node name="Chair3" type="Sprite2D" parent="Environment/Table" unique_id=446485998]
+position = Vector2(30, -18)
+texture = ExtResource("21_ceo7e")
+hframes = 2
+
+[node name="Table" type="Sprite2D" parent="Environment/Table" unique_id=1590829528]
+position = Vector2(20, -22)
+texture = ExtResource("22_08tqt")
+
+[node name="Chair" type="Sprite2D" parent="Environment/Table" unique_id=106299118]
+position = Vector2(-5, -2)
+texture = ExtResource("21_ceo7e")
+hframes = 2
+
+[node name="Chair2" type="Sprite2D" parent="Environment/Table" unique_id=981414881]
+position = Vector2(25, 7)
+texture = ExtResource("21_ceo7e")
+hframes = 2
+
+[node name="Table2" type="StaticBody2D" parent="Environment" unique_id=1603777665]
+position = Vector2(140, 46)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Table2" unique_id=1012657678]
+position = Vector2(6, -2)
+shape = SubResource("ConvexPolygonShape2D_br6em")
+
+[node name="Chair3" type="Sprite2D" parent="Environment/Table2" unique_id=1616902898]
+position = Vector2(30, -18)
+texture = ExtResource("21_ceo7e")
+hframes = 2
+
+[node name="Table" type="Sprite2D" parent="Environment/Table2" unique_id=1919070832]
+position = Vector2(20, -22)
+texture = ExtResource("22_08tqt")
+
+[node name="Chair" type="Sprite2D" parent="Environment/Table2" unique_id=628924928]
+position = Vector2(-5, -2)
+texture = ExtResource("21_ceo7e")
+hframes = 2
+
+[node name="Table3" type="StaticBody2D" parent="Environment" unique_id=197134559]
+position = Vector2(160, 99)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Table3" unique_id=1366064496]
+position = Vector2(6, -2)
+shape = SubResource("ConvexPolygonShape2D_br6em")
+
+[node name="Chair3" type="Sprite2D" parent="Environment/Table3" unique_id=1024389000]
+position = Vector2(30, -18)
+texture = ExtResource("21_ceo7e")
+hframes = 2
+
+[node name="Table" type="Sprite2D" parent="Environment/Table3" unique_id=1320033902]
+position = Vector2(20, -22)
+texture = ExtResource("22_08tqt")
+
+[node name="Chair" type="Sprite2D" parent="Environment/Table3" unique_id=888214953]
+position = Vector2(-5, -2)
+texture = ExtResource("21_ceo7e")
+hframes = 2
+
+[node name="Chair2" type="Sprite2D" parent="Environment/Table3" unique_id=826135651]
+position = Vector2(25, 7)
+texture = ExtResource("21_ceo7e")
+hframes = 2
+
+[node name="DecorativeBarrel" type="StaticBody2D" parent="Environment" unique_id=1769518335]
+position = Vector2(245, 35)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/DecorativeBarrel" unique_id=2144223213]
+position = Vector2(-1, 5)
+rotation = 2.0594885
+scale = Vector2(0.99999994, 0.99999994)
+shape = SubResource("CapsuleShape2D_ceo7e")
+
+[node name="Sprite2D" type="Sprite2D" parent="Environment/DecorativeBarrel" unique_id=2114666644]
+position = Vector2(-41, -24)
+texture = ExtResource("12_yrh2x")
+hframes = 3
+frame = 1
+
+[node name="Sprite2D2" type="Sprite2D" parent="Environment/DecorativeBarrel" unique_id=1352999808]
+position = Vector2(-22, -14)
+texture = ExtResource("12_yrh2x")
+hframes = 3
+frame = 1
+
+[node name="Sprite2D3" type="Sprite2D" parent="Environment/DecorativeBarrel" unique_id=910581761]
+position = Vector2(-2, -2)
+texture = ExtResource("12_yrh2x")
+hframes = 3
+frame = 1
+
+[node name="Sprite2D4" type="Sprite2D" parent="Environment/DecorativeBarrel" unique_id=699856849]
+position = Vector2(16, 7)
+texture = ExtResource("12_yrh2x")
+hframes = 3
+frame = 1
+
+[node name="Sprite2D5" type="Sprite2D" parent="Environment/DecorativeBarrel" unique_id=353094854]
+position = Vector2(37, 19)
+texture = ExtResource("12_yrh2x")
+hframes = 3
+frame = 1
+
 [node name="Interactables" type="Node2D" parent="." unique_id=2035297207]
 
 [node name="GardenPortalZone" parent="Interactables" unique_id=1319413431 groups=["iso_sort_ignore"] instance=ExtResource("5_eebke")]
-position = Vector2(-85, 32)
+position = Vector2(-89, 47)
 portal_id = "shop_garden"
 target_scene_path = "res://scenes/lobby/garden/garden.tscn"
 target_portal_id = "garden_shop"

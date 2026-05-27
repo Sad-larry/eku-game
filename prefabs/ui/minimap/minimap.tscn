@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://kvhj1e4blr0o"]
+
+[ext_resource type="Script" uid="uid://cgvauxe8qgi8r" path="res://prefabs/ui/minimap/minimap.gd" id="1_yhl1c"]
+
+[node name="Minimap" type="Control" unique_id=1457746110]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_yhl1c")
+
+[node name="Background" type="Panel" parent="." unique_id=1479829481]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="GridContainer" type="GridContainer" parent="." unique_id=830606436]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0

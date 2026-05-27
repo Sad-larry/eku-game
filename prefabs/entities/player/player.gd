@@ -40,7 +40,8 @@ func _ready() -> void:
 
 	# 创建 stats 运行时副本，避免修改共享 .tres 资源
 	stats_resource = stats_resource.duplicate()
-	PlayerProgressionManager.apply_progression_to_stats(stats_resource)
+	if PlayerProgressionManager.ENABLED:
+		PlayerProgressionManager.apply_progression_to_stats(stats_resource)
 
 	health_component.setup(stats_resource)
 	energy_component.setup(stats_resource)
@@ -56,7 +57,8 @@ func _ready() -> void:
 	input_handler.movement_dir_changed.connect(_on_movement_changed)
 
 	EventBus.player_died.connect(_on_player_died)
-	PlayerProgressionManager.stats_updated.connect(_on_progression_stats_updated)
+	if PlayerProgressionManager.ENABLED:
+		PlayerProgressionManager.stats_updated.connect(_on_progression_stats_updated)
 
 	EventBus.player_ready.emit()
 	print("Player: 初始化完成")
@@ -81,8 +83,13 @@ func _physics_process(delta: float) -> void:
 ## 功能：输入动作触发时的回调。
 ##       技能动作委托 skill_manager.try_execute() 处理前置条件，
 ##       通过后通知状态机播放动画。非技能动作直接转发。
+##       攻击动作会检查 MouseSwipeDetector.is_dragging，防止拖拽时误触攻击。
 ## 参数：action (String) - 输入动作名称（如 "attack"、"skill_1"）
 func _on_input_action(action: String) -> void:
+	# 安全检查：鼠标拖拽期间忽略攻击动作（滑动检测器已消费事件，此为双重保险）
+	if action == "attack" and MouseSwipeDetector.is_dragging:
+		return
+
 	if action.begins_with("skill_"):
 		if skill_manager.try_execute(action):
 			player_state_machine.send_event(action)
@@ -149,6 +156,8 @@ func _on_player_died() -> void:
 
 ## 功能：玩家成长属性更新时重新应用加成并刷新组件
 func _on_progression_stats_updated() -> void:
+	if not PlayerProgressionManager.ENABLED:
+		return
 	# 重新从基础 .tres 创建副本并叠加新的成长加成
 	var base_stats: Resource = load("res://resources/data/entities/player/stats_player.tres")
 	stats_resource = base_stats.duplicate()

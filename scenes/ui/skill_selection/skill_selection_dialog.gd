@@ -123,8 +123,8 @@ func _rebuild_card_grid() -> void:
 		_card_grid.add_child(card)
 		card.setup(data, _equipped_ids)
 		card.selected.connect(_on_card_selected)
-		# 未解锁技能：灰色显示 + 禁用点击
-		if not SkillUnlockManager.is_skill_unlocked(data.id):
+		# 技能解锁检查（后期系统禁用时，默认所有技能已解锁）
+		if SkillUnlockManager.ENABLED and not SkillUnlockManager.is_skill_unlocked(data.id):
 			card.self_modulate = Color(0.4, 0.4, 0.4)
 			card.disabled = true
 			card.tooltip_text = "未解锁 - 请前往商店解锁"
@@ -136,7 +136,7 @@ func _rebuild_card_grid() -> void:
 		# 优先选中第一个已解锁卡牌
 		var first_unlocked: SkillSelectionCard = null
 		for card in _card_instances:
-			if SkillUnlockManager.is_skill_unlocked(card.skill_data.id):
+			if not SkillUnlockManager.ENABLED or SkillUnlockManager.is_skill_unlocked(card.skill_data.id):
 				first_unlocked = card
 				break
 		if first_unlocked:
@@ -195,7 +195,7 @@ func _show_skill_detail(data: SkillEffect) -> void:
 
 	_show_skill_preview(data)
 
-	var is_unlocked := SkillUnlockManager.is_skill_unlocked(_selected_skill_id)
+	var is_unlocked: bool = not SkillUnlockManager.ENABLED or SkillUnlockManager.is_skill_unlocked(_selected_skill_id)
 	if not is_unlocked:
 		_equip_btn.text = "未解锁"
 		_equip_btn.disabled = true

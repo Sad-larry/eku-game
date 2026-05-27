@@ -7,6 +7,8 @@
 extends Node
 
 # ========================== 常量定义模块 ==========================
+## 模块启用开关（后期系统，暂时禁用）
+const ENABLED: bool = false
 ## 调试模式开关
 const DEBUG_MODE: bool = true
 ## 成长配置资源路径
@@ -30,6 +32,9 @@ var _progression_data: PlayerProgression = null
 
 # ========================== 生命周期模块 ==========================
 func _ready() -> void:
+	if not ENABLED:
+		print("PlayerProgressionManager: 已禁用")
+		return
 	SaveManager.data_loaded.connect(_on_save_data_loaded)
 	print("PlayerProgressionManager: 玩家成长管理器初始化完成")
 

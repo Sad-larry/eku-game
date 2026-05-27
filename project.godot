@@ -24,6 +24,8 @@ GameManager="*uid://b2d8xsmoe2oym"
 InputManager="*uid://cv2yv7jg6hpsk"
 SkillLibrary="*uid://yrsrocy8vkjp"
 RoomManager="*uid://s78qdkpjcod5"
+RoomNavigationManager="*res://autoloads/room_navigation_manager.gd"
+CursorManager="*res://autoloads/cursor_manager.gd"
 UIManager="*uid://bmt1y7i4o2tcb"
 AudioManager="*uid://ct1eqw2decfhs"
 CurrencyManager="*uid://cm5g15w24m8en"
@@ -49,6 +51,17 @@ window/stretch/mode="canvas_items"
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/godot_mcp/plugin.cfg", "res://addons/signal_lens/plugin.cfg")
+
+[file_customization]
+
+folder_colors={
+"res://assets/": "gray",
+"res://autoloads/": "red",
+"res://prefabs/": "purple",
+"res://resources/": "yellow",
+"res://scenes/": "green",
+"res://scripts/": "blue"
+}
 
 [input]
 

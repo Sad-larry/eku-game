@@ -36,6 +36,8 @@ var skill_data: SkillEffect
 
 ## SkillRunner 引用（由 SkillRunner.execute() 自动注入，子类通过此引用调用 on_hit 等方法）
 var runner: SkillRunner
+## 技能释放方向（由 SkillRunner.execute() 注入，基于鼠标位置计算）
+var skill_direction: Vector2 = Vector2.ZERO
 
 ## 预览模式标志（由外部设置）
 var is_preview: bool = false:

@@ -2,6 +2,9 @@
 #   player_animation_controller.gd
 #   功能：玩家动画控制器，驱动 AnimationPlayer 播放对应动画，
 #        将状态+方向映射为具体动画名，并监听动画完成事件。
+#        根据游戏状态自动切换方向映射：
+#        - 大厅（LOBBY）：8 方向动画名（如 move_down、idle_up_left）
+#        - 冒险（IN_GAME）：2 方向动画名（如 move_left、idle_right）
 #        同时负责身体部位的渲染层级管理（z_index 排序），
 #        解决多 Sprite 重叠导致的闪烁和遮挡问题。
 # ==============================================================================
@@ -41,10 +44,14 @@ func _ready() -> void:
 ## 参数：direction (Vector2) - 面朝方向，仅对需要方向的状态有效
 ## 说明：对于 dead、hurt 等在 DIRECTIONLESS_STATES 中的状态，不附加方向后缀。
 ##       如果目标动画已在播放中，不会重复触发，避免破坏循环。
+##       大厅使用 8 方向动画名，冒险使用 left/right。
 func play_anim(state: String, direction: Vector2) -> void:
 	var anim_name := state
 	if state not in DIRECTIONLESS_STATES:
-		anim_name += "_" + DirectionUtils.vector_to_dir_name(direction)
+		if GameManager.current_game_state == GameManager.GameState.LOBBY:
+			anim_name += "_" + DirectionUtils.vector_to_dir_name(direction)
+		else:
+			anim_name += "_" + DirectionUtils.vector_to_dir_name_2d(direction)
 	if anim_player.has_animation(anim_name):
 		# 已在播放相同动画时跳过，防止反复 restart 破坏循环
 		if anim_player.current_animation == anim_name and anim_player.is_playing():
@@ -55,8 +62,13 @@ func play_anim(state: String, direction: Vector2) -> void:
 ## 参数：skill_anim_base (String) - 技能动画基础名称（如 "fireball"）
 ## 参数：direction (Vector2) - 面朝方向
 ## 说明：动画名拼装为 skill_{base_name}_{direction}，如 "skill_fireball_down"
+##       大厅使用 8 方向名称，冒险使用 left/right。
 func play_skill(skill_anim_base: String, direction: Vector2) -> void:
-	var dir_name := DirectionUtils.vector_to_dir_name(direction)
+	var dir_name: String
+	if GameManager.current_game_state == GameManager.GameState.LOBBY:
+		dir_name = DirectionUtils.vector_to_dir_name(direction)
+	else:
+		dir_name = DirectionUtils.vector_to_dir_name_2d(direction)
 	var anim_name := "skill_%s_%s" % [skill_anim_base, dir_name]
 	if anim_player.has_animation(anim_name):
 		anim_player.play(anim_name)

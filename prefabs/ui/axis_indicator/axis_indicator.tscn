@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://b2yk6itbik8pv"]
+
+[ext_resource type="Script" uid="uid://d1pelaievvl6g" path="res://prefabs/ui/axis_indicator/axis_indicator.gd" id="1_wo2iu"]
+
+[node name="AxisIndicator" type="Control" unique_id=1360883927]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wo2iu")
+
+[node name="Label" type="Label" parent="." unique_id=230427216]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="Arrow" type="TextureRect" parent="." unique_id=630950703]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0

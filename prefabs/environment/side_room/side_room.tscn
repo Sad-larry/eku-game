@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://dnjd1bonqhrdm"]
+
+[ext_resource type="Script" uid="uid://cdmkmfu8h4cwk" path="res://prefabs/environment/side_room/side_room.gd" id="1_rla8d"]
+[ext_resource type="PackedScene" uid="uid://bqwkf4o83raxp" path="res://prefabs/environment/room_exit/room_exit.tscn" id="2_1vman"]
+
+[node name="SideRoom" type="Node2D" unique_id=705057362]
+script = ExtResource("1_rla8d")
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1923586017]
+
+[node name="Walls" type="Node2D" parent="." unique_id=1126992968]
+
+[node name="WallTop" type="StaticBody2D" parent="Walls" unique_id=1200206346]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/WallTop" unique_id=666211386]
+
+[node name="WallBottom" type="StaticBody2D" parent="Walls" unique_id=1002294013]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/WallBottom" unique_id=977668575]
+
+[node name="WallLeft" type="StaticBody2D" parent="Walls" unique_id=871081521]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/WallLeft" unique_id=1710772317]
+
+[node name="WallRight" type="StaticBody2D" parent="Walls" unique_id=993822463]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/WallRight" unique_id=1607726944]
+
+[node name="Exits" type="Node2D" parent="." unique_id=855229312]
+
+[node name="LeftExit" parent="Exits" unique_id=1677548442 instance=ExtResource("2_1vman")]
+
+[node name="RightExit" parent="Exits" unique_id=254080817 instance=ExtResource("2_1vman")]
+
+[node name="EventContent" type="Node2D" parent="." unique_id=1567357971]
+
+[node name="SpawnPoints" type="Node2D" parent="." unique_id=1613393024]
+
+[node name="Marker2D" type="Marker2D" parent="SpawnPoints" unique_id=97972912]
+
+[node name="Marker2D2" type="Marker2D" parent="SpawnPoints" unique_id=673768749]
+
+[node name="PlayerEntryLeft" type="Marker2D" parent="." unique_id=1524023087]
+
+[node name="PlayerEntryRight" type="Marker2D" parent="." unique_id=58575563]
+
+[node name="PlayerSpawn" type="Marker2D" parent="." unique_id=1609130173]

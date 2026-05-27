@@ -22,7 +22,8 @@ class_name PlayerProgressionPanel
 func _ready() -> void:
 	_level_up_btn.pressed.connect(_on_level_up_pressed)
 	CurrencyManager.coin_changed.connect(_on_coin_changed)
-	PlayerProgressionManager.player_level_up.connect(_on_player_level_up)
+	if PlayerProgressionManager.ENABLED:
+		PlayerProgressionManager.player_level_up.connect(_on_player_level_up)
 	_refresh_display()
 
 func _input(event: InputEvent) -> void:
@@ -32,6 +33,12 @@ func _input(event: InputEvent) -> void:
 
 # ========================== 显示刷新模块 ==========================
 func _refresh_display() -> void:
+	if not PlayerProgressionManager.ENABLED:
+		_level_label.text = "当前等级: Lv.1/1 (已禁用)"
+		_progress_bar.max_value = 1
+		_progress_bar.value = 1
+		return
+
 	var level: int = PlayerProgressionManager.get_player_level()
 	var max_level: int = PlayerProgressionManager.get_max_level()
 	_level_label.text = "当前等级: Lv.%d/%d" % [level, max_level]
@@ -68,6 +75,13 @@ func _refresh_display() -> void:
 		return
 
 	# 下一级奖励预览
+	if not PlayerProgressionManager.ENABLED:
+		_reward_preview_label.text = ""
+		_cost_label.text = ""
+		_level_up_btn.text = "升级"
+		_level_up_btn.disabled = true
+		return
+
 	var progression: PlayerProgression = load(PlayerProgressionManager.PROGRESSION_DATA_PATH)
 	if progression and (level - 1) < progression.level_rewards.size():
 		var reward: LevelUpReward = progression.level_rewards[level - 1]
@@ -107,6 +121,8 @@ func _get_base_stats() -> Dictionary:
 
 # ========================== 操作模块 ==========================
 func _on_level_up_pressed() -> void:
+	if not PlayerProgressionManager.ENABLED:
+		return
 	var success := PlayerProgressionManager.level_up()
 	if success:
 		_refresh_display()

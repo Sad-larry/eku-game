@@ -1,6 +1,9 @@
 # ==============================================================================
 #   direction_utils.gd
-#   功能：8方向向量与方向名称之间的映射工具
+#   功能：方向向量与方向名称之间的映射工具。
+#        提供两套方向映射：
+#        - 8 方向（vector_to_dir_name / normalize_8_direction）：用于大厅等距视角
+#        - 2 方向（vector_to_dir_name_2d）：用于冒险横版视角（仅 left/right）
 # ==============================================================================
 extends RefCounted
 class_name DirectionUtils
@@ -74,3 +77,9 @@ static func get_eight_direction_enum(dir: Vector2) -> int:
 		if eight_dir == DIRECTION_VECTORS[i].normalized():
 			return i
 	return -1
+
+## 功能：将方向向量转换为 2D 横版方向名称（仅返回 "left" 或 "right"）
+## 参数：dir (Vector2) - 方向向量
+## 返回值：String - "left" 或 "right"，零向量默认返回 "right"
+static func vector_to_dir_name_2d(dir: Vector2) -> String:
+	return "right" if dir.x >= 0 else "left"

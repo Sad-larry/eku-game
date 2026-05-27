@@ -7,6 +7,8 @@
 extends Node
 
 # ========================== 常量 ==========================
+## 模块启用开关（后期系统，暂时禁用）
+const ENABLED: bool = false
 ## 分析数据输出目录
 const ANALYTICS_DIR: String = "user://analytics/"
 ## 调试模式开关
@@ -36,6 +38,9 @@ var _run_start_time: float = 0.0
 
 # ========================== 生命周期 ==========================
 func _ready() -> void:
+	if not ENABLED:
+		print("AnalyticsManager: 已禁用")
+		return
 	_connect_signals()
 	print("AnalyticsManager: 数据分析管理器初始化完成")
 

@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://bqwkf4o83raxp"]
+
+[ext_resource type="Script" uid="uid://caucdjh4ogk1x" path="res://prefabs/environment/room_exit/room_exit.gd" id="1_qrg74"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_nbg8l"]
+
+[node name="RoomExit" type="Area2D" unique_id=1677548442]
+script = ExtResource("1_qrg74")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1526518963]
+shape = SubResource("CircleShape2D_nbg8l")
+
+[node name="Label" type="Label" parent="." unique_id=329611615]
+offset_right = 40.0
+offset_bottom = 23.0

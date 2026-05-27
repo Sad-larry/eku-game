@@ -98,7 +98,9 @@ func _handle_pause_input() -> void:
 			print("[InputManager] pause_requested 信号发出")
 
 ## 功能：遍历动作名列表，检测按键按下后自动缓冲并发射 action_triggered 信号
-## 说明：单个事件最多触发一个动作，匹配后立即返回
+## 说明：单个事件最多触发一个动作，匹配后立即返回。
+##       attack 动作特殊处理：在按键释放时触发（而非按下），
+##       配合 MouseSwipeDetector 的事件消费机制区分"点击"（攻击）和"拖拽"（滑动）。
 func _detect_actions(event: InputEvent) -> void:
 	if input_locked:
 		return
@@ -106,7 +108,15 @@ func _detect_actions(event: InputEvent) -> void:
 		if _is_action_blocked(action_name):
 			continue
 
-		if event.is_action_pressed(action_name):
+		# attack 使用释放触发：滑动检测器会在拖拽时消费 mouse-up 事件，
+		# 阻止此方法被调用，从而区分点击（攻击）和拖拽（滑动）。
+		var detected: bool = false
+		if action_name == "attack":
+			detected = event.is_action_released(action_name)
+		else:
+			detected = event.is_action_pressed(action_name)
+
+		if detected:
 			var config: Dictionary = INPUT_ACTIONS[action_name]
 			# 若该动作支持输入缓冲，则存入缓冲队列（供攻击动画结束时读取）
 			if config["bufferable"]:

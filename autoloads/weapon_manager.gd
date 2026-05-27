@@ -7,6 +7,8 @@
 extends Node
 
 # ========================== 常量定义模块 ==========================
+## 模块启用开关（后期系统，暂时禁用）
+const ENABLED: bool = false
 ## 调试模式开关
 const DEBUG_MODE: bool = true
 ## 武器资源目录
@@ -44,6 +46,9 @@ var _skill_cooldowns: Dictionary = {}
 
 # ========================== 生命周期模块 ==========================
 func _ready() -> void:
+	if not ENABLED:
+		print("WeaponManager: 已禁用")
+		return
 	SaveManager.data_loaded.connect(_on_save_data_loaded)
 	print("WeaponManager: 武器管理器初始化完成")
 

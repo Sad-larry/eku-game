@@ -7,6 +7,8 @@
 extends Node
 
 # ========================== 常量定义模块 ==========================
+## 模块启用开关（后期系统，暂时禁用）
+const ENABLED: bool = false
 ## 调试模式开关
 const DEBUG_MODE: bool = true
 ## 默认解锁费用（未在费用表中单独配置的技能使用此值）
@@ -36,6 +38,9 @@ var _unlock_data: Dictionary = {}
 
 # ========================== 生命周期模块 ==========================
 func _ready() -> void:
+	if not ENABLED:
+		print("SkillUnlockManager: 已禁用")
+		return
 	SaveManager.data_loaded.connect(_on_save_data_loaded)
 	print("SkillUnlockManager: 技能解锁管理器初始化完成")
 

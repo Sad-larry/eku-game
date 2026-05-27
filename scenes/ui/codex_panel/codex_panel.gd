@@ -24,6 +24,11 @@ func hide_panel() -> void:
 
 # ========================== 内部方法 ==========================
 func _refresh_display() -> void:
+	if not CodexManager.ENABLED:
+		if title_label:
+			title_label.text = "图鉴 (已禁用)"
+		return
+
 	# 更新标题
 	if title_label:
 		var progress: Dictionary = CodexManager.get_progress()

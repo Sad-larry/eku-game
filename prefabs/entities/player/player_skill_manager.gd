@@ -1,6 +1,8 @@
 # ==============================================================================
 #   player_skill_manager.gd
 #   功能：技能管理器，管理 SkillRunner 池和技能槽数据，处理冷却信号转发。
+#        try_execute() 在执行技能前会计算鼠标方向并传入 SkillRunner，
+#        使技能特效朝向鼠标位置飞行。
 #        从 player.gd 拆出的独立组件。
 # ==============================================================================
 extends Node
@@ -62,12 +64,17 @@ func try_execute(action: String) -> bool:
 		return false
 
 	var player := get_parent() as Player
-	var effective_cost := SkillUpgradeManager.get_effective_energy_cost(data.id, data.energy_cost)
+	var effective_cost: int = data.energy_cost
+	if SkillUpgradeManager.ENABLED:
+		effective_cost = SkillUpgradeManager.get_effective_energy_cost(data.id, data.energy_cost)
 	if player.energy_component.current_energy < effective_cost:
 		return false
 
 	player.energy_component.consume(effective_cost)
-	runner.execute(null)
+	# 计算鼠标方向
+	var mouse_pos := player.get_global_mouse_position()
+	var direction := (mouse_pos - player.global_position).normalized()
+	runner.execute(null, direction)
 	return true
 
 ## 功能：装备技能到指定槽位（自动寻找空槽位或覆盖第一个槽位）

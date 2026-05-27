@@ -81,7 +81,11 @@ func try_use_weapon_skill() -> SkillEffect:
 	# 启动冷却
 	_weapon_skill_total_cooldown = _current_stats.get("weapon_skill_cooldown", 10.0)
 	_weapon_skill_cooldown = _weapon_skill_total_cooldown
-	EventBus.weapon_skill_used.emit(WeaponManager.get_equipped_weapon().id if WeaponManager.get_equipped_weapon() else "")
+	var weapon_id: String = ""
+	if WeaponManager.ENABLED:
+		var weapon = WeaponManager.get_equipped_weapon()
+		weapon_id = weapon.id if weapon else ""
+	EventBus.weapon_skill_used.emit(weapon_id)
 
 	return skill_data
 
@@ -105,12 +109,19 @@ func has_weapon() -> bool:
 ## 功能：获取武器显示名称
 ## 返回值：String - 武器名称
 func get_weapon_display_name() -> String:
+	if not WeaponManager.ENABLED:
+		return ""
 	var weapon = WeaponManager.get_equipped_weapon()
 	return weapon.display_name if weapon else ""
 
 # ========================== 内部方法模块 ==========================
 ## 功能：刷新当前武器属性缓存
 func _refresh_stats() -> void:
+	if not WeaponManager.ENABLED:
+		_current_stats = {}
+		_weapon_skill_cooldown = 0.0
+		_weapon_skill_total_cooldown = 0.0
+		return
 	_current_stats = WeaponManager.get_equipped_stats()
 	if _current_stats.is_empty():
 		_weapon_skill_cooldown = 0.0

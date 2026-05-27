@@ -24,10 +24,12 @@ func _ready() -> void:
 	_enemy = owner as Enemy
 
 # ========================== 公共 API 模块 ==========================
-## 功能：向指定方向移动（带加速度平滑）
+## 功能：向指定方向移动（带加速度平滑，横版模式仅保留水平分量）
 ## 参数：direction (Vector2) - 标准化移动方向；delta (float) - 物理帧间隔时间
 func move_toward(direction: Vector2, delta: float) -> void:
-	var target_velocity: Vector2 = direction * _enemy.get_speed()
+	# 横版模式：只保留水平分量
+	var constrained := Vector2(direction.x, 0.0).normalized() if abs(direction.x) > 0.01 else Vector2.ZERO
+	var target_velocity: Vector2 = constrained * _enemy.get_speed()
 	_velocity = _velocity.move_toward(target_velocity, acceleration * delta)
 	_enemy.velocity = _velocity
 

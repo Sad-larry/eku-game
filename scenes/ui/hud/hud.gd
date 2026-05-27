@@ -27,6 +27,9 @@ class_name HUD
 ## 暂停按钮节点
 @onready var pause_button: Button = %PauseButton
 
+## 房间信息显示（需要手动在 hud.tscn 中添加）
+@onready var room_info_label: Label = %RoomInfoLabel
+
 ## 遗物栏容器（运行时动态创建）
 var _relic_bar: HBoxContainer = null
 
@@ -91,8 +94,14 @@ func _ready():
 		_init_skill_slot_icons()
 
 	# 初始化遗物栏
-	_init_relic_bar()
-	RelicManager.relics_changed.connect(_on_relics_changed)
+	if RelicManager.ENABLED:
+		_init_relic_bar()
+		RelicManager.relics_changed.connect(_on_relics_changed)
+
+	# 连接房间导航信号
+	RoomNavigationManager.axis_changed.connect(_on_axis_changed)
+	RoomNavigationManager.room_transition_requested.connect(_on_room_transition)
+	_update_room_info()
 
 ## 功能：节点退出场景树时断开所有全局信号连接，防止悬挂回调。
 func _exit_tree() -> void:
@@ -109,7 +118,7 @@ func _exit_tree() -> void:
 		EventBus.player_ready.disconnect(_on_player_ready)
 	if InputManager.action_triggered.is_connected(_on_input_action_triggered):
 		InputManager.action_triggered.disconnect(_on_input_action_triggered)
-	if RelicManager.relics_changed.is_connected(_on_relics_changed):
+	if RelicManager.ENABLED and RelicManager.relics_changed.is_connected(_on_relics_changed):
 		RelicManager.relics_changed.disconnect(_on_relics_changed)
 
 # ========================== 技能槽初始化模块 ==========================
@@ -294,6 +303,8 @@ func _init_relic_bar() -> void:
 func _update_relic_bar() -> void:
 	if not _relic_bar:
 		return
+	if not RelicManager.ENABLED:
+		return
 	for child in _relic_bar.get_children():
 		child.queue_free()
 	var relics := RelicManager.get_active_relics()
@@ -305,3 +316,21 @@ func _update_relic_bar() -> void:
 ## 功能：遗物变化时刷新遗物栏
 func _on_relics_changed() -> void:
 	_update_relic_bar()
+
+# ========================== 房间信息模块 ==========================
+## 功能：更新房间信息显示（坐标、ring、轴状态）
+func _update_room_info() -> void:
+	if not room_info_label:
+		return
+	var coord := RoomNavigationManager.current_coord
+	var ring := RoomNavigationManager.get_current_ring()
+	var axis := RoomNavigationManager.active_axis.to_upper()
+	room_info_label.text = "(%d,%d) R%d [%s轴]" % [coord.x, coord.y, ring, axis]
+
+## 功能：轴切换时更新显示
+func _on_axis_changed(_new_axis: String) -> void:
+	_update_room_info()
+
+## 功能：房间切换时更新显示
+func _on_room_transition(_target_coord: Vector2i) -> void:
+	_update_room_info()

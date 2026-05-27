@@ -51,7 +51,8 @@ func _ready() -> void:
 	_unlock_btn.pressed.connect(_on_unlock_pressed)
 	_upgrade_btn.pressed.connect(_on_upgrade_pressed)
 	CurrencyManager.coin_changed.connect(_on_coin_changed)
-	SkillUpgradeManager.skill_upgraded.connect(_on_skill_upgraded)
+	if SkillUpgradeManager.ENABLED:
+		SkillUpgradeManager.skill_upgraded.connect(_on_skill_upgraded)
 
 	_update_coin_display()
 	_rebuild_list()
@@ -143,6 +144,14 @@ func _clear_detail() -> void:
 
 # ========================== 解锁操作模块 ==========================
 func _update_unlock_section(skill_id: String) -> void:
+	if not SkillUnlockManager.ENABLED:
+		# 后期系统禁用时，所有技能默认已解锁
+		_condition_label.text = ""
+		_cost_label.text = ""
+		_unlock_btn.text = "已解锁"
+		_unlock_btn.disabled = true
+		return
+
 	var unlock_data := SkillUnlockManager.get_unlock_data(skill_id)
 	if unlock_data == null:
 		return
@@ -177,6 +186,8 @@ func _update_unlock_section(skill_id: String) -> void:
 		_unlock_btn.disabled = not can_unlock
 
 func _on_unlock_pressed() -> void:
+	if not SkillUnlockManager.ENABLED:
+		return
 	if _selected_skill_id.is_empty():
 		return
 
@@ -195,9 +206,18 @@ func _on_unlock_pressed() -> void:
 # ========================== 升级操作模块 ==========================
 ## 功能：根据技能解锁状态和等级更新升级区域显示
 func _update_upgrade_section(skill_id: String) -> void:
-	var is_unlocked := SkillUnlockManager.is_skill_unlocked(skill_id)
+	var is_unlocked: bool = not SkillUnlockManager.ENABLED or SkillUnlockManager.is_skill_unlocked(skill_id)
 	_upgrade_section.visible = is_unlocked
 	if not is_unlocked:
+		return
+
+	if not SkillUpgradeManager.ENABLED:
+		# 后期系统禁用时，显示默认等级
+		_level_label.text = "等级: Lv.1/1"
+		_upgrade_effect_label.text = ""
+		_upgrade_cost_label.text = ""
+		_upgrade_btn.text = "升级"
+		_upgrade_btn.disabled = true
 		return
 
 	var level: int = SkillUpgradeManager.get_skill_level(skill_id)
@@ -252,6 +272,8 @@ func _get_next_level_cumulative(skill_id: String) -> Dictionary:
 	return result
 
 func _on_upgrade_pressed() -> void:
+	if not SkillUpgradeManager.ENABLED:
+		return
 	if _selected_skill_id.is_empty():
 		return
 	var success := SkillUpgradeManager.upgrade_skill(_selected_skill_id)

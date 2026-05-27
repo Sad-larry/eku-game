@@ -7,6 +7,8 @@
 extends Node
 
 # ========================== 常量 ==========================
+## 模块启用开关（后期系统，暂时禁用）
+const ENABLED: bool = false
 ## 图鉴资源目录
 const CODEX_DIR: String = "res://resources/data/codex/"
 ## 调试模式开关
@@ -20,6 +22,9 @@ var _unlocked: Array[String] = []
 
 # ========================== 生命周期 ==========================
 func _ready() -> void:
+	if not ENABLED:
+		print("CodexManager: 已禁用")
+		return
 	SaveManager.data_loaded.connect(_on_save_data_loaded)
 	_connect_signals()
 	print("CodexManager: 图鉴管理器初始化完成")

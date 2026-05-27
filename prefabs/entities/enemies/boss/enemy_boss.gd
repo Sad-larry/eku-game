@@ -140,7 +140,7 @@ func _process_skill_drop() -> void:
 		return
 
 	for skill in dropped_skills:
-		if skill_drop_config.direct_unlock:
+		if skill_drop_config.direct_unlock and SkillUnlockManager.ENABLED:
 			SkillUnlockManager.unlock_skill_by_id(skill.id)
 		EventBus.boss_skill_dropped.emit(boss_id, skill.id)
 

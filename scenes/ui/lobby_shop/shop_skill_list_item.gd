@@ -54,13 +54,16 @@ func setup(data: SkillEffect) -> void:
 
 ## 功能：根据 SkillUpgradeManager 刷新等级标签
 func refresh_level() -> void:
+	if not SkillUpgradeManager.ENABLED:
+		_level_tag.text = "Lv.1/1"
+		return
 	var level: int = SkillUpgradeManager.get_skill_level(_skill_id)
 	var max_level: int = SkillUpgradeManager.get_max_level(_skill_id)
 	_level_tag.text = "Lv.%d/%d" % [level, max_level]
 
 ## 功能：根据 SkillUnlockManager 刷新解锁状态显示
 func refresh_state() -> void:
-	var unlocked: bool = SkillUnlockManager.is_skill_unlocked(_skill_id)
+	var unlocked: bool = not SkillUnlockManager.ENABLED or SkillUnlockManager.is_skill_unlocked(_skill_id)
 	_lock_mark.visible = not unlocked
 	_icon.self_modulate = Color(1, 1, 1, 1.0) if unlocked else Color(0.4, 0.4, 0.4, 1.0)
 

@@ -1,6 +1,9 @@
 # ==============================================================================
 #   player_movement_component.gd
-#   功能：玩家移动组件，将输入方向转为 8 方向速度并应用到父节点。
+#   功能：玩家移动组件，将输入方向转为速度并应用到父节点。
+#        根据游戏状态自动切换移动模式：
+#        - 大厅（LOBBY）：四方向移动（上下左右），适配等距视角
+#        - 冒险（IN_GAME）：仅水平移动（左右），适配横版视角
 # ==============================================================================
 extends Node
 class_name PlayerMovementComponent
@@ -11,7 +14,7 @@ var _speed: float = 100.0
 ## 当前运动方向（8 方向标准化后的向量）
 var current_direction: Vector2 = Vector2.ZERO
 ## 最后有效移动方向（用于动画朝向等，非 ZERO 时由 update_movement() 自动更新）
-var last_direction: Vector2 = Vector2.DOWN
+var last_direction: Vector2 = Vector2.RIGHT
 ## 当前的即时速度向量
 var current_velocity: Vector2 = Vector2.ZERO
 
@@ -32,9 +35,16 @@ func setup(stats: UnitStats) -> void:
 ##       speed_multiplier (float) - 移速倍率，设为 0 可禁用移动
 ## 说明：内部通过 InputManager 获取输入，不再需要外部传入方向。
 ##       last_direction 在 speed_multiplier > 0 且有实际方向时自动更新。
+##       大厅（LOBBY）使用四方向移动，冒险（IN_GAME）仅水平移动。
 func update_movement(_delta: float, speed_multiplier: float = 1.0) -> void:
 	var input_dir := InputManager.get_movement_vector()
-	current_direction = DirectionUtils.normalize_8_direction(input_dir)
+	# 根据游戏状态选择移动模式
+	if GameManager.current_game_state == GameManager.GameState.LOBBY:
+		# 等距大厅：四方向移动
+		current_direction = input_dir.normalized() if input_dir.length() > 0.01 else Vector2.ZERO
+	else:
+		# 横版冒险：仅水平移动
+		current_direction = Vector2(input_dir.x, 0.0).normalized() if abs(input_dir.x) > 0.01 else Vector2.ZERO
 
 	if speed_multiplier > 0.0 and current_direction != Vector2.ZERO:
 		last_direction = current_direction

@@ -28,6 +28,11 @@ func _refresh_display() -> void:
 	for child in achievement_list.get_children():
 		child.queue_free()
 
+	if not AchievementManager.ENABLED:
+		if title_label:
+			title_label.text = "成就 (已禁用)"
+		return
+
 	# 获取所有成就并排序
 	var all_achievements: Dictionary = AchievementManager.get_all_achievements()
 	var sorted_achievements: Array = all_achievements.values()

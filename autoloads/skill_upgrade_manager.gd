@@ -8,6 +8,8 @@
 extends Node
 
 # ========================== 常量定义模块 ==========================
+## 模块启用开关（后期系统，暂时禁用）
+const ENABLED: bool = false
 const DEBUG_MODE: bool = true
 const UPGRADE_DATA_DIR: String = "res://resources/data/skills/upgrades/"
 const DEFAULT_LEVEL: int = 1
@@ -25,6 +27,9 @@ var _skill_levels: Dictionary = {}
 
 # ========================== 生命周期模块 ==========================
 func _ready() -> void:
+	if not ENABLED:
+		print("SkillUpgradeManager: 已禁用")
+		return
 	SaveManager.data_loaded.connect(_on_save_data_loaded)
 	print("SkillUpgradeManager: 技能升级管理器初始化完成")
 
@@ -112,7 +117,7 @@ func get_upgrade_cost(skill_id: String) -> int:
 
 ## 功能：检查技能是否可以升级（已解锁 + 未满级 + 尘元足够）
 func can_upgrade_skill(skill_id: String) -> bool:
-	if not SkillUnlockManager.is_skill_unlocked(skill_id):
+	if SkillUnlockManager.ENABLED and not SkillUnlockManager.is_skill_unlocked(skill_id):
 		return false
 	var cost := get_upgrade_cost(skill_id)
 	if cost < 0:

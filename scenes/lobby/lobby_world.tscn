@@ -145,7 +145,7 @@ script = ExtResource("1_s6mil")
 
 [node name="IsoSorting" type="Node" parent="." unique_id=1817307723 node_paths=PackedStringArray("sort_groups")]
 script = ExtResource("2_x3a0l")
-sort_groups = [NodePath("../Environment"), NodePath("../Entities"), NodePath("../ChildScenes/Cabin"), NodePath("../ChildScenes/Garden"), NodePath("../ChildScenes/AdventureGate")]
+sort_groups = [NodePath("../Environment"), NodePath("../Entities"), NodePath("../ChildScenes/Cabin"), NodePath("../ChildScenes/Garden"), NodePath("../ChildScenes/AdventureGate"), NodePath("../ChildScenes/Shop")]
 
 [node name="SubSceneManager" type="Node" parent="." unique_id=2097827731]
 script = ExtResource("3_em6rn")
@@ -165,7 +165,7 @@ position = Vector2(374, -154)
 position = Vector2(434, 93)
 
 [node name="Shop" parent="ChildScenes" unique_id=698016401 instance=ExtResource("8_o85nr")]
-position = Vector2(70, -215)
+position = Vector2(-131, -343)
 
 [node name="TileMap" type="Node2D" parent="." unique_id=128744602]
 

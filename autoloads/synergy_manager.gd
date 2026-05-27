@@ -13,6 +13,8 @@ signal synergy_triggered(rule_id: String, context: Dictionary)
 signal weapon_skill_synergy_triggered(synergy_id: String, weapon_id: String, skill_id: String)
 
 # ========================== 常量 ==========================
+## 模块启用开关（后期系统，暂时禁用）
+const ENABLED: bool = false
 ## 调试模式开关
 const DEBUG_MODE: bool = true
 ## 协同规则资源目录
@@ -46,6 +48,9 @@ var _weapon_trigger_counts: Dictionary = {}
 
 # ========================== 生命周期 ==========================
 func _ready() -> void:
+	if not ENABLED:
+		print("SynergyManager: 已禁用")
+		return
 	_load_rules()
 	_load_weapon_synergies()
 	_connect_signals()
@@ -285,6 +290,9 @@ func _apply_area_effect(effect: SynergyEffect, damage_info: DamageInfo) -> void:
 
 # ========================== 武器技能协同 ==========================
 func _check_weapon_synergy(info: DamageInfo, skill_tags: Array[String]) -> void:
+	if not WeaponManager.ENABLED:
+		return
+
 	# 获取当前装备武器的tags
 	var weapon_tags: Array[String] = WeaponManager.get_equipped_stats().get("tags", [])
 	if weapon_tags.is_empty():

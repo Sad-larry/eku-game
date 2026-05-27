@@ -77,6 +77,11 @@ func reset_all() -> void:
 	_room_states.clear()
 	current_coord = Vector2i.ZERO
 
+## 功能：获取当前房间的 ring 值（曼哈顿距离）
+## 返回值：int - ring 值
+func get_current_ring() -> int:
+	return abs(current_coord.x) + abs(current_coord.y)
+
 # ========================== 工具方法模块 ==========================
 ## 功能：将房间坐标转换为字典键
 ## 参数：coord (Vector2i) - 房间坐标

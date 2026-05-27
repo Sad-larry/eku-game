@@ -69,7 +69,9 @@ func _process(delta: float) -> void:
 		return
 	if _state == RunnerState.COOLDOWN and _cooldown_remaining > 0.0:
 		_cooldown_remaining -= delta
-		var effective_cooldown := SkillUpgradeManager.get_effective_cooldown(skill_data.id, skill_data.cooldown)
+		var effective_cooldown: float = skill_data.cooldown
+		if SkillUpgradeManager.ENABLED:
+			effective_cooldown = SkillUpgradeManager.get_effective_cooldown(skill_data.id, skill_data.cooldown)
 		cooldown_updated.emit(_cooldown_remaining, effective_cooldown)
 		if _cooldown_remaining <= 0.0:
 			_cooldown_remaining = 0.0
@@ -96,9 +98,9 @@ func get_remaining_cooldown() -> float:
 # ========================== 技能执行（Player 层调用） ==========================
 ## 功能：执行技能，实例化技能场景（fx_scene）并进入 ACTIVE 状态。
 ## 说明：此方法仅在 Player 层完成能量/冷却检查后调用。不在此处做伤害计算。
-## 参数：target (Node2D) - 可选的目标节点
+## 参数：target (Node2D) - 可选的目标节点；direction (Vector2) - 技能释放方向（基于鼠标位置）
 ## 返回值：Node2D - 实例化的技能场景，调用者可按需操作
-func execute(target: Node2D = null) -> Node2D:
+func execute(target: Node2D = null, direction: Vector2 = Vector2.ZERO) -> Node2D:
 	_state = RunnerState.ACTIVE
 
 	if skill_data.fx_scene:
@@ -107,6 +109,7 @@ func execute(target: Node2D = null) -> Node2D:
 		_fx_instance.caster = caster
 		_fx_instance.target = target
 		_fx_instance.skill_data = skill_data
+		_fx_instance.skill_direction = direction
 
 		match skill_data.effect_attach_type:
 			SkillEffect.EffectAttachType.CASTER:
@@ -136,8 +139,11 @@ func on_execution_complete() -> void:
 ## 参数：target (Node2D) - 被命中的目标节点
 ## 返回值：DamageInfo - 包含计算后的伤害数据
 func on_hit(target: Node2D) -> DamageInfo:
-	var effective_damage := SkillUpgradeManager.get_effective_damage(skill_data.id, skill_data.damage)
-	var effective_multiplier := SkillUpgradeManager.get_effective_multiplier(skill_data.id, skill_data.skill_multiplier)
+	var effective_damage: float = skill_data.damage
+	var effective_multiplier: float = skill_data.skill_multiplier
+	if SkillUpgradeManager.ENABLED:
+		effective_damage = SkillUpgradeManager.get_effective_damage(skill_data.id, skill_data.damage)
+		effective_multiplier = SkillUpgradeManager.get_effective_multiplier(skill_data.id, skill_data.skill_multiplier)
 	var result = _calculator.calculate(
 		effective_damage,
 		effective_multiplier,
@@ -174,7 +180,9 @@ func on_fx_destroyed() -> void:
 # ========================== 内部方法模块 ==========================
 func _start_cooldown() -> void:
 	_state = RunnerState.COOLDOWN
-	var effective_cooldown := SkillUpgradeManager.get_effective_cooldown(skill_data.id, skill_data.cooldown)
+	var effective_cooldown: float = skill_data.cooldown
+	if SkillUpgradeManager.ENABLED:
+		effective_cooldown = SkillUpgradeManager.get_effective_cooldown(skill_data.id, skill_data.cooldown)
 	if effective_cooldown > 0.0:
 		_cooldown_remaining = effective_cooldown
 		cooldown_updated.emit(_cooldown_remaining, effective_cooldown)

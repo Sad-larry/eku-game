@@ -7,6 +7,8 @@
 extends Node
 
 # ========================== 常量 ==========================
+## 模块启用开关（后期系统，暂时禁用）
+const ENABLED: bool = false
 ## 成就资源目录
 const ACHIEVEMENTS_DIR: String = "res://resources/data/achievements/"
 ## 调试模式开关
@@ -29,6 +31,9 @@ var _progress: Dictionary = {}
 
 # ========================== 生命周期 ==========================
 func _ready() -> void:
+	if not ENABLED:
+		print("AchievementManager: 已禁用")
+		return
 	SaveManager.data_loaded.connect(_on_save_data_loaded)
 	_connect_signals()
 	print("AchievementManager: 成就管理器初始化完成")
@@ -162,12 +167,12 @@ func _grant_rewards(data: AchievementData) -> void:
 	if data.reward_coins > 0:
 		CurrencyManager.add_permanent_coin(data.reward_coins)
 
-	# 遗物奖励
-	if data.reward_relic is RelicData:
+	# 遗物奖励（后期系统禁用时跳过）
+	if RelicManager.ENABLED and data.reward_relic is RelicData:
 		RelicManager.acquire_relic(data.reward_relic)
 
-	# 技能奖励（直接解锁，不扣费）
-	if data.reward_skill is SkillEffect:
+	# 技能奖励（后期系统禁用时跳过）
+	if SkillUnlockManager.ENABLED and data.reward_skill is SkillEffect:
 		SkillUnlockManager.unlock_skill_by_id(data.reward_skill.id)
 
 # ========================== 信号回调 ==========================
@@ -216,6 +221,8 @@ func _on_weapon_upgraded(_weapon_id: String, new_level: int) -> void:
 
 ## 功能：更新遗物收集类成就进度（以当前持有遗物数为准）
 func _on_relic_acquired(_relic_id: String) -> void:
+	if not RelicManager.ENABLED:
+		return
 	for data in _achievements.values():
 		if data.condition_type == AchievementData.ConditionType.RELIC_COUNT:
 			var current_count: int = RelicManager.get_active_relics().size()

@@ -36,6 +36,10 @@ func hide_panel() -> void:
 # ========================== 内部方法模块 ==========================
 ## 功能：刷新显示内容
 func _refresh_display() -> void:
+	if not WeaponManager.ENABLED:
+		_show_empty_state()
+		return
+
 	var weapon = WeaponManager.get_equipped_weapon()
 	if weapon == null:
 		_show_empty_state()

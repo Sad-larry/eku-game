@@ -37,6 +37,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Communication
 
 - 永远使用简体中文进行思考和对话
+- 【重要】每次回复时都叫我【阿库】
 
 ## Documentation
 

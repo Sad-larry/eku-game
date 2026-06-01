@@ -59,6 +59,9 @@ func _ready() -> void:
 	# 记录生成位置
 	spawn_position = global_position
 
+	# 创建占位图视觉（开发阶段）
+	_setup_placeholder_visual()
+
 	# 同步碰撞范围
 	_sync_vision_area_range()
 	_sync_hitbox_size()
@@ -226,3 +229,36 @@ func _on_vision_area_body_entered(body: Node2D) -> void:
 func _on_vision_area_body_exited(body: Node2D) -> void:
 	if body is Player:
 		player_detected = false
+
+## 功能：设置占位图视觉（开发阶段使用）
+## 说明：隐藏原有的动画和精灵，添加占位图组件
+func _setup_placeholder_visual() -> void:
+	# 隐藏原有的动画控制器
+	var anim_node := get_node_or_null("EnemyAnimationController")
+	if anim_node:
+		anim_node.visible = false
+
+	# 确定敌人类型和颜色
+	var enemy_type := "enemy"
+	var enemy_label := stats_resource.unit_name if stats_resource else "敌人"
+
+	# 根据类名判断类型
+	if self is EnemyElite:
+		enemy_type = "elite"
+	elif self is EnemyBoss:
+		enemy_type = "boss"
+
+	# 创建占位图组件
+	var placeholder := PlaceholderSprite.new()
+	placeholder.name = "PlaceholderSprite"
+	placeholder.placeholder_type = enemy_type
+	placeholder.custom_label = enemy_label
+	placeholder.placeholder_size = Vector2(28, 28)  # 敌人占位图尺寸
+	add_child(placeholder)
+
+	# 将占位图移到最前面
+	move_child(placeholder, 0)
+
+	# 隐藏武器精灵
+	if weapon_sprite:
+		weapon_sprite.visible = false

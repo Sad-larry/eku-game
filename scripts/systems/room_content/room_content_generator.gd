@@ -13,7 +13,7 @@ var _world: GameWorld
 func setup(world: GameWorld) -> void:
 	_world = world
 	_registry = RoomContentRegistry.new()
-	_register_default_spawners()
+	#_register_default_spawners()
 
 ## 功能：处理房间进入事件，路由到对应的 Spawner
 ## 参数：coord - 房间坐标，ring - 环数，event_type - 事件类型

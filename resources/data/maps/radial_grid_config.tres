@@ -4,59 +4,38 @@
 [ext_resource type="TileSet" uid="uid://da0qlqx0x5l2p" path="res://resources/data/tilesets/tileset_grassland.tres" id="2_h0whh"]
 [ext_resource type="Script" uid="uid://cxqdfol5b21w7" path="res://resources/data/maps/ring_event_pool.gd" id="2_trbvx"]
 [ext_resource type="Script" uid="uid://c6w5eln1lkkuo" path="res://resources/data/maps/radial_grid_config.gd" id="2_vexvs"]
-[ext_resource type="Resource" uid="uid://clkb51m2omoj8" path="res://resources/data/biomes/biome_01_deep_water.tres" id="3_hauiu"]
 [ext_resource type="Script" uid="uid://7e23385ea1s6" path="res://resources/data/biomes/ring_biome_entry.gd" id="4"]
-[ext_resource type="Resource" uid="uid://oeck5fe2cd1c" path="res://resources/data/biomes/biome_02_shallow_water.tres" id="4_hnd0l"]
-[ext_resource type="Resource" uid="uid://c8o7q1okqbwo" path="res://resources/data/biomes/biome_05_grassland.tres" id="4_ploif"]
-[ext_resource type="Resource" uid="uid://pnkcminlvkhk" path="res://resources/data/biomes/biome_03_sand _beach.tres" id="5_1qjsr"]
-[ext_resource type="Resource" uid="uid://beoadmb50xbkq" path="res://resources/data/biomes/biome_04_mud_ground.tres" id="6_j58er"]
-[ext_resource type="Resource" uid="uid://c3idmd6qwkbxa" path="res://resources/data/biomes/biome_06_flower_field.tres" id="8_1qjsr"]
 
 [sub_resource type="Resource" id="Resource_jifnc"]
 script = ExtResource("4")
-biome = ExtResource("3_hauiu")
 metadata/_custom_type_script = "uid://7e23385ea1s6"
 
 [sub_resource type="Resource" id="Resource_l8jip"]
 script = ExtResource("4")
-ring_index = 1
-biome = ExtResource("3_hauiu")
 metadata/_custom_type_script = "uid://7e23385ea1s6"
 
 [sub_resource type="Resource" id="Resource_pc3ie"]
 script = ExtResource("4")
-ring_index = 2
-biome = ExtResource("4_hnd0l")
 metadata/_custom_type_script = "uid://7e23385ea1s6"
 
 [sub_resource type="Resource" id="Resource_1xgjc"]
 script = ExtResource("4")
-ring_index = 3
-biome = ExtResource("5_1qjsr")
 metadata/_custom_type_script = "uid://7e23385ea1s6"
 
 [sub_resource type="Resource" id="Resource_rnyli"]
 script = ExtResource("4")
-ring_index = 4
-biome = ExtResource("6_j58er")
 metadata/_custom_type_script = "uid://7e23385ea1s6"
 
 [sub_resource type="Resource" id="Resource_j58er"]
 script = ExtResource("4")
-ring_index = 5
-biome = ExtResource("4_ploif")
 metadata/_custom_type_script = "uid://7e23385ea1s6"
 
 [sub_resource type="Resource" id="Resource_ff06x"]
 script = ExtResource("4")
-ring_index = 6
-biome = ExtResource("8_1qjsr")
 metadata/_custom_type_script = "uid://7e23385ea1s6"
 
 [sub_resource type="Resource" id="Resource_ke25b"]
 script = ExtResource("4")
-ring_index = 7
-biome = ExtResource("8_1qjsr")
 metadata/_custom_type_script = "uid://7e23385ea1s6"
 
 [resource]

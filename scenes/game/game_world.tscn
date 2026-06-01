@@ -4,7 +4,6 @@
 [ext_resource type="Resource" uid="uid://3iiaugj3ttag" path="res://resources/data/combat/battle_room_config.tres" id="2_battle"]
 [ext_resource type="Resource" uid="uid://c0a1op68lstgq" path="res://resources/data/maps/radial_grid_config.tres" id="2_nms8r"]
 [ext_resource type="Resource" uid="uid://byr1nu7d2t0bb" path="res://resources/data/progression/layer_progression.tres" id="2_progression"]
-[ext_resource type="TileSet" uid="uid://da0qlqx0x5l2p" path="res://resources/data/tilesets/tileset_grassland.tres" id="3_jmprd"]
 [ext_resource type="Script" uid="uid://begwagd0w8e0k" path="res://scripts/systems/map_generation/chunk_manager.gd" id="3_nms8r"]
 [ext_resource type="Script" uid="uid://ctnn8d726sofc" path="res://scripts/systems/map_generation/chunk_pool.gd" id="4_60nf8"]
 [ext_resource type="PackedScene" uid="uid://dohnbnw4ew3hp" path="res://prefabs/entities/player/player.tscn" id="5_0jb8d"]
@@ -25,10 +24,6 @@ layer_progression_config = ExtResource("2_progression")
 
 [node name="ChunkManager" type="Node" parent="." unique_id=178272235]
 script = ExtResource("3_nms8r")
-tileset = ExtResource("3_jmprd")
-chunk_size = 48
-load_radius = 1
-unload_radius = 1
 
 [node name="ChunkContainer" type="Node2D" parent="ChunkManager" unique_id=1354218738]
 

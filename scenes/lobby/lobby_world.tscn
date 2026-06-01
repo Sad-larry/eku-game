@@ -143,9 +143,8 @@ sources/0 = SubResource("TileSetAtlasSource_r17ct")
 [node name="LobbyWorld" type="Node2D" unique_id=540314176]
 script = ExtResource("1_s6mil")
 
-[node name="IsoSorting" type="Node" parent="." unique_id=1817307723 node_paths=PackedStringArray("sort_groups")]
+[node name="IsoSorting" type="Node" parent="." unique_id=1817307723]
 script = ExtResource("2_x3a0l")
-sort_groups = [NodePath("../Environment"), NodePath("../Entities"), NodePath("../ChildScenes/Cabin"), NodePath("../ChildScenes/Garden"), NodePath("../ChildScenes/AdventureGate"), NodePath("../ChildScenes/Shop")]
 
 [node name="SubSceneManager" type="Node" parent="." unique_id=2097827731]
 script = ExtResource("3_em6rn")

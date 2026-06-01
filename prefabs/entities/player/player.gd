@@ -34,6 +34,9 @@ func _ready() -> void:
 	add_to_group("player")
 	Global.player = self
 
+	# 创建占位图视觉（开发阶段）
+	#_setup_placeholder_visual()
+
 	health_component.health_updated.connect(_on_health_forward_to_bus)
 	health_component.unit_died.connect(_on_unit_died)
 	energy_component.energy_changed.connect(_on_energy_forward_to_bus)
@@ -178,3 +181,28 @@ func _get_current_speed_multiplier() -> float:
 	if status_effect_component:
 		effect_mult = status_effect_component.get_speed_multiplier()
 	return state_mult * effect_mult
+
+## 功能：设置占位图视觉（开发阶段使用）
+## 说明：隐藏原有的动画和精灵，添加占位图组件
+func _setup_placeholder_visual() -> void:
+	# 隐藏原有的 Visual 节点
+	var visual_node := get_node_or_null("Visual")
+	if visual_node:
+		visual_node.visible = false
+
+	# 隐藏原有的 Sprite2D 节点
+	var sprite_node := get_node_or_null("Sprite2D")
+	if sprite_node:
+		sprite_node.visible = false
+
+	# 创建占位图组件
+	var placeholder := PlaceholderSprite.new()
+	placeholder.name = "PlaceholderSprite"
+	placeholder.placeholder_type = "player"
+	placeholder.placeholder_size = Vector2(24, 40)  # 玩家占位图尺寸
+	add_child(placeholder)
+
+	# 将占位图移到最前面
+	move_child(placeholder, 0)
+
+	print("Player: 已创建占位图视觉")

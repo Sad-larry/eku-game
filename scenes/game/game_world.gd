@@ -109,32 +109,36 @@ func _get_current_event_type() -> String:
 
 # ========================== 世界初始化 ==========================
 func _setup_world() -> void:
-	if room_map_config == null:
-		push_error("GameWorld: room_map_config 未设置")
-		return
+	# 暂时注释掉地图生成器相关配置检查
+	# if room_map_config == null:
+	# 	push_error("GameWorld: room_map_config 未设置")
+	# 	return
 
 	_apply_layer_config()
 
-	# 1. 生成地图数据
-	var grid_gen := RadialGridGenerator.new()
-	_map_data = grid_gen.generate(room_map_config)
+	# 暂时注释掉地图生成器
+	# var grid_gen := RadialGridGenerator.new()
+	# _map_data = grid_gen.generate(room_map_config)
 
-	# 2. 初始化导航管理器
-	RoomNavigationManager.setup(_map_data, room_map_config.max_ring)
+	# 暂时注释掉导航管理器初始化
+	# RoomNavigationManager.setup(_map_data, room_map_config.max_ring)
 
-	# 3. 初始化房间加载器
-	_room_loader = RoomLoader.new()
-	_room_loader.name = "RoomLoader"
-	add_child(_room_loader)
-	_room_loader.setup(_map_data, room_container)
-	_room_loader.main_room_changed.connect(_on_main_room_changed)
+	# 暂时注释掉房间加载器初始化
+	# _room_loader = RoomLoader.new()
+	# _room_loader.name = "RoomLoader"
+	# add_child(_room_loader)
+	# _room_loader.setup(_map_data, room_container)
+	# _room_loader.main_room_changed.connect(_on_main_room_changed)
 
-	# 4. 初始化房间内容生成器
-	_room_content_generator = RoomContentGenerator.new()
-	_room_content_generator.setup(self)
+	# 暂时注释掉房间内容生成器初始化
+	# _room_content_generator = RoomContentGenerator.new()
+	# _room_content_generator.setup(self)
 
-	# 5. 加载起始房间
-	_room_loader.load_start_room(Vector2i.ZERO)
+	# 暂时注释掉加载起始房间
+	# _room_loader.load_start_room(Vector2i.ZERO)
+
+	# 创建测试房间占位图（开发阶段）
+	_create_test_rooms()
 
 	# 6. 玩家出生点定位
 	_place_player_at_start()
@@ -148,14 +152,56 @@ func _apply_layer_config() -> void:
 	if RunManager.run_seed != 0:
 		room_map_config.world_seed = RunManager.run_seed
 
+## 功能：创建测试房间占位图（开发阶段使用）
+## 说明：生成几个测试房间，用于验证房间系统和玩家移动
+func _create_test_rooms() -> void:
+	# 创建起始房间
+	var start_room := RoomPlaceholder.new()
+	start_room.name = "StartRoom"
+	start_room.room_type = "start"
+	start_room.room_coord = Vector2i.ZERO
+	start_room.room_size = ROOM_SIZE
+	start_room.position = Vector2.ZERO
+	room_container.add_child(start_room)
+
+	# 创建战斗房间（右边）
+	var battle_room := RoomPlaceholder.new()
+	battle_room.name = "BattleRoom1"
+	battle_room.room_type = "battle"
+	battle_room.room_coord = Vector2i(1, 0)
+	battle_room.room_size = ROOM_SIZE
+	battle_room.position = Vector2(ROOM_SIZE.x, 0)
+	room_container.add_child(battle_room)
+
+	# 创建宝箱房间（上边）
+	var treasure_room := RoomPlaceholder.new()
+	treasure_room.name = "TreasureRoom"
+	treasure_room.room_type = "treasure"
+	treasure_room.room_coord = Vector2i(0, -1)
+	treasure_room.room_size = ROOM_SIZE
+	treasure_room.position = Vector2(0, -ROOM_SIZE.y)
+	room_container.add_child(treasure_room)
+
+	# 创建Boss房间（右上）
+	var boss_room := RoomPlaceholder.new()
+	boss_room.name = "BossRoom"
+	boss_room.room_type = "boss"
+	boss_room.room_coord = Vector2i(1, -1)
+	boss_room.room_size = ROOM_SIZE
+	boss_room.position = Vector2(ROOM_SIZE.x, -ROOM_SIZE.y)
+	room_container.add_child(boss_room)
+
+	print("GameWorld: 已创建测试房间占位图")
+
 func _place_player_at_start() -> void:
 	await get_tree().process_frame
 	if not player and is_instance_valid(Global.player):
 		player = Global.player
-	if player:
-		var main_room := _room_loader.get_main_room()
-		if main_room:
-			player.global_position = main_room.get_spawn_position()
+	# 暂时注释掉房间加载器相关逻辑，使用场景中预设的玩家位置
+	# if player:
+	# 	var main_room := _room_loader.get_main_room()
+	# 	if main_room:
+	# 		player.global_position = main_room.get_spawn_position()
 
 # ========================== 房间切换模块 ==========================
 func _on_room_transition(target_coord: Vector2i) -> void:
